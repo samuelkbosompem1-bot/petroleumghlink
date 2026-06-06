@@ -40,6 +40,7 @@
   --c-chase: #1a73e8; --c-quantum: #188038; --c-tor: #e37400;
   --c-hub: #7b1fa2; --c-sage: #c62828; --c-tfc: #00838f;
   --c-blue-ocean: #e65100; --c-matrix: #558b2f; --c-vana: #ad1457;
+  --c-accra: #00695c;
 }
 
 /* ── DARK MODE VARIABLES ── */
@@ -73,6 +74,62 @@ body { font-family:'Calibri',Calibri,sans-serif; background:var(--bg); color:var
 /* PAGES */
 .page { display:none; min-height:100vh; flex-direction:column; }
 .page.active { display:flex; }
+
+/* ── SKELETON LOADING ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+.skeleton-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: var(--bg);
+  padding: 0;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+.skeleton-overlay.visible { display: flex; }
+.skeleton-nav {
+  height: 56px;
+  background: var(--bg2);
+  border-bottom: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.skeleton-body {
+  flex: 1;
+  padding: 1.5rem 1.75rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.sk {
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg2) 50%, var(--bg3) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  flex-shrink: 0;
+}
+.sk-circle { border-radius: 50%; }
+.sk-row { display: flex; gap: 12px; align-items: center; }
+.sk-grid { display: grid; gap: 12px; }
+.sk-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.sk-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.sk-grid-2 { grid-template-columns: 2fr 1fr; }
+.sk-card { border-radius: 10px; border: 1.5px solid var(--border); padding: 14px; background: var(--bg); flex-shrink: 0; }
+@media (max-width: 640px) {
+  .sk-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .sk-grid-3 { grid-template-columns: 1fr; }
+  .sk-grid-2 { grid-template-columns: 1fr; }
+  .skeleton-body { padding: calc(48px + 58px + 0.75rem) 12px 1rem; }
+  .skeleton-nav { height: 48px; }
+}
 
 /* ═══ NAV ═══ */
 nav {
@@ -188,6 +245,34 @@ nav {
 .notif-toast-text { font-size:12px; line-height:1.4; }
 @keyframes toastIn  { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
 @keyframes toastOut { from{opacity:1;transform:translateY(0);} to{opacity:0;transform:translateY(-8px);} }
+
+/* ── NOTIFICATION DETAIL MODAL ── */
+.notif-detail-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1800;
+  display:flex; align-items:center; justify-content:center; padding:1rem;
+}
+.notif-detail-box {
+  background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-md); width:100%; max-width:460px; overflow:hidden;
+  animation:alertPop 0.2s cubic-bezier(.34,1.56,.64,1);
+}
+.notif-detail-header {
+  padding:14px 16px; border-bottom:1.5px solid var(--border);
+  display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+}
+.notif-detail-close {
+  background:none; border:none; font-size:22px; line-height:1;
+  color:var(--text-3); cursor:pointer; padding:0 4px; flex-shrink:0;
+  border-radius:6px; transition:background 0.15s;
+}
+.notif-detail-close:hover { background:var(--bg3); }
+.notif-detail-body-wrap { padding:14px 16px 20px; }
+.notif-detail-message { font-size:14px; color:var(--text); line-height:1.55; margin-bottom:8px; font-weight:500; }
+.notif-detail-time-row { font-size:11px; color:var(--text-3); margin-bottom:14px; }
+@media (max-width:640px) {
+  .notif-detail-box { max-width:100%; border-radius:18px 18px 0 0; }
+  .notif-detail-overlay { align-items:flex-end; padding:0; }
+}
 .role-badge {
   padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600;
   background:var(--accent-light); color:var(--accent);
@@ -1227,6 +1312,24 @@ input, select, textarea {
 </head>
 <body>
 
+<!-- ── SKELETON LOADING OVERLAY ── -->
+<div class="skeleton-overlay" id="skeleton-overlay">
+  <div class="skeleton-nav">
+    <div class="sk sk-circle" style="width:32px;height:32px;flex-shrink:0;"></div>
+    <div class="sk" style="width:130px;height:14px;"></div>
+    <div style="flex:1;"></div>
+    <div class="sk" style="width:80px;height:14px;"></div>
+    <div class="sk" style="width:80px;height:14px;"></div>
+    <div class="sk" style="width:80px;height:14px;"></div>
+    <div style="width:20px;"></div>
+    <div class="sk sk-circle" style="width:30px;height:30px;flex-shrink:0;"></div>
+    <div class="sk sk-circle" style="width:30px;height:30px;flex-shrink:0;"></div>
+  </div>
+  <div class="skeleton-body" id="skeleton-body">
+    <!-- content injected by JS per page -->
+  </div>
+</div>
+
 <!-- Loading overlay shown while Firebase connects -->
 <div id="loading-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--bg2);flex-direction:column;align-items:center;justify-content:center;gap:16px;">
   <svg width="48" height="48" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
@@ -1264,6 +1367,24 @@ input, select, textarea {
 
 <!-- ── TOAST CONTAINER ── -->
 <div class="notif-toast-wrap" id="notif-toast-wrap"></div>
+
+<!-- ── NOTIFICATION DETAIL MODAL ── -->
+<div class="notif-detail-overlay hidden" id="notif-detail-modal" onclick="if(event.target===this)closeNotifDetail()">
+  <div class="notif-detail-box">
+    <div class="notif-detail-header" id="notif-detail-header">
+      <div>
+        <div class="notif-item-tag" id="notif-detail-tag" style="margin-bottom:6px;display:inline-block;"></div>
+        <div class="notif-detail-message" id="notif-detail-text"></div>
+        <div class="notif-detail-time-row" id="notif-detail-time"></div>
+      </div>
+      <button class="notif-detail-close" onclick="closeNotifDetail()">&#215;</button>
+    </div>
+    <div class="notif-detail-body-wrap" id="notif-detail-body"></div>
+    <div style="padding:0 16px 16px;display:flex;justify-content:flex-end;">
+      <button onclick="closeNotifDetail()" style="padding:9px 22px;border-radius:8px;border:1.5px solid var(--border);background:none;color:var(--text-2);font-family:'Calibri',Calibri,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Close</button>
+    </div>
+  </div>
+</div>
 
 <style>
 @keyframes loadBar {
@@ -1603,7 +1724,7 @@ input, select, textarea {
             <option value="">All Stations</option>
             <option>Chase Petroleum</option><option>Quantum Terminal</option><option>Tema Oil Refinery</option>
             <option>Petroleum Hub</option><option>Sage Distribution</option><option>Tema Fuel Company</option>
-            <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option>
+            <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option><option>Accra Plains Depot</option>
           </select>
         </div>
         <div style="overflow-x:auto;">
@@ -1675,7 +1796,7 @@ input, select, textarea {
               <option value="">— Select Station —</option>
               <option>Chase Petroleum</option><option>Quantum Terminal</option><option>Tema Oil Refinery</option>
               <option>Petroleum Hub</option><option>Sage Distribution</option><option>Tema Fuel Company</option>
-              <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option>
+              <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option><option>Accra Plains Depot</option>
             </select>
           </div>
           <div class="form-row">
@@ -1696,7 +1817,7 @@ input, select, textarea {
               <option value="">— Select Station —</option>
               <option>Chase Petroleum</option><option>Quantum Terminal</option><option>Tema Oil Refinery</option>
               <option>Petroleum Hub</option><option>Sage Distribution</option><option>Tema Fuel Company</option>
-              <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option>
+              <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option><option>Accra Plains Depot</option>
             </select>
           </div>
           <div class="form-row">
@@ -1797,7 +1918,7 @@ input, select, textarea {
           <option value="">— Select Loading Station —</option>
           <option>Chase Petroleum</option><option>Quantum Terminal</option><option>Tema Oil Refinery</option>
           <option>Petroleum Hub</option><option>Sage Distribution</option><option>Tema Fuel Company</option>
-          <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option>
+          <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option><option>Accra Plains Depot</option>
         </select>
       </div>
       <div class="form-row">
@@ -1944,6 +2065,7 @@ input, select, textarea {
               <option>Blue Ocean</option>
               <option>Matrix Gas</option>
               <option>Vana Energy</option>
+              <option>Accra Plains Depot</option>
             </select>
             <div id="r-station-preview" style="display:none;margin-top:6px;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-3);"></div>
           </div>
@@ -2668,7 +2790,7 @@ input, select, textarea {
         <select class="form-input" id="edit-trip-station">
           <option>Chase Petroleum</option><option>Quantum Terminal</option><option>Tema Oil Refinery</option>
           <option>Petroleum Hub</option><option>Sage Distribution</option><option>Tema Fuel Company</option>
-          <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option>
+          <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option><option>Accra Plains Depot</option>
         </select>
       </div>
       <div class="form-row">
@@ -2842,6 +2964,7 @@ const STATIONS = [
   {name:'Blue Ocean',color:'#e65100'},
   {name:'Matrix Gas',color:'#558b2f'},
   {name:'Vana Energy',color:'#ad1457'},
+  {name:'Accra Plains Depot',color:'#00695c'},
 ];
 
 let DB = { users:[], trips:[], stationRequests:{}, activity:[] };
@@ -2934,12 +3057,129 @@ function loadDB() {
 }
 // Populate BOE datalist from any previously saved data
 setTimeout(refreshBoeDatalist, 0);
+// ══════════ SKELETON LOADING ══════════
+const _skeletonTemplates = {
+  default: `
+    <div class="sk" style="width:220px;height:22px;margin-bottom:4px;"></div>
+    <div class="sk" style="width:160px;height:13px;margin-bottom:18px;"></div>
+    <div class="sk-grid sk-grid-4">
+      <div class="sk-card"><div class="sk" style="height:10px;width:60%;margin-bottom:10px;"></div><div class="sk" style="height:32px;width:80%;"></div></div>
+      <div class="sk-card"><div class="sk" style="height:10px;width:60%;margin-bottom:10px;"></div><div class="sk" style="height:32px;width:80%;"></div></div>
+      <div class="sk-card"><div class="sk" style="height:10px;width:60%;margin-bottom:10px;"></div><div class="sk" style="height:32px;width:80%;"></div></div>
+      <div class="sk-card"><div class="sk" style="height:10px;width:60%;margin-bottom:10px;"></div><div class="sk" style="height:32px;width:80%;"></div></div>
+    </div>
+    <div class="sk-grid sk-grid-2" style="margin-top:2px;">
+      <div class="sk-card" style="height:180px;"></div>
+      <div class="sk-card" style="height:180px;"></div>
+    </div>`,
+
+  'page-dashboard': `
+    <div class="sk" style="width:220px;height:22px;margin-bottom:4px;"></div>
+    <div class="sk" style="width:160px;height:13px;margin-bottom:18px;"></div>
+    <div class="sk-grid sk-grid-4">
+      ${Array(4).fill('<div class="sk-card"><div class="sk" style="height:10px;width:55%;margin-bottom:8px;"></div><div class="sk" style="height:30px;width:70%;margin-bottom:6px;"></div><div class="sk" style="height:11px;width:90%;"></div></div>').join('')}
+    </div>
+    <div class="sk-grid sk-grid-2" style="margin-top:2px;">
+      <div class="sk-card" style="height:190px;"></div>
+      <div class="sk-card" style="height:190px;"></div>
+    </div>
+    <div class="sk-card" style="height:140px;margin-top:2px;"></div>`,
+
+  'page-record': `
+    <div class="sk" style="width:180px;height:22px;margin-bottom:4px;"></div>
+    <div class="sk" style="width:260px;height:13px;margin-bottom:18px;"></div>
+    <div class="sk-grid sk-grid-3">
+      <div class="sk-card" style="height:380px;"></div>
+      <div class="sk-card" style="height:380px;"></div>
+      <div class="sk-card" style="height:380px;"></div>
+    </div>`,
+
+  'page-data': `
+    <div class="sk" style="width:180px;height:22px;margin-bottom:4px;"></div>
+    <div class="sk" style="width:220px;height:13px;margin-bottom:18px;"></div>
+    <div class="sk-row" style="margin-bottom:14px;">
+      <div class="sk" style="height:38px;flex:1;border-radius:8px;"></div>
+      <div class="sk" style="height:38px;width:120px;border-radius:8px;"></div>
+      <div class="sk" style="height:38px;width:120px;border-radius:8px;"></div>
+    </div>
+    <div class="sk-card">
+      ${Array(6).fill('<div class="sk-row" style="padding:8px 0;border-bottom:1px solid var(--border);"><div class="sk" style="height:13px;flex:1;"></div><div class="sk" style="height:13px;width:80px;"></div><div class="sk" style="height:13px;width:60px;"></div></div>').join('')}
+    </div>`,
+
+  'page-supervisor': `
+    <div class="sk" style="width:200px;height:22px;margin-bottom:4px;"></div>
+    <div class="sk" style="width:180px;height:13px;margin-bottom:18px;"></div>
+    <div class="sk-grid" style="grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="sk-card" style="height:260px;"></div>
+      <div class="sk-card" style="height:260px;"></div>
+      <div class="sk-card" style="height:200px;"></div>
+      <div class="sk-card" style="height:200px;"></div>
+    </div>`,
+
+  'page-attend': `
+    <div class="sk" style="width:160px;height:22px;margin-bottom:4px;"></div>
+    <div class="sk" style="width:220px;height:13px;margin-bottom:18px;"></div>
+    <div class="sk-grid sk-grid-4" style="margin-bottom:14px;">
+      ${Array(4).fill('<div class="sk-card"><div class="sk" style="height:10px;width:60%;margin-bottom:8px;"></div><div class="sk" style="height:28px;width:70%;"></div></div>').join('')}
+    </div>
+    ${Array(5).fill('<div class="sk-card sk-row" style="height:56px;margin-bottom:6px;"><div class="sk sk-circle" style="width:36px;height:36px;flex-shrink:0;"></div><div style="flex:1;display:flex;flex-direction:column;gap:6px;"><div class="sk" style="height:12px;width:50%;"></div><div class="sk" style="height:10px;width:70%;"></div></div><div class="sk" style="width:70px;height:28px;border-radius:6px;"></div></div>').join('')}`,
+
+  'page-declaration': `
+    <div class="sk" style="width:240px;height:22px;margin-bottom:4px;"></div>
+    <div class="sk" style="width:300px;height:13px;margin-bottom:18px;"></div>
+    <div class="sk-card" style="height:160px;margin-bottom:14px;"></div>
+    <div class="sk-row" style="margin-bottom:14px;gap:10px;">
+      ${Array(4).fill('<div class="sk" style="height:38px;flex:1;border-radius:8px;"></div>').join('')}
+    </div>
+    ${Array(3).fill(`<div class="sk-card" style="margin-bottom:10px;">
+      <div class="sk-row" style="margin-bottom:12px;"><div class="sk" style="height:14px;flex:1;"></div><div class="sk" style="height:22px;width:80px;border-radius:6px;"></div></div>
+      <div class="sk-grid sk-grid-4"><div class="sk" style="height:40px;"></div><div class="sk" style="height:40px;"></div><div class="sk" style="height:40px;"></div><div class="sk" style="height:40px;"></div></div>
+    </div>`).join('')}`,
+
+  'page-output': `
+    <div class="sk" style="width:160px;height:22px;margin-bottom:4px;"></div>
+    <div class="sk" style="width:200px;height:13px;margin-bottom:18px;"></div>
+    <div class="sk-grid sk-grid-3" style="margin-bottom:14px;">
+      ${Array(3).fill('<div class="sk-card"><div class="sk" style="height:10px;width:50%;margin-bottom:8px;"></div><div class="sk" style="height:28px;width:60%;"></div></div>').join('')}
+    </div>
+    ${Array(5).fill('<div class="sk-card sk-row" style="height:64px;margin-bottom:6px;"><div class="sk sk-circle" style="width:36px;height:36px;flex-shrink:0;"></div><div style="flex:1;display:flex;flex-direction:column;gap:7px;"><div class="sk" style="height:12px;width:40%;"></div><div class="sk" style="height:10px;width:65%;"></div></div><div class="sk" style="width:50px;height:24px;border-radius:6px;"></div></div>').join('')}`,
+
+  'page-report': `
+    <div class="sk" style="width:160px;height:22px;margin-bottom:4px;"></div>
+    <div class="sk" style="width:220px;height:13px;margin-bottom:18px;"></div>
+    <div class="sk-row" style="margin-bottom:14px;">
+      ${Array(3).fill('<div class="sk" style="height:38px;flex:1;border-radius:8px;"></div>').join('')}
+    </div>
+    ${Array(4).fill(`<div class="sk-card" style="margin-bottom:8px;">
+      <div class="sk-row" style="margin-bottom:10px;"><div class="sk" style="height:14px;flex:1;"></div><div class="sk" style="height:20px;width:60px;border-radius:5px;"></div></div>
+      <div class="sk-grid sk-grid-3"><div class="sk" style="height:32px;"></div><div class="sk" style="height:32px;"></div><div class="sk" style="height:32px;"></div></div>
+    </div>`).join('')}`,
+};
+
+let _skeletonTimer = null;
+
+function showSkeleton(pageId) {
+  const overlay = document.getElementById('skeleton-overlay');
+  const body = document.getElementById('skeleton-body');
+  if (!overlay || !body) return;
+  const tpl = _skeletonTemplates[pageId] || _skeletonTemplates['default'];
+  body.innerHTML = tpl;
+  overlay.classList.add('visible');
+  if (_skeletonTimer) clearTimeout(_skeletonTimer);
+  _skeletonTimer = setTimeout(hideSkeleton, 2000);
+}
+
+function hideSkeleton() {
+  const overlay = document.getElementById('skeleton-overlay');
+  if (overlay) overlay.classList.remove('visible');
+  if (_skeletonTimer) { clearTimeout(_skeletonTimer); _skeletonTimer = null; }
+}
+
 function goTo(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
   document.querySelectorAll('.user-menu').forEach(m => m.classList.remove('open'));
-  // Hide mobile nav bar on auth pages, show on app pages
   const authPages = ['page-login','page-signup'];
   const mobileNavBar = document.getElementById('mobile-nav-bar');
   if (mobileNavBar) {
@@ -2948,6 +3188,10 @@ function goTo(id) {
 }
 
 function navTo(id, btn) {
+  // Show skeleton immediately, then load page content
+  const authPages = ['page-login','page-signup'];
+  if (!authPages.includes(id)) showSkeleton(id);
+
   if(id === 'page-data') checkDataAccess();
   if(id === 'page-supervisor') checkSupAccess();
   if(id === 'page-dashboard') refreshDashboard();
@@ -2958,7 +3202,6 @@ function navTo(id, btn) {
   if(id === 'page-declaration') renderDeclaration();
   if(id === 'page-report') renderReport();
   goTo(id);
-  // Sync mobile bottom nav active state
   const pageToMobBtn = {
     'page-dashboard': 'mob-btn-dashboard',
     'page-record': 'mob-btn-record',
@@ -3130,7 +3373,6 @@ function renderNotifPanel() {
   const notifs = _visibleNotifs();
   const unread = notifs.filter(n => !n.read).length;
 
-  // Badge
   if (badge) {
     badge.style.display = unread > 0 ? 'block' : 'none';
     badge.textContent = unread > 9 ? '9+' : unread;
@@ -3145,27 +3387,56 @@ function renderNotifPanel() {
     const tagClass = n.type === 'request' ? 'notif-tag-request' : n.type === 'alert' ? 'notif-tag-alert' : 'notif-tag-activity';
     const tagLabel = n.type === 'request' ? 'Device Request' : n.type === 'alert' ? 'Alert' : 'Activity';
     const timeAgo  = _timeAgo(n.ts);
-    const detail   = n.detail ? `<div style="margin-top:4px;padding:6px 8px;background:var(--bg2);border-radius:6px;font-size:11px;color:var(--text-2);line-height:1.5;">${n.detail.replace(/\n/g,'<br>')}</div>` : '';
-    return `<div class="notif-item ${n.read ? '' : 'unread'}" data-id="${n.id}">
+    return `<div class="notif-item ${n.read ? '' : 'unread'}" data-id="${n.id}" onclick="openNotifDetail('${n.id}')" style="cursor:pointer;">
       <div class="notif-dot"></div>
       <div class="notif-item-body">
         <div class="notif-item-tag ${tagClass}">${tagLabel}</div>
         <div class="notif-item-text">${n.text}</div>
-        ${detail}
-        <div class="notif-item-time">${timeAgo}</div>
+        <div class="notif-item-time">${timeAgo} ${n.detail ? '<span style="color:var(--accent);font-size:10px;margin-left:4px;">· Tap for details</span>' : ''}</div>
       </div>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:4px;"><polyline points="9 18 15 12 9 6"/></svg>
     </div>`;
   }).join('');
+}
 
-  // Mark items as read when panel is open
-  list.querySelectorAll('.notif-item').forEach(el => {
-    el.addEventListener('click', () => {
-      const id = el.dataset.id;
-      const store = _getNotifStore();
-      const item = store.find(n => n.id === id);
-      if (item) { item.read = true; _saveNotifStore(store); renderNotifPanel(); }
-    });
-  });
+function openNotifDetail(id) {
+  const store = _getNotifStore();
+  const notif = store.find(n => n.id === id);
+  if (!notif) return;
+
+  // Mark as read
+  notif.read = true;
+  _saveNotifStore(store);
+  renderNotifPanel();
+
+  // Close panel
+  document.getElementById('notif-panel').classList.remove('open');
+
+  // Build and show detail modal
+  const tagClass = notif.type === 'request' ? 'notif-tag-request' : notif.type === 'alert' ? 'notif-tag-alert' : 'notif-tag-activity';
+  const tagLabel = notif.type === 'request' ? 'Device Request' : notif.type === 'alert' ? 'Alert' : 'Activity';
+  const headerBg = notif.type === 'request' ? 'var(--warning-bg)' : notif.type === 'alert' ? 'var(--danger-bg)' : 'var(--accent-light)';
+  const headerBorder = notif.type === 'request' ? 'var(--warning)' : notif.type === 'alert' ? 'var(--danger)' : 'var(--accent)';
+  const headerColor = notif.type === 'request' ? 'var(--warning)' : notif.type === 'alert' ? 'var(--danger)' : 'var(--accent)';
+  const timeStr = new Date(notif.ts).toLocaleString('en-GB', {weekday:'short',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  const detailHtml = notif.detail
+    ? `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--text-2);line-height:1.8;white-space:pre-wrap;font-family:'Calibri',Calibri,sans-serif;">${notif.detail}</div>`
+    : '';
+
+  const modal = document.getElementById('notif-detail-modal');
+  document.getElementById('notif-detail-tag').textContent = tagLabel;
+  document.getElementById('notif-detail-tag').className = 'notif-item-tag ' + tagClass;
+  document.getElementById('notif-detail-header').style.background = headerBg;
+  document.getElementById('notif-detail-header').style.borderColor = headerBorder;
+  document.getElementById('notif-detail-text').textContent = notif.text;
+  document.getElementById('notif-detail-time').textContent = timeStr;
+  document.getElementById('notif-detail-body').innerHTML = detailHtml || '<div style="color:var(--text-3);font-size:13px;font-style:italic;">No additional details.</div>';
+  modal.classList.remove('hidden');
+}
+
+function closeNotifDetail() {
+  document.getElementById('notif-detail-modal').classList.add('hidden');
 }
 
 function _timeAgo(ts) {
@@ -3182,7 +3453,6 @@ function _timeAgo(ts) {
 
 function toggleNotifPanel(e) {
   e.stopPropagation();
-  // Close user menus
   document.querySelectorAll('.user-menu').forEach(m => m.classList.remove('open'));
   const panel = document.getElementById('notif-panel');
   const isOpen = panel.classList.contains('open');
@@ -3205,7 +3475,6 @@ function markAllNotifsRead() {
 }
 
 function clearAllNotifs() {
-  // Only clear what this user can see
   if (!currentUser) return;
   const role = currentUser.role;
   const store = _getNotifStore().filter(n => !n.roles.includes(role));
@@ -3213,9 +3482,10 @@ function clearAllNotifs() {
   renderNotifPanel();
 }
 
-// Toast popup — auto-dismisses after 3s
+// Toast — shows for ALL logged-in users, auto-dismisses after 3s
 function showNotifToast(notif) {
-  if (!currentUser || !notif.roles.includes(currentUser.role)) return;
+  if (!currentUser) return;
+  if (!notif.roles.includes(currentUser.role)) return;
   const wrap = document.getElementById('notif-toast-wrap');
   if (!wrap) return;
 
@@ -3226,21 +3496,33 @@ function showNotifToast(notif) {
 
   const el = document.createElement('div');
   el.className = 'notif-toast';
+  el.style.cursor = 'pointer';
+  el.title = 'Click to view details';
   el.innerHTML = `
     <div class="notif-toast-icon" style="background:${iconBg};color:${iconColor};">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     </div>
-    <div class="notif-toast-body">
+    <div class="notif-toast-body" style="flex:1;">
       <div class="notif-toast-tag ${tagClass}">${tagLabel}</div>
       <div class="notif-toast-text">${notif.text}</div>
-    </div>`;
+    </div>
+    <div style="font-size:18px;color:var(--text-3);line-height:1;padding:0 2px;align-self:flex-start;">&rsaquo;</div>`;
+
+  // Click toast to open detail
+  el.addEventListener('click', () => {
+    el.classList.add('toast-out');
+    setTimeout(() => el.remove(), 320);
+    openNotifDetail(notif.id);
+  });
 
   wrap.appendChild(el);
 
   // Auto-dismiss after 3 seconds
   setTimeout(() => {
-    el.classList.add('toast-out');
-    setTimeout(() => el.remove(), 320);
+    if (el.parentNode) {
+      el.classList.add('toast-out');
+      setTimeout(() => el.remove(), 320);
+    }
   }, 3000);
 }
 
