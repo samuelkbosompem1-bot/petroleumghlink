@@ -95,6 +95,99 @@ nav {
 .nav-tab:hover { background:var(--bg2); color:var(--text); }
 .nav-tab.active { background:var(--accent-light); color:var(--accent); }
 .nav-right { display:flex; align-items:center; gap:10px; position:relative; }
+
+/* ── NOTIFICATION BELL ── */
+.notif-btn {
+  position:relative; background:none; border:none; cursor:pointer;
+  width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+  color:var(--text-2); transition:background 0.15s, color 0.15s;
+  flex-shrink:0;
+}
+.notif-btn:hover { background:var(--bg2); color:var(--accent); }
+.notif-btn svg { width:18px; height:18px; }
+.notif-badge {
+  position:absolute; top:4px; right:4px;
+  min-width:14px; height:14px; border-radius:7px;
+  background:var(--danger); color:#fff;
+  font-size:8px; font-weight:700; line-height:14px;
+  text-align:center; padding:0 3px;
+  border:1.5px solid var(--bg);
+  display:none;
+}
+
+/* ── NOTIFICATION PANEL ── */
+.notif-panel {
+  position:fixed; top:52px; right:12px; z-index:600;
+  width:340px; max-width:calc(100vw - 24px);
+  background:var(--bg); border:1.5px solid var(--border);
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-md);
+  display:none; flex-direction:column; overflow:hidden;
+  max-height:480px;
+}
+.notif-panel.open { display:flex; }
+.notif-panel-header {
+  padding:12px 14px 10px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--bg2); flex-shrink:0;
+}
+.notif-panel-title { font-size:13px; font-weight:700; }
+.notif-panel-actions { display:flex; gap:8px; align-items:center; }
+.notif-clear-btn {
+  font-size:11px; color:var(--text-3); background:none; border:none;
+  cursor:pointer; padding:2px 6px; border-radius:5px; transition:background 0.15s;
+}
+.notif-clear-btn:hover { background:var(--bg3); color:var(--text); }
+.notif-list { overflow-y:auto; flex:1; }
+.notif-empty {
+  padding:2.5rem 1rem; text-align:center;
+  font-size:13px; color:var(--text-3);
+}
+.notif-item {
+  display:flex; gap:10px; padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  transition:background 0.12s; cursor:default;
+  align-items:flex-start;
+}
+.notif-item:last-child { border-bottom:none; }
+.notif-item.unread { background:var(--accent-light); }
+.notif-item:hover { background:var(--bg2); }
+.notif-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:var(--accent); flex-shrink:0; margin-top:5px;
+  transition:opacity 0.2s;
+}
+.notif-item:not(.unread) .notif-dot { opacity:0; }
+.notif-item-body { flex:1; min-width:0; }
+.notif-item-text { font-size:12px; color:var(--text); line-height:1.45; }
+.notif-item-time { font-size:10px; color:var(--text-3); margin-top:3px; }
+.notif-item-tag {
+  font-size:10px; font-weight:700; padding:1px 6px; border-radius:4px;
+  margin-bottom:3px; display:inline-block;
+}
+.notif-tag-request { background:var(--warning-bg); color:var(--warning); }
+.notif-tag-activity { background:var(--accent-light); color:var(--accent); }
+.notif-tag-alert { background:var(--danger-bg); color:var(--danger); }
+
+/* ── TOAST NOTIFICATIONS ── */
+.notif-toast-wrap {
+  position:fixed; top:68px; left:50%; transform:translateX(-50%);
+  z-index:700; display:flex; flex-direction:column; gap:8px;
+  pointer-events:none; align-items:center; width:100%; max-width:400px; padding:0 12px;
+}
+.notif-toast {
+  background:var(--bg); border:1.5px solid var(--border);
+  border-radius:10px; box-shadow:var(--shadow-md);
+  padding:10px 14px; font-size:13px; color:var(--text);
+  pointer-events:auto; display:flex; gap:10px; align-items:flex-start;
+  animation:toastIn 0.25s ease; max-width:100%; width:100%;
+}
+.notif-toast.toast-out { animation:toastOut 0.3s ease forwards; }
+.notif-toast-icon { width:22px; height:22px; border-radius:6px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.notif-toast-body { flex:1; min-width:0; }
+.notif-toast-tag { font-size:10px; font-weight:700; margin-bottom:2px; }
+.notif-toast-text { font-size:12px; line-height:1.4; }
+@keyframes toastIn  { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
+@keyframes toastOut { from{opacity:1;transform:translateY(0);} to{opacity:0;transform:translateY(-8px);} }
 .role-badge {
   padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600;
   background:var(--accent-light); color:var(--accent);
@@ -692,6 +785,61 @@ input.form-input:focus, textarea.form-input:focus, select.form-input:focus {
 .attend-card:hover { box-shadow:0 4px 16px rgba(0,0,0,0.08); }
 .decl-card { transition:transform 0.16s ease, box-shadow 0.16s ease; }
 .decl-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.08); }
+
+/* ── DECLARATION EDIT BUTTON ── */
+.decl-edit-btn {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:5px 12px; border-radius:6px; font-size:11px; font-weight:700;
+  border:1.5px solid var(--border-2); background:var(--bg); color:var(--text-2);
+  cursor:pointer; transition:all 0.15s; font-family:'Calibri',Calibri,sans-serif;
+}
+.decl-edit-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+.decl-edit-btn svg { width:12px; height:12px; }
+
+/* ── ENTRY CONFIRM PREVIEW MODAL ── */
+.entry-preview-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1500;
+  display:flex; align-items:center; justify-content:center; padding:1rem;
+}
+.entry-preview-box {
+  background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-md); width:100%; max-width:520px; overflow:hidden;
+  animation:alertPop 0.2s cubic-bezier(.34,1.56,.64,1);
+}
+.entry-preview-header {
+  padding:1.1rem 1.4rem; background:var(--accent); color:#fff;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.entry-preview-header h3 { font-size:15px; font-weight:700; margin:0; }
+.entry-preview-header p { font-size:12px; color:rgba(255,255,255,0.75); margin:3px 0 0; }
+.entry-preview-body { padding:1.2rem 1.4rem; }
+.entry-preview-row {
+  display:flex; justify-content:space-between; align-items:flex-start;
+  padding:8px 0; border-bottom:1px solid var(--border); gap:10px;
+}
+.entry-preview-row:last-child { border-bottom:none; }
+.entry-preview-label { font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.4px; font-weight:600; flex-shrink:0; }
+.entry-preview-val { font-size:13px; font-weight:700; color:var(--text); text-align:right; }
+.entry-preview-footer { padding:1rem 1.4rem; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; background:var(--bg2); }
+
+/* ── EDIT TRIP MODAL ── */
+.edit-trip-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1500;
+  display:flex; align-items:center; justify-content:center; padding:1rem;
+}
+.edit-trip-box {
+  background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-md); width:100%; max-width:560px; max-height:90vh;
+  overflow-y:auto; animation:alertPop 0.2s cubic-bezier(.34,1.56,.64,1);
+}
+.edit-trip-header {
+  padding:1rem 1.4rem; background:var(--bg2); border-bottom:1.5px solid var(--border);
+  position:sticky; top:0; z-index:2;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.edit-trip-header h3 { font-size:15px; font-weight:700; margin:0; }
+.edit-trip-body { padding:1.2rem 1.4rem; }
+.edit-trip-footer { padding:1rem 1.4rem; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; background:var(--bg2); position:sticky; bottom:0; }
 .chart-tab { border-radius:20px !important; }
 .filter-tabs { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:5px; display:inline-flex; gap:3px; flex-wrap:wrap; }
 .filter-tabs .chart-tab { border:none !important; background:none; border-radius:7px !important; padding:5px 14px; color:var(--text-3); }
@@ -1100,6 +1248,23 @@ input, select, textarea {
 <!-- Sync status dot (shown in nav after login) -->
 <div id="fb-status" title="Synced" style="display:none;position:fixed;bottom:14px;right:14px;width:10px;height:10px;border-radius:50%;background:var(--success);z-index:500;box-shadow:0 0 0 2px var(--bg);"></div>
 
+<!-- ── NOTIFICATION PANEL ── -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-panel-header">
+    <span class="notif-panel-title">Notifications</span>
+    <div class="notif-panel-actions">
+      <button class="notif-clear-btn" onclick="markAllNotifsRead()">Mark all read</button>
+      <button class="notif-clear-btn" onclick="clearAllNotifs()">Clear all</button>
+    </div>
+  </div>
+  <div class="notif-list" id="notif-list">
+    <div class="notif-empty">No notifications yet.</div>
+  </div>
+</div>
+
+<!-- ── TOAST CONTAINER ── -->
+<div class="notif-toast-wrap" id="notif-toast-wrap"></div>
+
 <style>
 @keyframes loadBar {
   0%   { width: 0%; margin-left: 0; }
@@ -1289,6 +1454,7 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
       <div class="user-menu" id="um1">
         <button class="user-btn" onclick="toggleMenu('um1')">
           <div class="user-avatar" id="ua1"></div>
@@ -1409,6 +1575,7 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
       <div class="user-menu" id="um2">
         <button class="user-btn" onclick="toggleMenu('um2')">
           <div class="user-avatar" id="ua2"></div>
@@ -1477,6 +1644,7 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
       <div class="user-menu" id="um3">
         <button class="user-btn" onclick="toggleMenu('um3')">
           <div class="user-avatar" id="ua3"></div>
@@ -1597,6 +1765,7 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
       <div class="user-menu" id="um4">
         <button class="user-btn" onclick="toggleMenu('um4')">
           <div class="user-avatar" id="ua4"></div>
@@ -1697,6 +1866,7 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
       <div class="user-menu" id="um5">
         <button class="user-btn" onclick="toggleMenu('um5')">
           <div class="user-avatar" id="ua5"></div>
@@ -1763,7 +1933,7 @@ input, select, textarea {
 
           <div class="form-row">
             <label class="form-label">Loading Station <span style="color:var(--danger);">*</span></label>
-            <select class="form-input" id="r-station">
+            <select class="form-input" id="r-station" onchange="const b=document.getElementById('r-boe');if(b&&b.value.length===11)_showBoeConflictWarning(b.value,this.value);">
               <option value="">— Select Loading Station —</option>
               <option>Chase Petroleum</option>
               <option>Quantum Terminal</option>
@@ -1790,6 +1960,7 @@ input, select, textarea {
               <div style="font-size:11px;color:var(--text-3);" id="r-boe-counter">0 / 11 digits</div>
               <div style="font-size:11px;color:var(--danger);display:none;" id="r-boe-warn">Must be exactly 11 digits</div>
             </div>
+            <div id="r-boe-conflict" style="display:none;margin-top:8px;padding:10px 13px;background:var(--danger-bg);border:1.5px solid var(--danger);border-radius:8px;font-size:12px;color:var(--danger);line-height:1.5;"></div>
           </div>
 
           <div class="form-row">
@@ -1934,6 +2105,7 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
       <div class="user-menu" id="um6">
         <button class="user-btn" onclick="toggleMenu('um6')">
           <div class="user-avatar" id="ua6"></div>
@@ -2036,6 +2208,7 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
       <div class="user-menu" id="um7">
         <button class="user-btn" onclick="toggleMenu('um7')">
           <div class="user-avatar" id="ua7"></div>
@@ -2139,6 +2312,7 @@ input, select, textarea {
       <button class="nav-tab active d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
       <div class="user-menu" id="um9">
         <button class="user-btn" onclick="toggleMenu('um9')">
           <div class="user-avatar" id="ua9"></div>
@@ -2289,6 +2463,7 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
       <div class="user-menu" id="um8">
         <button class="user-btn" onclick="toggleMenu('um8')">
           <div class="user-avatar" id="ua8"></div>
@@ -2433,15 +2608,12 @@ input, select, textarea {
       </div>
     </div>
     <div class="msg-preview-body">
-      <!-- Editable message -->
       <textarea id="inform-request-text"
-        style="width:100%;min-height:320px;resize:vertical;border:1.5px solid var(--border);border-radius:8px;padding:1.4rem 1.6rem;font-size:15px;line-height:2;font-family:'Lora',Georgia,serif;color:var(--text);background:var(--bg);outline:none;cursor:text;transition:border-color 0.2s,box-shadow 0.2s;"
+        style="width:100%;min-height:320px;resize:vertical;border:1.5px solid var(--border);border-radius:8px;padding:1.4rem 1.6rem;font-size:15px;line-height:2;font-family:'Calibri',Calibri,sans-serif;color:var(--text);background:var(--bg);outline:none;cursor:text;transition:border-color 0.2s,box-shadow 0.2s;"
         onfocus="this.style.borderColor='var(--accent)';this.style.boxShadow='0 0 0 3px rgba(26,58,42,0.09)'"
         onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
       </textarea>
       <div style="font-size:11px;color:var(--text-3);text-align:right;margin-top:4px;margin-bottom:18px;" id="inform-char-count"></div>
-
-      <!-- Send buttons -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
         <button onclick="sendInformRequestEmail()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:10px;border:2px solid var(--accent);background:var(--accent-light);color:var(--accent);font-family:'Calibri',Calibri,sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.18s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -2455,6 +2627,75 @@ input, select, textarea {
       <div style="font-size:11px;color:var(--text-3);text-align:center;line-height:1.7;">
         Your mail client or WhatsApp will open with this message pre-filled. Confirm and send from there.
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ ENTRY CONFIRM PREVIEW MODAL ════════════ -->
+<div class="entry-preview-overlay hidden" id="entry-confirm-modal">
+  <div class="entry-preview-box">
+    <div class="entry-preview-header">
+      <div>
+        <h3>Are you sure you want to save this information?</h3>
+        <p>Please review all details carefully before confirming.</p>
+      </div>
+    </div>
+    <div class="entry-preview-body" id="entry-confirm-body"></div>
+    <div class="entry-preview-footer">
+      <button onclick="closeEntryConfirm()" style="padding:10px 20px;border-radius:8px;border:1.5px solid var(--border);background:none;color:var(--text-2);font-family:'Calibri',Calibri,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Go Back</button>
+      <button onclick="confirmAndSaveEntry()" style="padding:10px 24px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'Calibri',Calibri,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Yes, I am sure</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ EDIT TRIP MODAL ════════════ -->
+<div class="edit-trip-overlay hidden" id="edit-trip-modal">
+  <div class="edit-trip-box">
+    <div class="edit-trip-header">
+      <div>
+        <h3>Edit Trip Entry</h3>
+        <div style="font-size:12px;color:var(--text-3);margin-top:2px;" id="edit-trip-subtitle">BOE —</div>
+      </div>
+      <button onclick="closeEditTripModal()" style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--text-3);padding:2px 6px;line-height:1;">&#215;</button>
+    </div>
+    <div class="edit-trip-body">
+      <div style="background:var(--warning-bg);border:1px solid var(--warning);border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:12px;color:var(--warning);font-weight:600;">
+        Editing a saved trip record. All changes are logged to the activity feed.
+      </div>
+      <input type="hidden" id="edit-trip-idx">
+      <div class="form-row">
+        <label class="form-label">Loading Station <span style="color:var(--danger);">*</span></label>
+        <select class="form-input" id="edit-trip-station">
+          <option>Chase Petroleum</option><option>Quantum Terminal</option><option>Tema Oil Refinery</option>
+          <option>Petroleum Hub</option><option>Sage Distribution</option><option>Tema Fuel Company</option>
+          <option>Blue Ocean</option><option>Matrix Gas</option><option>Vana Energy</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Number of Trips <span style="color:var(--danger);">*</span></label>
+        <input class="form-input" id="edit-trip-trips" type="number" min="1">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Devices Allocated</label>
+        <input class="form-input" id="edit-trip-devices" type="number" min="0">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Faulty Devices</label>
+        <input class="form-input" id="edit-trip-faulty" type="number" min="0">
+      </div>
+      <div class="form-row">
+        <label class="form-label">BOE Number <span style="font-size:11px;color:var(--text-3);font-weight:400;">(11 digits)</span></label>
+        <input class="form-input" id="edit-trip-boe" type="text" maxlength="11" placeholder="00000000000" oninput="this.value=this.value.replace(/\D/g,'').slice(0,11)">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Remarks / Notes</label>
+        <textarea class="form-input" id="edit-trip-remarks" rows="2" style="resize:vertical;"></textarea>
+      </div>
+      <div id="edit-trip-msg" class="hidden msg-err"></div>
+    </div>
+    <div class="edit-trip-footer">
+      <button onclick="closeEditTripModal()" style="padding:10px 20px;border-radius:8px;border:1.5px solid var(--border);background:none;color:var(--text-2);font-family:'Calibri',Calibri,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Cancel</button>
+      <button onclick="saveEditedTrip()" style="padding:10px 24px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'Calibri',Calibri,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Save Changes</button>
     </div>
   </div>
 </div>
@@ -2841,10 +3082,175 @@ function nowStr() {
   return new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 
-function addActivity(type, text) {
-  DB.activity.unshift({type, text, time: nowStr()});
-  if(DB.activity.length > 120) DB.activity.pop();
+// ══════════ NOTIFICATION SYSTEM ══════════
+const NOTIF_TTL_DAYS = 30;
+
+function _getNotifStore() {
+  if (!DB.notifications) DB.notifications = [];
+  return DB.notifications;
+}
+function _saveNotifStore(arr) {
+  DB.notifications = arr;
   saveDB();
+}
+function _pruneNotifs(arr) {
+  const cutoff = Date.now() - (NOTIF_TTL_DAYS * 86400000);
+  return arr.filter(n => n.ts > cutoff);
+}
+
+// Push a notification. type: 'request' | 'activity' | 'alert'
+// roles: array of roles that should see it e.g. ['manager','supervisor'] or ['staff']
+// If staffOnly is true, only staff users see it (device requests)
+function pushNotif({ text, type = 'activity', roles = ['manager','supervisor'], detail = null }) {
+  const store = _pruneNotifs(_getNotifStore());
+  const notif = {
+    id: Date.now() + '_' + Math.random().toString(36).slice(2,7),
+    text, type, roles, detail,
+    ts: Date.now(),
+    read: false
+  };
+  store.unshift(notif);
+  _saveNotifStore(store);
+  renderNotifPanel();
+  showNotifToast(notif);
+}
+
+function _visibleNotifs() {
+  if (!currentUser) return [];
+  const role = currentUser.role;
+  const store = _pruneNotifs(_getNotifStore());
+  return store.filter(n => n.roles.includes(role));
+}
+
+function renderNotifPanel() {
+  const list = document.getElementById('notif-list');
+  const badge = document.getElementById('notif-badge');
+  if (!list) return;
+
+  const notifs = _visibleNotifs();
+  const unread = notifs.filter(n => !n.read).length;
+
+  // Badge
+  if (badge) {
+    badge.style.display = unread > 0 ? 'block' : 'none';
+    badge.textContent = unread > 9 ? '9+' : unread;
+  }
+
+  if (notifs.length === 0) {
+    list.innerHTML = '<div class="notif-empty">No notifications yet.</div>';
+    return;
+  }
+
+  list.innerHTML = notifs.map(n => {
+    const tagClass = n.type === 'request' ? 'notif-tag-request' : n.type === 'alert' ? 'notif-tag-alert' : 'notif-tag-activity';
+    const tagLabel = n.type === 'request' ? 'Device Request' : n.type === 'alert' ? 'Alert' : 'Activity';
+    const timeAgo  = _timeAgo(n.ts);
+    const detail   = n.detail ? `<div style="margin-top:4px;padding:6px 8px;background:var(--bg2);border-radius:6px;font-size:11px;color:var(--text-2);line-height:1.5;">${n.detail.replace(/\n/g,'<br>')}</div>` : '';
+    return `<div class="notif-item ${n.read ? '' : 'unread'}" data-id="${n.id}">
+      <div class="notif-dot"></div>
+      <div class="notif-item-body">
+        <div class="notif-item-tag ${tagClass}">${tagLabel}</div>
+        <div class="notif-item-text">${n.text}</div>
+        ${detail}
+        <div class="notif-item-time">${timeAgo}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Mark items as read when panel is open
+  list.querySelectorAll('.notif-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.id;
+      const store = _getNotifStore();
+      const item = store.find(n => n.id === id);
+      if (item) { item.read = true; _saveNotifStore(store); renderNotifPanel(); }
+    });
+  });
+}
+
+function _timeAgo(ts) {
+  const diff = Date.now() - ts;
+  const s = Math.floor(diff / 1000);
+  if (s < 60)   return 'Just now';
+  const m = Math.floor(s / 60);
+  if (m < 60)   return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24)   return h + 'h ago';
+  const d = Math.floor(h / 24);
+  return d + 'd ago';
+}
+
+function toggleNotifPanel(e) {
+  e.stopPropagation();
+  // Close user menus
+  document.querySelectorAll('.user-menu').forEach(m => m.classList.remove('open'));
+  const panel = document.getElementById('notif-panel');
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  if (!isOpen) renderNotifPanel();
+}
+
+document.addEventListener('click', e => {
+  const panel = document.getElementById('notif-panel');
+  if (panel && !e.target.closest('.notif-panel') && !e.target.closest('.notif-btn')) {
+    panel.classList.remove('open');
+  }
+});
+
+function markAllNotifsRead() {
+  const store = _getNotifStore();
+  store.forEach(n => n.read = true);
+  _saveNotifStore(store);
+  renderNotifPanel();
+}
+
+function clearAllNotifs() {
+  // Only clear what this user can see
+  if (!currentUser) return;
+  const role = currentUser.role;
+  const store = _getNotifStore().filter(n => !n.roles.includes(role));
+  _saveNotifStore(store);
+  renderNotifPanel();
+}
+
+// Toast popup — auto-dismisses after 3s
+function showNotifToast(notif) {
+  if (!currentUser || !notif.roles.includes(currentUser.role)) return;
+  const wrap = document.getElementById('notif-toast-wrap');
+  if (!wrap) return;
+
+  const tagClass = notif.type === 'request' ? 'notif-tag-request' : notif.type === 'alert' ? 'notif-tag-alert' : 'notif-tag-activity';
+  const tagLabel = notif.type === 'request' ? 'Device Request' : notif.type === 'alert' ? 'Alert' : 'Activity';
+  const iconBg   = notif.type === 'request' ? 'var(--warning-bg)' : notif.type === 'alert' ? 'var(--danger-bg)' : 'var(--accent-light)';
+  const iconColor= notif.type === 'request' ? 'var(--warning)' : notif.type === 'alert' ? 'var(--danger)' : 'var(--accent)';
+
+  const el = document.createElement('div');
+  el.className = 'notif-toast';
+  el.innerHTML = `
+    <div class="notif-toast-icon" style="background:${iconBg};color:${iconColor};">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <div class="notif-toast-body">
+      <div class="notif-toast-tag ${tagClass}">${tagLabel}</div>
+      <div class="notif-toast-text">${notif.text}</div>
+    </div>`;
+
+  wrap.appendChild(el);
+
+  // Auto-dismiss after 3 seconds
+  setTimeout(() => {
+    el.classList.add('toast-out');
+    setTimeout(() => el.remove(), 320);
+  }, 3000);
+}
+
+function addActivity(type, text) {
+  if (!DB.activity) DB.activity = [];
+  DB.activity.unshift({ type, text, time: nowStr(), rawTs: new Date().toISOString() });
+  if (DB.activity.length > 120) DB.activity.pop();
+  saveDB();
+  // Push to managers & supervisors for all activity
+  pushNotif({ text, type: type === 'alert' ? 'alert' : 'activity', roles: ['manager', 'supervisor'] });
 }
 
 function initials(name) {
@@ -3190,58 +3596,31 @@ function submitRecordEntry() {
   if(faulty > devices) return showMsg('r-msg','Faulty devices cannot exceed total devices allocated (' + devices + ').');
   if(!boe || boe.length !== 11) return showMsg('r-msg','BOE must be exactly 11 digits.');
 
-  const rawTs = new Date();
-  const entry = {
+  // BOE-station conflict check — hard block
+  const boeConflicts = checkBoeStationConflict(boe, station);
+  if (boeConflicts) {
+    showMsg('r-msg', 'This BOE (' + boe + ') has already been used at ' + boeConflicts.join(', ') + '. A BOE cannot be shared across different loading stations. Please check your BOE number.');
+    document.getElementById('r-boe').classList.add('err');
+    const conflictEl = document.getElementById('r-boe-conflict');
+    if (conflictEl) {
+      conflictEl.innerHTML = '<strong>Cannot save.</strong> BOE ' + boe + ' already has trip logs at: <strong>' + boeConflicts.join(', ') + '</strong>. Correct the BOE number or station before submitting.';
+      conflictEl.style.display = 'block';
+    }
+    return;
+  }
+
+  // Show confirmation preview — actual save happens in confirmAndSaveEntry()
+  showEntryConfirmPreview({
     station, trips, devices, faulty,
-    boe, remarks: remarks || null,
+    boe, remarks: remarks || '',
+    expectedTrips: expectedTripsVal,
     deviceNums: _deviceNums.length > 0 ? [..._deviceNums] : [],
     user: currentUser.fullname,
     staffno: currentUser.staffno || '—',
     role: currentUser.role,
     unit: currentUser.unit,
-    ts: nowStr(),
-    rawTs: rawTs.toISOString(),
-    confirmed: false, confirmedBy: null, confirmedAt: null,
-    entryType: 'staff-record'
-  };
-  DB.trips.push(entry);
-
-  // If user set expected trips for this BOE, save it to the declaration register
-  const expectedTrips = parseInt(expectedTripsVal);
-  if(boe && !isNaN(expectedTrips) && expectedTrips > 0) {
-    if(!DB.boeExpected) DB.boeExpected = {};
-    DB.boeExpected[boe] = expectedTrips;
-  }
-
-  let actText = currentUser.fullname + ' logged ' + trips + ' trip(s) at ' + station + ' [BOE: ' + boe + '] · Devices: ' + devices;
-  if(faulty > 0) actText += ' · [!] ' + faulty + ' FAULTY device(s)';
-  addActivity('entry', actText);
-  saveDB();
-
-  // Reset form fields individually — safer than blanket reset
-  document.getElementById('r-station').value = '';
-  document.getElementById('r-trips').value = '';
-  document.getElementById('r-devices').value = '';
-  document.getElementById('r-faulty').value = '0';
-  document.getElementById('r-boe').value = '';
-  document.getElementById('r-boe-counter').textContent = '0 / 11 digits';
-  document.getElementById('r-boe-warn').style.display = 'none';
-  document.getElementById('r-remarks').value = '';
-  document.getElementById('r-expected-trips').value = '';
-  clearDeviceTags();
-  // Reset station preview
-  const preview = document.getElementById('r-station-preview');
-  if(preview) preview.style.display = 'none';
-  // Reset BOE input error state
-  document.getElementById('r-boe').classList.remove('err');
-
-  toast(faulty > 0 ? 'Entry submitted — faulty devices reported!' : 'Trip entry submitted!', faulty > 0 ? 'error' : 'success');
-  if(faulty > 0) SFX.faultyAlert(); else SFX.entry();
-
-  // Refresh only the record page elements — do NOT call refreshDashboard here (too heavy)
-  refreshRecordSummary();
-  renderRecordTodayList();
-  updateAttendBadge();
+    ts: nowStr()
+  });
 }
 
 function doSignup() {
@@ -3331,6 +3710,9 @@ function setupNav() {
 
   // Update attend notification badge
   updateAttendBadge();
+
+  // Render notification badge
+  renderNotifPanel();
 
   // Mobile bottom nav: set dashboard active by default
   document.querySelectorAll('.mobile-nav-item').forEach(b => b.classList.remove('active'));
@@ -3802,6 +4184,7 @@ function closeInformRequestModal(e) {
 }
 
 function _dispatchInformRequest() {
+  const name = currentUser ? currentUser.fullname : 'Supervisor';
   // Log each queued request as a trip record
   _informQueue.forEach(r => {
     DB.trips.push({
@@ -3810,10 +4193,30 @@ function _dispatchInformRequest() {
       unit: currentUser.unit, ts: nowStr(), rawTs: new Date().toISOString(),
       entryType: 'inform-request'
     });
-    addActivity('edit', currentUser.fullname + ' sent device request for ' + r.station + ' — ' + r.devices + ' device(s)');
+    addActivity('edit', name + ' sent device request for ' + r.station + ' — ' + r.devices + ' device(s)');
   });
+
+  // Build detail text for staff notification
+  const totalDevices = _informQueue.reduce((sum, r) => sum + r.devices, 0);
+  const stationNames = [...new Set(_informQueue.map(r => r.station))].join(', ');
+  const detailLines = _informQueue.map((r, i) =>
+    (i + 1) + '. ' + r.station + ' — ' + r.devices + ' device(s)' +
+    (r.boe ? ' | BOE: ' + r.boe : '') +
+    (r.notes ? '\n   Notes: ' + r.notes : '')
+  ).join('\n');
+
+  const staffText = name + ' has requested ' + totalDevices + ' device(s) for: ' + stationNames;
+  const staffDetail = 'Requested by: ' + name + ' (' + (currentUser.unit || '') + ')\n' +
+    'Total Devices: ' + totalDevices + '\n\n' + detailLines;
+
+  pushNotif({
+    text: staffText,
+    type: 'request',
+    roles: ['staff'],
+    detail: staffDetail
+  });
+
   saveDB();
-  // Clear queue and form
   _informQueue = [];
   renderInformQueue();
   ['trip-station','trip-devices','trip-boe','trip-notes'].forEach(id => {
@@ -3821,7 +4224,7 @@ function _dispatchInformRequest() {
   });
   document.getElementById('boe-counter2').textContent = '0 / 11 digits';
   document.getElementById('inform-request-modal').classList.add('hidden');
-  toast('Request' + (_informQueue.length !== 1 ? 's' : '') + ' sent!', 'success');
+  toast('Requests sent!', 'success');
   refreshDashboard();
 }
 
@@ -4121,6 +4524,141 @@ function saveQuickRegisterBOE() {
   renderDeclaration();
 }
 
+// ══════════ EDIT TRIP MODAL ══════════
+function openEditTripModal(idx) {
+  const t = DB.trips[idx];
+  if (!t) return;
+  document.getElementById('edit-trip-idx').value = idx;
+  document.getElementById('edit-trip-subtitle').textContent = 'BOE ' + (t.boe || '—') + '  ·  ' + t.ts;
+  document.getElementById('edit-trip-station').value = t.station || '';
+  document.getElementById('edit-trip-trips').value = t.trips || 0;
+  document.getElementById('edit-trip-devices').value = t.devices || 0;
+  document.getElementById('edit-trip-faulty').value = t.faulty || 0;
+  document.getElementById('edit-trip-boe').value = t.boe || '';
+  document.getElementById('edit-trip-remarks').value = t.remarks || '';
+  document.getElementById('edit-trip-msg').classList.add('hidden');
+  document.getElementById('edit-trip-modal').classList.remove('hidden');
+}
+
+function closeEditTripModal() {
+  document.getElementById('edit-trip-modal').classList.add('hidden');
+}
+
+function saveEditedTrip() {
+  const idx = parseInt(document.getElementById('edit-trip-idx').value);
+  const t = DB.trips[idx];
+  if (!t) return;
+
+  const station = document.getElementById('edit-trip-station').value;
+  const trips   = parseInt(document.getElementById('edit-trip-trips').value);
+  const devices = parseInt(document.getElementById('edit-trip-devices').value) || 0;
+  const faulty  = parseInt(document.getElementById('edit-trip-faulty').value) || 0;
+  const boe     = document.getElementById('edit-trip-boe').value.trim();
+  const remarks = document.getElementById('edit-trip-remarks').value.trim();
+
+  const msgEl = document.getElementById('edit-trip-msg');
+  if (!station) { msgEl.textContent = 'Please select a station.'; msgEl.classList.remove('hidden'); return; }
+  if (isNaN(trips) || trips < 1) { msgEl.textContent = 'Number of trips must be at least 1.'; msgEl.classList.remove('hidden'); return; }
+  if (boe && boe.length !== 11) { msgEl.textContent = 'BOE must be exactly 11 digits.'; msgEl.classList.remove('hidden'); return; }
+
+  const oldTrips = t.trips;
+  const oldStation = t.station;
+
+  DB.trips[idx] = { ...t, station, trips, devices, faulty, boe: boe || t.boe || null, remarks,
+    editedBy: currentUser ? currentUser.fullname : '—',
+    editedAt: nowStr() };
+
+  addActivity('edit', (currentUser ? currentUser.fullname : 'System') +
+    ' edited trip entry — Station: ' + station +
+    (oldTrips !== trips ? ' | Trips: ' + oldTrips + ' → ' + trips : '') +
+    (oldStation !== station ? ' | Station: ' + oldStation + ' → ' + station : '') +
+    (boe ? ' | BOE: ' + boe : ''));
+  saveDB();
+  closeEditTripModal();
+  toast('Trip entry updated.', 'success');
+  renderDeclaration();
+}
+
+// ══════════ ENTRY CONFIRM PREVIEW ══════════
+let _pendingEntryData = null;
+
+function showEntryConfirmPreview(data) {
+  _pendingEntryData = data;
+  const body = document.getElementById('entry-confirm-body');
+  const rows = [
+    ['Loading Station', data.station],
+    ['Number of Trips', data.trips],
+    ['Devices Allocated', data.devices],
+    ['Faulty Devices', data.faulty],
+    ['BOE Number', data.boe || '—'],
+    ['Remarks', data.remarks || '—'],
+    ['Submitted by', data.user],
+    ['Staff No.', data.staffno || '—'],
+    ['Unit', data.unit || '—'],
+    ['Date & Time', data.ts],
+  ];
+  if (data.deviceNums && data.deviceNums.length) {
+    rows.push(['Faulty Device Numbers', data.deviceNums.join(', ')]);
+  }
+  body.innerHTML = rows.map(([label, val]) => `
+    <div class="entry-preview-row">
+      <span class="entry-preview-label">${label}</span>
+      <span class="entry-preview-val">${val}</span>
+    </div>`).join('');
+  document.getElementById('entry-confirm-modal').classList.remove('hidden');
+}
+
+function closeEntryConfirm() {
+  document.getElementById('entry-confirm-modal').classList.add('hidden');
+  _pendingEntryData = null;
+}
+
+function confirmAndSaveEntry() {
+  if (!_pendingEntryData) return;
+  const data = _pendingEntryData;
+
+  DB.trips.push({
+    station: data.station, trips: data.trips, devices: data.devices,
+    faulty: data.faulty, boe: data.boe || null, remarks: data.remarks || '',
+    user: data.user, staffno: data.staffno, role: data.role,
+    unit: data.unit, ts: data.ts, rawTs: new Date().toISOString(),
+    confirmed: false, confirmedBy: null, confirmedAt: null,
+    entryType: 'staff-record',
+    deviceNums: data.deviceNums || []
+  });
+
+  if (data.boe && data.expectedTrips) {
+    if (!DB.boeExpected) DB.boeExpected = {};
+    DB.boeExpected[data.boe] = parseInt(data.expectedTrips);
+  }
+
+  if (data.faulty > 0) {
+    addActivity('alert', data.user + ' reported ' + data.faulty + ' faulty device(s) at ' + data.station +
+      (data.deviceNums && data.deviceNums.length ? ' — Nos: ' + data.deviceNums.join(', ') : ''));
+  }
+
+  addActivity('entry', data.user + ' logged ' + data.trips + ' trip(s) at ' + data.station + ' [BOE: ' + (data.boe||'—') + ']');
+  saveDB();
+
+  // Clear the record form
+  ['r-station','r-trips','r-devices','r-faulty','r-boe','r-remarks','r-expected-trips'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  if (typeof _deviceNums !== 'undefined') _deviceNums = [];
+  if (typeof renderDeviceTags === 'function') renderDeviceTags();
+  const counter = document.getElementById('r-boe-counter');
+  if (counter) counter.textContent = '0 / 11 digits';
+
+  closeEntryConfirm();
+  SFX.success();
+  toast('Entry saved successfully!', 'success');
+  refreshDashboard();
+  renderDeclaration();
+
+  const todayList = document.getElementById('rec-today-list');
+  if (todayList && typeof renderTodayEntries === 'function') renderTodayEntries();
+}
+
 function setBOEExpected(boe) {
   const val = prompt('Set expected number of trips for BOE ' + boe + ':', DB.boeExpected && DB.boeExpected[boe] ? DB.boeExpected[boe] : '');
   if(val === null) return;
@@ -4226,6 +4764,35 @@ function renderDeclaration() {
     const statusClass = {complete:'status-complete',incomplete:'status-incomplete',exceeded:'status-exceeded',pending:'status-pending'}[e.status];
     const statusLabel = {complete:'Complete',incomplete:'Incomplete',exceeded:'Exceeded',pending:'Pending'}[e.status];
     const remainingColor = e.remaining !== null ? (e.remaining > 0 ? '#188038' : e.remaining < 0 ? '#c0392b' : '#188038') : 'var(--text-3)';
+
+    // Build list of individual trip entries for this BOE
+    const tripEntries = DB.trips
+      .map((t, idx) => ({...t, _idx: idx}))
+      .filter(t => t.boe === e.boe && t.trips > 0);
+
+    const entriesHtml = tripEntries.length ? `
+      <div style="border-top:1px solid var(--border);padding:10px 16px;background:var(--bg2);">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);margin-bottom:8px;">Trip Entries — click Edit to correct any record</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          ${tripEntries.map(t => `
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 12px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:12px;font-weight:700;color:var(--text);">${t.station}</div>
+                <div style="font-size:11px;color:var(--text-3);margin-top:2px;">
+                  ${t.trips} trip(s) &nbsp;·&nbsp; ${t.devices||0} devices &nbsp;·&nbsp; ${t.faulty||0} faulty
+                  ${t.remarks ? ' &nbsp;·&nbsp; ' + t.remarks : ''}
+                  &nbsp;·&nbsp; ${t.ts}
+                </div>
+              </div>
+              <button class="decl-edit-btn" onclick="openEditTripModal(${t._idx})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      </div>` : '';
+
     return `
       <div class="decl-card ${e.status === 'exceeded' ? 'exceeded' : ''}">
         <div class="decl-card-header">
@@ -4266,6 +4833,7 @@ function renderDeclaration() {
             </div>
           </div>
         </div>
+        ${entriesHtml}
       </div>
     `;
   }).join('');
@@ -4868,17 +5436,25 @@ function refreshBoeDatalist() {
   dl.innerHTML = Array.from(known).sort().map(b => `<option value="${b}">`).join('');
 }
 
+function checkBoeStationConflict(boe, station) {
+  if (!boe || boe.length !== 11 || !station || !DB.trips) return null;
+  // Find all stations this BOE has been used with (excluding current station)
+  const usedStations = [...new Set(
+    DB.trips
+      .filter(t => t.boe === boe && t.station && t.station !== station && t.trips > 0)
+      .map(t => t.station)
+  )];
+  return usedStations.length > 0 ? usedStations : null;
+}
+
 function onBoeInput(el, counterId, expectedFieldId) {
-  // Strip non-digits, enforce 11-char max
   el.value = el.value.replace(/\D/g,'').slice(0,11);
   const len = el.value.length;
-  // Update counter
   const counter = counterId ? document.getElementById(counterId) : null;
   if(counter) {
     counter.textContent = len + ' / 11 digits';
     counter.style.color = (len===11) ? 'var(--success)' : (len>0&&len<11) ? 'var(--danger)' : 'var(--text-3)';
   }
-  // Warn on r-boe specifically
   const warn = document.getElementById('r-boe-warn');
   if(warn) {
     if(len > 0 && len !== 11) { warn.style.display='block'; el.classList.add('err'); }
@@ -4887,10 +5463,33 @@ function onBoeInput(el, counterId, expectedFieldId) {
     if(len === 11) el.classList.remove('err');
     else if(len > 0) el.classList.add('err');
   }
-  // When a full 11-digit BOE is entered, auto-fill expected trips if known
-  if(len === 11 && expectedFieldId) {
-    autoFillBoeExpected(el.value, expectedFieldId);
+  if(len === 11 && expectedFieldId) autoFillBoeExpected(el.value, expectedFieldId);
+
+  // Live BOE-station conflict check (only on the record form)
+  if (el.id === 'r-boe' && len === 11) {
+    const station = document.getElementById('r-station') ? document.getElementById('r-station').value : '';
+    _showBoeConflictWarning(el.value, station);
+  } else if (el.id === 'r-boe') {
+    _clearBoeConflictWarning();
   }
+}
+
+function _showBoeConflictWarning(boe, station) {
+  const conflictEl = document.getElementById('r-boe-conflict');
+  if (!conflictEl) return;
+  if (!station) { conflictEl.style.display = 'none'; return; }
+  const conflicts = checkBoeStationConflict(boe, station);
+  if (conflicts) {
+    conflictEl.innerHTML = '<strong>BOE already used at a different station.</strong> This BOE (' + boe + ') has existing trip logs at: <strong>' + conflicts.join(', ') + '</strong>. A BOE cannot be used across multiple loading stations. Please verify your BOE number or station.';
+    conflictEl.style.display = 'block';
+  } else {
+    conflictEl.style.display = 'none';
+  }
+}
+
+function _clearBoeConflictWarning() {
+  const el = document.getElementById('r-boe-conflict');
+  if (el) el.style.display = 'none';
 }
 
 function autoFillBoeExpected(boe, fieldId) {
