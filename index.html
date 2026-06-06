@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#1a3a2a">
 <meta name="format-detection" content="telephone=no">
 <title>Petroleum Ghana Link</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
 <style>
 :root {
   --bg: #ffffff;
@@ -67,7 +67,8 @@
   --shadow-md: 0 4px 24px rgba(0,0,0,0.5);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; font-size:14px; }
+body { font-family:'Calibri',Calibri,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; font-size:15px; }
+* { font-family:'Calibri',Calibri,sans-serif; }
 
 /* PAGES */
 .page { display:none; min-height:100vh; flex-direction:column; }
@@ -88,7 +89,7 @@ nav {
 .nav-tabs { display:flex; gap:2px; }
 .nav-tab {
   padding:6px 16px; border-radius:6px; font-size:13px; cursor:pointer;
-  color:var(--text-2); border:none; background:none; font-family:'Inter',sans-serif;
+  color:var(--text-2); border:none; background:none; font-family:'Calibri',Calibri,sans-serif;
   font-weight:500; transition:all 0.15s;
 }
 .nav-tab:hover { background:var(--bg2); color:var(--text); }
@@ -105,7 +106,7 @@ nav {
 .user-btn {
   display:flex; align-items:center; gap:8px; padding:6px 12px;
   border:1.5px solid var(--border); border-radius:8px; background:var(--bg);
-  cursor:pointer; font-family:'Inter',sans-serif; font-size:13px; font-weight:500;
+  cursor:pointer; font-family:'Calibri',Calibri,sans-serif; font-size:13px; font-weight:500;
   color:var(--text); transition:all 0.15s;
 }
 .user-btn:hover { border-color:var(--border-2); background:var(--bg2); }
@@ -128,7 +129,7 @@ nav {
 .dd-item {
   display:flex; align-items:center; gap:10px; padding:10px 14px;
   font-size:13px; color:var(--text-2); cursor:pointer; transition:background 0.1s;
-  border:none; background:none; width:100%; text-align:left; font-family:'Inter',sans-serif;
+  border:none; background:none; width:100%; text-align:left; font-family:'Calibri',Calibri,sans-serif;
 }
 .dd-item:hover { background:var(--bg2); color:var(--text); }
 .dd-item.danger { color:var(--danger); }
@@ -186,7 +187,7 @@ nav {
 .form-input {
   width:100%; padding:10px 13px; border-radius:8px;
   background:var(--bg); border:1.5px solid var(--border);
-  color:var(--text); font-family:'Inter',sans-serif; font-size:14px;
+  color:var(--text); font-family:'Calibri',Calibri,sans-serif; font-size:14px;
   outline:none; transition:border-color 0.2s;
 }
 .form-input:focus { border-color:var(--accent); }
@@ -202,7 +203,7 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .check-item label { font-size:13px; cursor:pointer; }
 .btn-primary {
   width:100%; padding:11px; border-radius:8px; border:none;
-  background:var(--accent); color:#fff; font-family:'Inter',sans-serif;
+  background:var(--accent); color:#fff; font-family:'Calibri',Calibri,sans-serif;
   font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; margin-top:4px;
 }
 .btn-primary:hover { background:var(--accent-2); }
@@ -218,7 +219,89 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .pg-title { font-size:20px; font-weight:700; margin-bottom:2px; }
 .pg-sub { font-size:13px; color:var(--text-3); margin-bottom:1.2rem; }
 
-/* METRIC CARDS */
+/* ═══ RECORD PAGE ═══ */
+.rec-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.rec-form-card {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.rec-form-header {
+  padding: 1rem 1.4rem;
+}
+.rec-form-header-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+.rec-form-header-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.72);
+  margin-top: 2px;
+}
+.rec-form-body {
+  padding: 1.2rem 1.4rem;
+}
+.rec-entries-panel {
+  /* takes the 3rd column on desktop */
+}
+.rec-autofill-strip {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+.rec-autofill-label {
+  font-size: 11px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.rec-autofill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+}
+.rec-autofill-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.rec-autofill-key {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-3);
+}
+.rec-device-summary {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 12px;
+}
+.rec-device-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.rec-device-summary-row:last-child { border-bottom: none; }
+.rec-device-summary-label { color: var(--text-3); font-size: 12px; }
+.rec-device-summary-val { font-weight: 700; color: var(--text); }
 .metric-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:10px; margin-bottom:1.2rem; }
 .metric-card {
   background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius);
@@ -233,7 +316,7 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .metric-card.clickable-entry { border-color:var(--accent); cursor:pointer; }
 .metric-card.clickable-entry:hover { background:var(--accent-light); }
 .metric-label { font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
-.metric-value { font-family:'Space Mono',monospace; font-size:26px; font-weight:700; color:var(--text); }
+.metric-value { font-family:'Calibri',Calibri,sans-serif; font-size:26px; font-weight:700; color:var(--text); }
 .metric-sub { font-size:11px; color:var(--text-3); margin-top:4px; }
 .entry-cta { margin-top:8px; font-size:11px; font-weight:600; color:var(--accent); }
 
@@ -246,7 +329,7 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .chart-tab {
   padding:4px 12px; border-radius:6px; font-size:12px; cursor:pointer;
   border:1.5px solid var(--border); background:none; color:var(--text-3);
-  font-family:'Inter',sans-serif; transition:all 0.15s;
+  font-family:'Calibri',Calibri,sans-serif; transition:all 0.15s;
 }
 .chart-tab.active { background:var(--accent-light); color:var(--accent); border-color:#b8d9c6; }
 
@@ -262,7 +345,7 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .station-name { font-size:13px; font-weight:600; }
 .station-stat { display:flex; justify-content:space-between; margin-bottom:5px; }
 .station-label { font-size:11px; color:var(--text-3); }
-.station-val { font-size:12px; font-family:'Space Mono',monospace; font-weight:700; }
+.station-val { font-size:12px; font-family:'Calibri',Calibri,sans-serif; font-weight:700; }
 .station-bar-wrap { background:var(--bg3); border-radius:4px; height:4px; overflow:hidden; margin-top:6px; }
 .station-bar { height:100%; border-radius:4px; transition:width 0.8s ease; }
 .station-requested { margin-top:8px; padding-top:8px; border-top:1px solid var(--border); font-size:11px; color:var(--text-3); }
@@ -279,7 +362,7 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .ai-edit { background:var(--gold-light); }
 .ai-entry { background:var(--success-bg); }
 .activity-text { font-size:13px; margin-bottom:2px; }
-.activity-time { font-size:11px; color:var(--text-3); font-family:'Space Mono',monospace; }
+.activity-time { font-size:11px; color:var(--text-3); font-family:'Calibri',Calibri,sans-serif; }
 
 /* DATA TABLE */
 .table-wrap { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius); overflow:hidden; }
@@ -301,7 +384,7 @@ tbody tr:hover td { background:var(--bg2); }
 .form-card p { font-size:13px; color:var(--text-3); margin-bottom:0.9rem; }
 .btn-confirm {
   width:100%; padding:11px; border-radius:8px; border:none;
-  background:var(--success); color:#fff; font-family:'Inter',sans-serif;
+  background:var(--success); color:#fff; font-family:'Calibri',Calibri,sans-serif;
   font-size:14px; font-weight:600; cursor:pointer; margin-top:6px; transition:opacity 0.2s;
 }
 .btn-confirm:hover { opacity:0.88; }
@@ -356,7 +439,7 @@ tbody tr:hover td { background:var(--bg2); }
 .btn-alert-ok {
   padding:9px 28px; border-radius:7px; border:none;
   background:var(--accent); color:#fff;
-  font-family:'Inter',sans-serif; font-size:14px; font-weight:600;
+  font-family:'Calibri',Calibri,sans-serif; font-size:14px; font-weight:600;
   cursor:pointer; transition:opacity 0.2s;
 }
 .btn-alert-ok:hover { opacity:0.88; }
@@ -385,15 +468,15 @@ tbody tr:hover td { background:var(--bg2); }
 .decl-card:hover { box-shadow:var(--shadow); }
 .decl-card.exceeded { border-color:var(--danger); }
 .decl-card-header { padding:10px 16px; background:var(--bg2); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
-.decl-boe { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; letter-spacing:1px; }
+.decl-boe { font-family:'Calibri',Calibri,sans-serif; font-size:15px; font-weight:700; }
 .decl-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:0; }
 .decl-field { padding:10px 16px; border-right:1px solid var(--border); }
 .decl-field:last-child { border-right:none; }
 .decl-field-label { font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:3px; }
-.decl-field-val { font-size:18px; font-weight:800; font-family:'Space Mono',monospace; }
+.decl-field-val { font-size:18px; font-weight:800; font-family:'Calibri',Calibri,sans-serif; }
 .decl-set-expected {
   padding:6px 14px; border-radius:6px; border:1.5px solid var(--accent);
-  background:var(--accent-light); color:var(--accent); font-family:'Inter',sans-serif;
+  background:var(--accent-light); color:var(--accent); font-family:'Calibri',Calibri,sans-serif;
   font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; white-space:nowrap;
 }
 .decl-set-expected:hover { background:var(--accent); color:#fff; }
@@ -409,7 +492,7 @@ tbody tr:hover td { background:var(--bg2); }
   display:inline-flex; align-items:center; gap:5px;
   background:var(--accent-light); color:var(--accent);
   border:1px solid #b8d9c6; border-radius:5px;
-  font-size:12px; font-weight:600; font-family:'Space Mono',monospace;
+  font-size:12px; font-weight:600; font-family:'Calibri',Calibri,sans-serif;
   padding:3px 9px; white-space:nowrap;
 }
 .device-tag.invalid { background:var(--danger-bg); color:var(--danger); border-color:#f5c6c6; }
@@ -419,10 +502,10 @@ tbody tr:hover td { background:var(--bg2); }
 }
 .device-tag-remove:hover { opacity:1; }
 .device-tag-input {
-  border:none; outline:none; font-size:13px; font-family:'Space Mono',monospace;
+  border:none; outline:none; font-size:13px; font-family:'Calibri',Calibri,sans-serif;
   background:transparent; min-width:120px; flex:1; color:var(--text);
 }
-.device-tag-input::placeholder { font-family:'Inter',sans-serif; color:var(--text-3); font-size:13px; }
+.device-tag-input::placeholder { font-family:'Calibri',Calibri,sans-serif; color:var(--text-3); font-size:13px; }
 
 /* ── Message preview modal ── */
 .msg-preview-overlay {
@@ -442,27 +525,27 @@ tbody tr:hover td { background:var(--bg2); }
 .msg-preview-text {
   background:var(--bg2); border:1px solid var(--border); border-radius:8px;
   padding:1rem 1.2rem; font-size:13px; line-height:1.8; white-space:pre-wrap;
-  font-family:'Space Mono',monospace; color:var(--text); max-height:320px; overflow-y:auto;
+  font-family:'Calibri',Calibri,sans-serif; color:var(--text); max-height:320px; overflow-y:auto;
   margin-bottom:1.2rem;
 }
 .msg-send-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .btn-send-email {
   padding:11px 16px; border-radius:8px; border:1.5px solid var(--accent);
-  background:var(--accent-light); color:var(--accent); font-family:'Inter',sans-serif;
+  background:var(--accent-light); color:var(--accent); font-family:'Calibri',Calibri,sans-serif;
   font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s;
   display:flex; align-items:center; justify-content:center; gap:8px;
 }
 .btn-send-email:hover { background:var(--accent); color:#fff; }
 .btn-send-whatsapp {
   padding:11px 16px; border-radius:8px; border:1.5px solid #25d366;
-  background:#f0fdf4; color:#16a34a; font-family:'Inter',sans-serif;
+  background:#f0fdf4; color:#16a34a; font-family:'Calibri',Calibri,sans-serif;
   font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s;
   display:flex; align-items:center; justify-content:center; gap:8px;
 }
 .btn-send-whatsapp:hover { background:#25d366; color:#fff; }
 .btn-draft-report {
   padding:9px 20px; border-radius:7px; border:1.5px solid var(--accent);
-  background:var(--accent-light); color:var(--accent); font-family:'Inter',sans-serif;
+  background:var(--accent-light); color:var(--accent); font-family:'Calibri',Calibri,sans-serif;
   font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s;
 }
 .btn-draft-report:hover { background:var(--accent); color:#fff; }
@@ -488,17 +571,17 @@ tbody tr:hover td { background:var(--bg2); }
   font-size:13px; font-weight:700;
 }
 .attend-faulty-num {
-  font-size:28px; font-weight:900; font-family:'Space Mono',monospace;
+  font-size:28px; font-weight:900; font-family:'Calibri',Calibri,sans-serif;
   background:rgba(255,255,255,0.2); border-radius:6px; padding:2px 10px;
   min-width:50px; text-align:center;
 }
 .attend-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; padding:14px 16px; }
 .attend-field-label { font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:3px; }
-.attend-field-val { font-size:16px; font-weight:700; font-family:'Space Mono',monospace; }
+.attend-field-val { font-size:16px; font-weight:700; font-family:'Calibri',Calibri,sans-serif; }
 .attend-confirm-bar { padding:12px 16px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--bg2); }
 .btn-confirm-entry {
   padding:8px 20px; border-radius:7px; border:none; background:var(--success);
-  color:#fff; font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+  color:#fff; font-family:'Calibri',Calibri,sans-serif; font-size:13px; font-weight:600;
   cursor:pointer; transition:opacity 0.2s; display:flex; align-items:center; gap:6px;
 }
 .btn-confirm-entry:hover { opacity:0.85; }
@@ -532,7 +615,7 @@ tbody tr:hover td { background:var(--bg2); }
 .modal-stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1.2rem; }
 .modal-stat { background:var(--bg2); border-radius:8px; padding:12px; }
 .modal-stat-label { font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:4px; }
-.modal-stat-val { font-size:20px; font-weight:700; font-family:'Space Mono',monospace; }
+.modal-stat-val { font-size:20px; font-weight:700; font-family:'Calibri',Calibri,sans-serif; }
 
 /* ENTRIES PAGE */
 .entry-form-card { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius); padding:1.2rem; max-width:600px; margin-bottom:1.2rem; }
@@ -608,7 +691,7 @@ tbody tr { transition:background 0.1s ease; }
 /* ═══ REPORT PAGE ═══ */
 .rpt-view-btn {
   padding:5px 16px; border-radius:20px; border:1.5px solid var(--border);
-  background:none; color:var(--text-3); font-family:'Inter',sans-serif;
+  background:none; color:var(--text-3); font-family:'Calibri',Calibri,sans-serif;
   font-size:12px; font-weight:500; cursor:pointer; transition:all 0.15s;
 }
 .rpt-view-btn:hover { border-color:var(--accent); color:var(--accent); }
@@ -662,11 +745,11 @@ tbody tr { transition:background 0.1s ease; }
   background:var(--accent-light); color:var(--accent);
   border-top:2px solid #b8d9c6;
 }
-.rpt-boe { font-family:'Space Mono',monospace; font-size:13px; font-weight:700; letter-spacing:0.5px; color:var(--text); }
-.rpt-num { font-family:'Space Mono',monospace; font-size:15px; font-weight:800; }
-.rpt-rem-pos { color:var(--success); font-family:'Space Mono',monospace; font-size:15px; font-weight:800; }
+.rpt-boe { font-family:'Calibri',Calibri,sans-serif; font-size:13px; font-weight:700; letter-spacing:0.5px; color:var(--text); }
+.rpt-num { font-family:'Calibri',Calibri,sans-serif; font-size:15px; font-weight:800; }
+.rpt-rem-pos { color:var(--success); font-family:'Calibri',Calibri,sans-serif; font-size:15px; font-weight:800; }
 .rpt-rem-zero { color:var(--success); font-weight:700; font-size:13px; }
-.rpt-rem-neg { color:var(--danger); font-family:'Space Mono',monospace; font-size:15px; font-weight:800; }
+.rpt-rem-neg { color:var(--danger); font-family:'Calibri',Calibri,sans-serif; font-size:15px; font-weight:800; }
 .rpt-rem-none { color:var(--text-3); font-size:13px; }
 .rpt-grand {
   background:var(--accent); color:#fff; border-radius:var(--radius);
@@ -679,13 +762,13 @@ tbody tr { transition:background 0.1s ease; }
 }
 .rpt-grand-item:last-child { border-right:none; }
 .rpt-grand-label { font-size:10px; text-transform:uppercase; letter-spacing:0.6px; opacity:0.72; margin-bottom:5px; }
-.rpt-grand-val { font-size:28px; font-weight:800; font-family:'Space Mono',monospace; }
+.rpt-grand-val { font-size:28px; font-weight:800; font-family:'Calibri',Calibri,sans-serif; }
 /* Send preview button — big prominent CTA */
 .rpt-send-btn {
   display:inline-flex; align-items:center; gap:10px;
   padding:12px 28px; border-radius:10px; border:none;
   background:var(--accent); color:#fff;
-  font-family:'Inter',sans-serif; font-size:14px; font-weight:700;
+  font-family:'Calibri',Calibri,sans-serif; font-size:14px; font-weight:700;
   cursor:pointer; transition:all 0.18s;
   box-shadow:0 3px 12px rgba(26,58,42,0.22);
 }
@@ -814,7 +897,7 @@ input, select, textarea {
     border: none;
     border-bottom: 2.5px solid transparent;
     background: none;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Calibri', sans-serif;
     color: var(--text-3);
     font-size: 10px;
     font-weight: 500;
@@ -880,6 +963,20 @@ input, select, textarea {
   .form-card h3 { font-size: 14px; }
   .form-card p { font-size: 12px; margin-bottom: 0.7rem; }
   .form-row { margin-bottom: 0.6rem; }
+
+  /* ── RECORD PAGE: stack cards vertically ── */
+  .rec-layout {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .rec-form-body { padding: 1rem 0.9rem; }
+  .rec-form-header { padding: 0.85rem 0.9rem; }
+  .rec-form-header-title { font-size: 14px; }
+  .rec-form-header-sub { font-size: 11px; }
+  .rec-autofill-row { gap: 8px; }
+  .rec-autofill-item { font-size: 11px; }
+  .rec-device-summary-row { font-size: 12px; }
+  .rec-entries-panel { order: 3; }
 
   .form-input { padding: 9px 11px; border-radius: 8px; min-height: 40px; font-size: 16px !important; }
   select.form-input { min-height: 40px; }
@@ -1163,17 +1260,15 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
-      <span class="role-badge" id="rb1"></span>
       <div class="user-menu" id="um1">
         <button class="user-btn" onclick="toggleMenu('um1')">
           <div class="user-avatar" id="ua1"></div>
-          <span id="un1"></span>
           <span class="user-chevron">▼</span>
         </button>
         <div class="dropdown">
           <div class="dd-header"><div class="dd-name" id="dd-name1"></div><div class="dd-unit" id="dd-unit1"></div></div>
           <button class="dd-item" onclick="openPwdModal()">Change Password</button>
-          <button class="dd-item" onclick="openThemeModal()"><span style="margin-right:4px;">🎨</span> Appearance</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
           <div class="dd-sep"></div>
           <button class="dd-item danger" onclick="doLogout()">Log Out</button>
         </div>
@@ -1238,7 +1333,7 @@ input, select, textarea {
           <div class="chart-sub">Tap a station card for detailed information</div>
         </div>
         <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--success);font-weight:600;">
-          <span class="live-dot"></span> Live
+          Live
         </span>
       </div>
       <div class="station-grid" id="station-cards-container"></div>
@@ -1248,7 +1343,7 @@ input, select, textarea {
     <div class="activity-card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
         <div class="chart-title">Live Activity Feed</div>
-        <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--success);font-weight:600;"><span class="live-dot"></span> Live</span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--success);font-weight:600;">Live</span>
       </div>
       <div class="activity-list" id="activity-feed"></div>
     </div>
@@ -1285,17 +1380,15 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
-      <span class="role-badge" id="rb2"></span>
       <div class="user-menu" id="um2">
         <button class="user-btn" onclick="toggleMenu('um2')">
           <div class="user-avatar" id="ua2"></div>
-          <span id="un2"></span>
           <span class="user-chevron">▼</span>
         </button>
         <div class="dropdown">
           <div class="dd-header"><div class="dd-name" id="dd-name2"></div><div class="dd-unit" id="dd-unit2"></div></div>
           <button class="dd-item" onclick="openPwdModal()">Change Password</button>
-          <button class="dd-item" onclick="openThemeModal()"><span style="margin-right:4px;">🎨</span> Appearance</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
           <div class="dd-sep"></div>
           <button class="dd-item danger" onclick="doLogout()">Log Out</button>
         </div>
@@ -1355,17 +1448,15 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
-      <span class="role-badge manager" id="rb3"></span>
       <div class="user-menu" id="um3">
         <button class="user-btn" onclick="toggleMenu('um3')">
           <div class="user-avatar" id="ua3"></div>
-          <span id="un3"></span>
           <span class="user-chevron">▼</span>
         </button>
         <div class="dropdown">
           <div class="dd-header"><div class="dd-name" id="dd-name3"></div><div class="dd-unit" id="dd-unit3"></div></div>
           <button class="dd-item" onclick="openPwdModal()">Change Password</button>
-          <button class="dd-item" onclick="openThemeModal()"><span style="margin-right:4px;">🎨</span> Appearance</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
           <div class="dd-sep"></div>
           <button class="dd-item danger" onclick="doLogout()">Log Out</button>
         </div>
@@ -1462,17 +1553,15 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
-      <span class="role-badge" id="rb4"></span>
       <div class="user-menu" id="um4">
         <button class="user-btn" onclick="toggleMenu('um4')">
           <div class="user-avatar" id="ua4"></div>
-          <span id="un4"></span>
           <span class="user-chevron">▼</span>
         </button>
         <div class="dropdown">
           <div class="dd-header"><div class="dd-name" id="dd-name4"></div><div class="dd-unit" id="dd-unit4"></div></div>
           <button class="dd-item" onclick="openPwdModal()">Change Password</button>
-          <button class="dd-item" onclick="openThemeModal()"><span style="margin-right:4px;">🎨</span> Appearance</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
           <div class="dd-sep"></div>
           <button class="dd-item danger" onclick="doLogout()">Log Out</button>
         </div>
@@ -1481,7 +1570,7 @@ input, select, textarea {
   </nav>
   <div class="main-wrap">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
-      <button onclick="navTo('page-dashboard',null)" style="border:none;background:none;cursor:pointer;font-size:13px;color:var(--accent);font-family:'Inter',sans-serif;font-weight:600;padding:0;">← Back to Dashboard</button>
+      <button onclick="navTo('page-dashboard',null)" style="border:none;background:none;cursor:pointer;font-size:13px;color:var(--accent);font-family:'Calibri',Calibri,sans-serif;font-weight:600;padding:0;">← Back to Dashboard</button>
     </div>
     <div class="pg-title">New Entry — Data Trip Log</div>
     <div class="pg-sub">Record a field data entry trip. All fields are logged with your name and timestamp.</div>
@@ -1516,8 +1605,7 @@ input, select, textarea {
         <textarea class="form-input" id="e-remarks" rows="3" placeholder="Any additional notes for this trip..." style="resize:vertical;"></textarea>
       </div>
       <div style="background:var(--bg2);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--text-3);">
-        This entry will be logged under: <strong id="e-autofill-name" style="color:var(--text);">—</strong> · <span id="e-autofill-role" style="color:var(--accent);font-weight:600;"></span>
-      </div>
+        This entry will be logged under: <strong id="e-autofill-name" style="color:var(--text);">—</strong> · </div>
       <div id="e-msg" class="hidden msg-err"></div>
       <button class="btn-primary" onclick="submitEntry()">Submit Entry</button>
     </div>
@@ -1565,17 +1653,15 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
-      <span class="role-badge" id="rb5"></span>
       <div class="user-menu" id="um5">
         <button class="user-btn" onclick="toggleMenu('um5')">
           <div class="user-avatar" id="ua5"></div>
-          <span id="un5"></span>
           <span class="user-chevron">▼</span>
         </button>
         <div class="dropdown">
           <div class="dd-header"><div class="dd-name" id="dd-name5"></div><div class="dd-unit" id="dd-unit5"></div></div>
           <button class="dd-item" onclick="openPwdModal()">Change Password</button>
-          <button class="dd-item" onclick="openThemeModal()"><span style="margin-right:4px;">🎨</span> Appearance</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
           <div class="dd-sep"></div>
           <button class="dd-item danger" onclick="doLogout()">Log Out</button>
         </div>
@@ -1621,16 +1707,15 @@ input, select, textarea {
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+    <div class="rec-layout">
 
-      <!-- THE FORM -->
-      <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;">
-        <!-- form header stripe -->
-        <div style="background:var(--accent);padding:1rem 1.4rem;">
-          <div style="font-size:15px;font-weight:700;color:#fff;">Trip Logistics Form</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px;">Complete all fields accurately before submitting</div>
+      <!-- CARD 1: TRIP LOGISTICS -->
+      <div class="rec-form-card">
+        <div class="rec-form-header" style="background:var(--accent);">
+          <div class="rec-form-header-title">Trip Logistics</div>
+          <div class="rec-form-header-sub">Loading station, trips and BOE details</div>
         </div>
-        <div style="padding:1.4rem;">
+        <div class="rec-form-body">
 
           <div class="form-row">
             <label class="form-label">Loading Station <span style="color:var(--danger);">*</span></label>
@@ -1646,32 +1731,70 @@ input, select, textarea {
               <option>Matrix Gas</option>
               <option>Vana Energy</option>
             </select>
-            <!-- Station colour pill preview -->
-            <div id="r-station-preview" style="display:none;margin-top:6px;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-3);">
-              <span id="r-station-dot" style="width:10px;height:10px;border-radius:50%;display:inline-block;"></span>
-              <span id="r-station-label"></span>
+            <div id="r-station-preview" style="display:none;margin-top:6px;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-3);"></div>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Number of Trips <span style="color:var(--danger);">*</span></label>
+            <input class="form-input" id="r-trips" type="number" min="1" placeholder="e.g. 4">
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">BOE Number <span style="color:var(--danger);">*</span> <span style="color:var(--text-3);font-weight:400;font-size:11px;">(exactly 11 digits)</span></label>
+            <input class="form-input" id="r-boe" type="text" maxlength="11" placeholder="00000000000" list="boe-datalist" autocomplete="off" oninput="onBoeInput(this,'r-boe-counter','r-expected-trips')">
+            <div style="display:flex;justify-content:space-between;margin-top:4px;">
+              <div style="font-size:11px;color:var(--text-3);" id="r-boe-counter">0 / 11 digits</div>
+              <div style="font-size:11px;color:var(--danger);display:none;" id="r-boe-warn">Must be exactly 11 digits</div>
             </div>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div class="form-row" style="margin-bottom:0;">
-              <label class="form-label">Number of Trips <span style="color:var(--danger);">*</span></label>
-              <input class="form-input" id="r-trips" type="number" min="1" placeholder="e.g. 4">
-            </div>
-            <div class="form-row" style="margin-bottom:0;">
-              <label class="form-label">Devices Allocated <span style="color:var(--danger);">*</span></label>
-              <input class="form-input" id="r-devices" type="number" min="0" placeholder="e.g. 12">
+          <div class="form-row">
+            <label class="form-label">Expected Trips for this BOE <span style="color:var(--text-3);font-weight:400;">(optional)</span></label>
+            <input class="form-input" id="r-expected-trips" type="number" min="1" placeholder="Total trips expected">
+            <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Updates the Declaration register automatically.</div>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Remarks / Notes <span style="color:var(--text-3);font-weight:400;">(optional)</span></label>
+            <textarea class="form-input" id="r-remarks" rows="3" placeholder="Any additional observations or notes..." style="resize:vertical;line-height:1.5;"></textarea>
+          </div>
+
+          <!-- Auto-info strip -->
+          <div class="rec-autofill-strip">
+            <div class="rec-autofill-label">Auto-filled on submission</div>
+            <div class="rec-autofill-row">
+              <span class="rec-autofill-item"><span class="rec-autofill-key">Name:</span> <strong id="r-auto-name">—</strong></span>
+              <span class="rec-autofill-item"><span class="rec-autofill-key">Staff No.:</span><span id="r-auto-staffno" style="color:var(--text-2);">—</span></span>
+              <span class="rec-autofill-item"><span class="rec-autofill-key">Unit:</span><span id="r-auto-unit" style="color:var(--text-2);">—</span></span>
+              <span class="rec-autofill-item"><span class="rec-autofill-key">Time:</span><span id="r-auto-time" style="color:var(--text-2);">—</span></span>
             </div>
           </div>
 
-          <div style="height:14px;"></div>
+          <div id="r-msg" class="hidden msg-err" style="margin-bottom:10px;"></div>
+          <button class="btn-primary" style="background:var(--accent);font-size:15px;padding:13px;" onclick="submitRecordEntry()">Submit Trip Entry</button>
+        </div>
+      </div>
+
+      <!-- CARD 2: DEVICE DETAILS -->
+      <div class="rec-form-card">
+        <div class="rec-form-header" style="background:#7b4f12;">
+          <div class="rec-form-header-title">Device Details</div>
+          <div class="rec-form-header-sub">Allocated and faulty device information</div>
+        </div>
+        <div class="rec-form-body">
+
+          <div class="form-row">
+            <label class="form-label">Devices Allocated <span style="color:var(--danger);">*</span></label>
+            <input class="form-input" id="r-devices" type="number" min="0" placeholder="e.g. 12" oninput="updateDeviceSummary()">
+            <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Total number of devices issued at this station.</div>
+          </div>
 
           <div class="form-row">
             <label class="form-label">
               Number of Faulty Devices
               <span style="background:var(--warning-bg);color:var(--warning);font-size:10px;padding:1px 7px;border-radius:4px;font-weight:600;margin-left:4px;">Report</span>
             </label>
-            <input class="form-input" id="r-faulty" type="number" min="0" value="0" placeholder="0 if none">
+            <input class="form-input" id="r-faulty" type="number" min="0" value="0" placeholder="0 if none" oninput="updateDeviceSummary()">
             <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Enter 0 if no faulty devices were recorded.</div>
           </div>
 
@@ -1686,55 +1809,38 @@ input, select, textarea {
                 oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);"
                 onkeydown="handleDeviceNumKey(event)">
             </div>
-            <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Enter each device number (exactly 10 digits) and press <strong>Enter</strong> or <strong>,</strong> to add. Click a tag to remove it.</div>
+            <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Enter each device number (exactly 10 digits) and press <strong>Enter</strong> or <strong>,</strong> to add. Tap a tag to remove it.</div>
             <div style="font-size:11px;color:var(--danger);margin-top:3px;display:none;" id="device-num-err"></div>
           </div>
 
-          <div class="form-row">
-            <label class="form-label">BOE Number <span style="color:var(--danger);">*</span> <span style="color:var(--text-3);font-weight:400;font-size:11px;">(exactly 11 digits)</span></label>
-            <input class="form-input" id="r-boe" type="text" maxlength="11" placeholder="00000000000" list="boe-datalist" autocomplete="off" oninput="onBoeInput(this,'r-boe-counter','r-expected-trips')">
-            <div style="display:flex;justify-content:space-between;margin-top:4px;">
-              <div style="font-size:11px;color:var(--text-3);" id="r-boe-counter">0 / 11 digits</div>
-              <div style="font-size:11px;color:var(--danger);display:none;" id="r-boe-warn">Must be exactly 11 digits</div>
+          <!-- Device summary box -->
+          <div class="rec-device-summary">
+            <div class="rec-device-summary-row">
+              <span class="rec-device-summary-label">Allocated</span>
+              <span class="rec-device-summary-val" id="dev-summary-allocated">—</span>
+            </div>
+            <div class="rec-device-summary-row">
+              <span class="rec-device-summary-label">Faulty Reported</span>
+              <span class="rec-device-summary-val" style="color:var(--danger);" id="dev-summary-faulty">—</span>
+            </div>
+            <div class="rec-device-summary-row">
+              <span class="rec-device-summary-label">Device Numbers Entered</span>
+              <span class="rec-device-summary-val" id="dev-summary-count">0</span>
             </div>
           </div>
 
-          <div class="form-row">
-            <label class="form-label">Expected Number of Trips for this BOE <span style="color:var(--text-3);font-weight:400;">(optional)</span></label>
-            <input class="form-input" id="r-expected-trips" type="number" min="1" placeholder="Total trips expected to complete this BOE">
-            <div style="font-size:11px;color:var(--text-3);margin-top:4px;">If set, this will update the Declaration register for this BOE automatically.</div>
-          </div>
-
-          <div class="form-row">
-            <label class="form-label">Remarks / Notes <span style="color:var(--text-3);font-weight:400;">(optional)</span></label>
-            <textarea class="form-input" id="r-remarks" rows="3" placeholder="Any additional observations, conditions or notes for this trip..." style="resize:vertical;line-height:1.5;"></textarea>
-          </div>
-
-          <!-- Auto-info strip -->
-          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:12px;">
-            <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;font-weight:600;">Auto-filled on submission</div>
-            <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:12px;">
-              <span style="display:inline-flex;align-items:center;gap:4px;"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);">Name:</span> <strong id="r-auto-name">—</strong></span>
-              <span style="display:inline-flex;align-items:center;gap:4px;"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);">Staff No.:</span><span id="r-auto-staffno" style="color:var(--text-2);">—</span></span>
-              <span style="display:inline-flex;align-items:center;gap:4px;"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);">Unit:</span><span id="r-auto-unit" style="color:var(--text-2);">—</span></span>
-              <span style="display:inline-flex;align-items:center;gap:4px;"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);">Time:</span><span id="r-auto-time" style="color:var(--text-2);">—</span></span>
-            </div>
-          </div>
-
-          <div id="r-msg" class="hidden msg-err" style="margin-bottom:10px;"></div>
-          <button class="btn-primary" style="background:var(--accent);font-size:15px;padding:13px;" onclick="submitRecordEntry()">Submit Trip Entry</button>
         </div>
       </div>
 
       <!-- TODAY'S ENTRIES PANEL -->
-      <div>
+      <div class="rec-entries-panel">
         <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;">
           <div style="padding:1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
             <div>
               <div style="font-size:14px;font-weight:700;">My Entries Today</div>
               <div style="font-size:12px;color:var(--text-3);">Records submitted in this session</div>
             </div>
-            <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--success);font-weight:600;"><span class="live-dot"></span>Live</span>
+            <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--success);font-weight:600;">Live</span>
           </div>
           <div id="rec-today-list" style="max-height:500px;overflow-y:auto;">
             <div style="padding:2rem;text-align:center;color:var(--text-3);font-size:13px;" id="rec-empty-state">
@@ -1745,13 +1851,13 @@ input, select, textarea {
 
         <!-- Faulty device summary card -->
         <div id="faulty-summary-card" style="margin-top:12px;background:var(--danger-bg);border:1.5px solid #f5c6c6;border-radius:var(--radius);padding:1rem 1.4rem;display:none;">
-          <div style="font-size:13px;font-weight:700;color:var(--danger);margin-bottom:6px;display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:14px;height:14px;background:var(--danger);border-radius:2px;flex-shrink:0;"></span>FAULTY DEVICE REPORT</div>
+          <div style="font-size:13px;font-weight:700;color:var(--danger);margin-bottom:6px;">FAULTY DEVICE REPORT</div>
           <div style="font-size:12px;color:var(--danger);margin-bottom:8px;">Faulty devices have been logged. Supervisor has been notified via activity feed.</div>
           <div id="faulty-detail-list" style="font-size:12px;color:var(--text-2);"></div>
         </div>
       </div>
 
-    </div><!-- end grid -->
+    </div><!-- end rec-layout -->
   </div>
 </div>
 
@@ -1784,17 +1890,15 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
-      <span class="role-badge manager" id="rb6"></span>
       <div class="user-menu" id="um6">
         <button class="user-btn" onclick="toggleMenu('um6')">
           <div class="user-avatar" id="ua6"></div>
-          <span id="un6"></span>
           <span class="user-chevron">▼</span>
         </button>
         <div class="dropdown">
           <div class="dd-header"><div class="dd-name" id="dd-name6"></div><div class="dd-unit" id="dd-unit6"></div></div>
           <button class="dd-item" onclick="openPwdModal()">Change Password</button>
-          <button class="dd-item" onclick="openThemeModal()"><span style="margin-right:4px;">🎨</span> Appearance</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
           <div class="dd-sep"></div>
           <button class="dd-item danger" onclick="doLogout()">Log Out</button>
         </div>
@@ -1888,17 +1992,15 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
-      <span class="role-badge manager" id="rb7"></span>
       <div class="user-menu" id="um7">
         <button class="user-btn" onclick="toggleMenu('um7')">
           <div class="user-avatar" id="ua7"></div>
-          <span id="un7"></span>
           <span class="user-chevron">▼</span>
         </button>
         <div class="dropdown">
           <div class="dd-header"><div class="dd-name" id="dd-name7"></div><div class="dd-unit" id="dd-unit7"></div></div>
           <button class="dd-item" onclick="openPwdModal()">Change Password</button>
-          <button class="dd-item" onclick="openThemeModal()"><span style="margin-right:4px;">🎨</span> Appearance</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
           <div class="dd-sep"></div>
           <button class="dd-item danger" onclick="doLogout()">Log Out</button>
         </div>
@@ -1919,15 +2021,15 @@ input, select, textarea {
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <div style="background:var(--danger-bg);border:1.5px solid #f5c6c6;border-radius:8px;padding:10px 16px;text-align:center;min-width:110px;">
             <div style="font-size:11px;color:var(--danger);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;">Unconfirmed</div>
-            <div style="font-size:26px;font-weight:800;font-family:'Space Mono',monospace;color:var(--danger);" id="attend-unconfirmed-count">0</div>
+            <div style="font-size:26px;font-weight:800;font-family:'Calibri',Calibri,sans-serif;color:var(--danger);" id="attend-unconfirmed-count">0</div>
           </div>
           <div style="background:var(--success-bg);border:1.5px solid #a8d5bc;border-radius:8px;padding:10px 16px;text-align:center;min-width:110px;">
             <div style="font-size:11px;color:var(--success);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;">Confirmed</div>
-            <div style="font-size:26px;font-weight:800;font-family:'Space Mono',monospace;color:var(--success);" id="attend-confirmed-count">0</div>
+            <div style="font-size:26px;font-weight:800;font-family:'Calibri',Calibri,sans-serif;color:var(--success);" id="attend-confirmed-count">0</div>
           </div>
           <div style="background:var(--warning-bg);border:1.5px solid #fcd34d;border-radius:8px;padding:10px 16px;text-align:center;min-width:110px;">
             <div style="font-size:11px;color:var(--warning);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;">Faulty Devices</div>
-            <div style="font-size:26px;font-weight:800;font-family:'Space Mono',monospace;color:var(--warning);" id="attend-faulty-total">0</div>
+            <div style="font-size:26px;font-weight:800;font-family:'Calibri',Calibri,sans-serif;color:var(--warning);" id="attend-faulty-total">0</div>
           </div>
         </div>
       </div>
@@ -1946,7 +2048,7 @@ input, select, textarea {
         <button class="btn-draft-report" id="attend-draft-btn" onclick="openFaultyDraftModal()">
           Draft Faulty Device Report
         </button>
-        <button id="attend-confirm-all-btn" onclick="confirmAllEntries()" style="display:none;padding:8px 20px;border-radius:7px;border:1.5px solid var(--success);background:var(--success-bg);color:var(--success);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;align-items:center;gap:6px;" onmouseover="this.style.background='var(--success)';this.style.color='#fff';" onmouseout="this.style.background='var(--success-bg)';this.style.color='var(--success)';">
+        <button id="attend-confirm-all-btn" onclick="confirmAllEntries()" style="display:none;padding:8px 20px;border-radius:7px;border:1.5px solid var(--success);background:var(--success-bg);color:var(--success);font-family:'Calibri',Calibri,sans-serif;font-size:13px;font-weight:600;cursor:pointer;align-items:center;gap:6px;" onmouseover="this.style.background='var(--success)';this.style.color='#fff';" onmouseout="this.style.background='var(--success-bg)';this.style.color='var(--success)';">
           Confirm All Unconfirmed
         </button>
       </div>
@@ -1993,17 +2095,15 @@ input, select, textarea {
       <button class="nav-tab active d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
-      <span class="role-badge" id="rb9"></span>
       <div class="user-menu" id="um9">
         <button class="user-btn" onclick="toggleMenu('um9')">
           <div class="user-avatar" id="ua9"></div>
-          <span id="un9"></span>
           <span class="user-chevron">▼</span>
         </button>
         <div class="dropdown">
           <div class="dd-header"><div class="dd-name" id="dd-name9"></div><div class="dd-unit" id="dd-unit9"></div></div>
           <button class="dd-item" onclick="openPwdModal()">Change Password</button>
-          <button class="dd-item" onclick="openThemeModal()"><span style="margin-right:4px;">🎨</span> Appearance</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
           <div class="dd-sep"></div>
           <button class="dd-item danger" onclick="doLogout()">Log Out</button>
         </div>
@@ -2050,7 +2150,7 @@ input, select, textarea {
       <div style="display:flex;align-items:center;gap:6px;">
         <button class="rpt-view-btn active" id="rpt-btn-today" onclick="switchReportView('today',this)">Today</button>
         <button class="rpt-view-btn" id="rpt-btn-all" onclick="switchReportView('all',this)">All My Entries</button>
-        <button onclick="reportExpandAll()" style="margin-left:6px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:none;font-family:'Inter',sans-serif;font-size:12px;color:var(--text-3);cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-3)'">
+        <button onclick="reportExpandAll()" style="margin-left:6px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:none;font-family:'Calibri',Calibri,sans-serif;font-size:12px;color:var(--text-3);cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-3)'">
           Expand All
         </button>
       </div>
@@ -2088,7 +2188,7 @@ input, select, textarea {
         <div style="font-size:12px;color:var(--text-3);margin-top:2px;">Edit the message below, then choose how to send it</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="resetReportPreview()" style="font-size:12px;color:var(--accent);background:var(--accent-light);border:1px solid #b8d9c6;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;padding:5px 12px;transition:all 0.15s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">Reset</button>
+        <button onclick="resetReportPreview()" style="font-size:12px;color:var(--accent);background:var(--accent-light);border:1px solid #b8d9c6;border-radius:6px;cursor:pointer;font-family:'Calibri',Calibri,sans-serif;font-weight:600;padding:5px 12px;transition:all 0.15s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">Reset</button>
         <button style="border:none;background:none;font-size:22px;cursor:pointer;color:var(--text-3);padding:2px 8px;border-radius:4px;line-height:1;" onclick="document.getElementById('report-preview-modal').classList.add('hidden')">&#215;</button>
       </div>
     </div>
@@ -2100,11 +2200,11 @@ input, select, textarea {
 
       <!-- Send buttons — large and clear -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-        <button onclick="sendReportEmail()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:10px;border:2px solid var(--accent);background:var(--accent-light);color:var(--accent);font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.18s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">
+        <button onclick="sendReportEmail()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:10px;border:2px solid var(--accent);background:var(--accent-light);color:var(--accent);font-family:'Calibri',Calibri,sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.18s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Send via Email
         </button>
-        <button onclick="sendReportWhatsApp()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:10px;border:2px solid #25d366;background:#f0fdf4;color:#15803d;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.18s;" onmouseover="this.style.background='#25d366';this.style.color='#fff'" onmouseout="this.style.background='#f0fdf4';this.style.color='#15803d'">
+        <button onclick="sendReportWhatsApp()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:10px;border:2px solid #25d366;background:#f0fdf4;color:#15803d;font-family:'Calibri',Calibri,sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.18s;" onmouseover="this.style.background='#25d366';this.style.color='#fff'" onmouseout="this.style.background='#f0fdf4';this.style.color='#15803d'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
           Send via WhatsApp
         </button>
@@ -2145,17 +2245,15 @@ input, select, textarea {
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
     </div>
     <div class="nav-right">
-      <span class="role-badge" id="rb8"></span>
       <div class="user-menu" id="um8">
         <button class="user-btn" onclick="toggleMenu('um8')">
           <div class="user-avatar" id="ua8"></div>
-          <span id="un8"></span>
           <span class="user-chevron">▼</span>
         </button>
         <div class="dropdown">
           <div class="dd-header"><div class="dd-name" id="dd-name8"></div><div class="dd-unit" id="dd-unit8"></div></div>
           <button class="dd-item" onclick="openPwdModal()">Change Password</button>
-          <button class="dd-item" onclick="openThemeModal()"><span style="margin-right:4px;">🎨</span> Appearance</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
           <div class="dd-sep"></div>
           <button class="dd-item danger" onclick="doLogout()">Log Out</button>
         </div>
@@ -2286,7 +2384,7 @@ input, select, textarea {
         <div style="font-size:12px;color:var(--text-3);margin-top:2px;">Review and edit before sending to Device Management</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="resetInformRequestText()" style="font-size:12px;color:var(--accent);background:var(--accent-light);border:1px solid #b8d9c6;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;padding:5px 12px;transition:all 0.15s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">Reset</button>
+        <button onclick="resetInformRequestText()" style="font-size:12px;color:var(--accent);background:var(--accent-light);border:1px solid #b8d9c6;border-radius:6px;cursor:pointer;font-family:'Calibri',Calibri,sans-serif;font-weight:600;padding:5px 12px;transition:all 0.15s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">Reset</button>
         <button style="border:none;background:none;font-size:22px;cursor:pointer;color:var(--text-3);padding:2px 8px;border-radius:4px;line-height:1;" onclick="closeInformRequestModal()">&#215;</button>
       </div>
     </div>
@@ -2301,11 +2399,11 @@ input, select, textarea {
 
       <!-- Send buttons -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-        <button onclick="sendInformRequestEmail()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:10px;border:2px solid var(--accent);background:var(--accent-light);color:var(--accent);font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.18s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">
+        <button onclick="sendInformRequestEmail()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:10px;border:2px solid var(--accent);background:var(--accent-light);color:var(--accent);font-family:'Calibri',Calibri,sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.18s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Send via Email
         </button>
-        <button onclick="sendInformRequestWhatsApp()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:10px;border:2px solid #25d366;background:#f0fdf4;color:#15803d;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.18s;" onmouseover="this.style.background='#25d366';this.style.color='#fff'" onmouseout="this.style.background='#f0fdf4';this.style.color='#15803d'">
+        <button onclick="sendInformRequestWhatsApp()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:10px;border:2px solid #25d366;background:#f0fdf4;color:#15803d;font-family:'Calibri',Calibri,sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.18s;" onmouseover="this.style.background='#25d366';this.style.color='#fff'" onmouseout="this.style.background='#f0fdf4';this.style.color='#15803d'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
           Send via WhatsApp
         </button>
@@ -2330,7 +2428,7 @@ input, select, textarea {
     <div class="msg-preview-body">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
         <div style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;">Message Preview — Edit before sending</div>
-        <button onclick="resetDraftMessage()" style="font-size:11px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;padding:2px 6px;border-radius:4px;" onmouseover="this.style.background='var(--accent-light)'" onmouseout="this.style.background='none'">Reset to default</button>
+        <button onclick="resetDraftMessage()" style="font-size:11px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'Calibri',Calibri,sans-serif;font-weight:600;padding:2px 6px;border-radius:4px;" onmouseover="this.style.background='var(--accent-light)'" onmouseout="this.style.background='none'">Reset to default</button>
       </div>
       <textarea class="msg-preview-text" id="faulty-draft-text" style="width:100%;resize:vertical;min-height:280px;border:1.5px solid var(--border);border-radius:8px;padding:1.4rem 1.6rem;font-size:15px;line-height:2;font-family:'Lora',Georgia,serif;color:var(--text);background:var(--bg);outline:none;cursor:text;" oninput="updateDraftCharCount()" onfocus="this.style.borderColor='var(--accent)';this.style.boxShadow='0 0 0 3px rgba(26,58,42,0.09)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'"></textarea>
       <div style="font-size:11px;color:var(--text-3);text-align:right;margin-top:4px;" id="draft-char-count"></div>
@@ -2387,8 +2485,7 @@ input, select, textarea {
     <div class="modal-body">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.2rem;">
         <div id="smd-dot" style="width:14px;height:14px;border-radius:50%;"></div>
-        <span style="font-size:16px;font-weight:700;" id="smd-name"></span>
-      </div>
+        </div>
       <div class="modal-stat-grid">
         <div class="modal-stat"><div class="modal-stat-label">Trips (Today)</div><div class="modal-stat-val" id="smd-trips-today">0</div></div>
         <div class="modal-stat"><div class="modal-stat-label">Trips (All Time)</div><div class="modal-stat-val" id="smd-trips-all">0</div></div>
@@ -2800,15 +2897,14 @@ function removeDeviceTag(idx) {
 function renderDeviceTags() {
   const wrap = document.getElementById('device-tag-wrap');
   const input = document.getElementById('device-num-input');
-  // Remove all existing tags (keep the input)
   wrap.querySelectorAll('.device-tag').forEach(t => t.remove());
-  // Rebuild tags before the input
   _deviceNums.forEach((num, idx) => {
     const tag = document.createElement('span');
     tag.className = 'device-tag';
     tag.innerHTML = num + '<button class="device-tag-remove" onclick="removeDeviceTag(' + idx + ')" title="Remove">&#215;</button>';
     wrap.insertBefore(tag, input);
   });
+  updateDeviceSummary();
 }
 
 function clearDeviceTags() {
@@ -3001,21 +3097,32 @@ function renderRecordTodayList() {
     <div style="padding:12px 14px;border-bottom:1px solid var(--border);${i===0?'background:var(--accent-light);':''}">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
         <span style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;">
-          <span style="width:8px;height:8px;border-radius:50%;background:${stationColors[t.station]||'#999'};flex-shrink:0;display:inline-block;"></span>
           ${t.station}
         </span>
-        <span style="font-size:11px;color:var(--text-3);font-family:'Space Mono',monospace;">${(t.ts||'').split(',')[1]?.trim()||t.ts||''}</span>
+        <span style="font-size:11px;color:var(--text-3);font-family:'Calibri',Calibri,sans-serif;">${(t.ts||'').split(',')[1]?.trim()||t.ts||''}</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:12px;">
-        <div><div style="color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:0.4px;">Trips</div><div style="font-weight:700;font-family:'Space Mono',monospace;">${t.trips}</div></div>
-        <div><div style="color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:0.4px;">Devices</div><div style="font-weight:700;font-family:'Space Mono',monospace;">${t.devices}</div></div>
-        <div><div style="color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:0.4px;">Faulty</div><div style="font-weight:700;font-family:'Space Mono',monospace;color:${(t.faulty||0)>0?'#c0392b':'var(--text)'};">${t.faulty||0}</div></div>
-        <div><div style="color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:0.4px;">BOE</div><div style="font-weight:700;font-family:'Space Mono',monospace;font-size:11px;">${t.boe||'—'}</div></div>
+        <div><div style="color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:0.4px;">Trips</div><div style="font-weight:700;font-family:'Calibri',Calibri,sans-serif;">${t.trips}</div></div>
+        <div><div style="color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:0.4px;">Devices</div><div style="font-weight:700;font-family:'Calibri',Calibri,sans-serif;">${t.devices}</div></div>
+        <div><div style="color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:0.4px;">Faulty</div><div style="font-weight:700;font-family:'Calibri',Calibri,sans-serif;color:${(t.faulty||0)>0?'#c0392b':'var(--text)'};">${t.faulty||0}</div></div>
+        <div><div style="color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:0.4px;">BOE</div><div style="font-weight:700;font-family:'Calibri',Calibri,sans-serif;font-size:11px;">${t.boe||'—'}</div></div>
       </div>
       ${t.remarks ? `<div style="margin-top:6px;font-size:11px;color:var(--text-3);font-style:italic;">"${t.remarks}"</div>` : ''}
-      ${t.deviceNums && t.deviceNums.length > 0 ? `<div style="margin-top:6px;"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--danger);">Faulty Device Nos.:</span> <span style="font-size:11px;font-family:'Space Mono',monospace;color:var(--danger);">${t.deviceNums.join(', ')}</span></div>` : ''}
+      ${t.deviceNums && t.deviceNums.length > 0 ? `<div style="margin-top:6px;"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--danger);">Faulty Device Nos.:</span> <span style="font-size:11px;font-family:'Calibri',Calibri,sans-serif;color:var(--danger);">${t.deviceNums.join(', ')}</span></div>` : ''}
     </div>
   `).join('');
+}
+
+function updateDeviceSummary() {
+  const alloc = document.getElementById('r-devices').value;
+  const faulty = document.getElementById('r-faulty').value;
+  const tags = document.querySelectorAll('#device-tag-wrap .device-tag');
+  const s1 = document.getElementById('dev-summary-allocated');
+  const s2 = document.getElementById('dev-summary-faulty');
+  const s3 = document.getElementById('dev-summary-count');
+  if (s1) s1.textContent = alloc !== '' ? alloc : '—';
+  if (s2) s2.textContent = faulty !== '' ? faulty : '—';
+  if (s3) s3.textContent = tags.length;
 }
 
 function submitRecordEntry() {
@@ -3356,7 +3463,7 @@ function openStationModal(stationName) {
       <td>${t.user}</td>
       <td>${t.trips}</td>
       <td>${t.devices}</td>
-      <td style="font-family:'Space Mono',monospace;">${t.boe||'—'}</td>
+      <td style="font-family:'Calibri',Calibri,sans-serif;">${t.boe||'—'}</td>
       <td style="color:var(--text-3);">${t.ts}</td>
     </tr>
   `).join('') : '<tr><td colspan="5" style="color:var(--text-3);padding:8px 0;">No entries yet</td></tr>';
@@ -3405,7 +3512,7 @@ function renderTable() {
     const faulty = t.faulty||0;
     return `
     <tr>
-      <td style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-3);">PGL-${String(DB.trips.length-i).padStart(4,'0')}</td>
+      <td style="font-family:'Calibri',Calibri,sans-serif;font-size:11px;color:var(--text-3);">PGL-${String(DB.trips.length-i).padStart(4,'0')}</td>
       <td>${t.user}</td>
       <td><span style="display:inline-flex;align-items:center;gap:5px;">
         <span style="width:7px;height:7px;border-radius:50%;background:${STATIONS.find(s=>s.name===t.station)?.color||'#999'};flex-shrink:0;"></span>${t.station}
@@ -3413,7 +3520,7 @@ function renderTable() {
       <td>${t.trips}</td>
       <td>${t.devices}</td>
       <td style="font-weight:${faulty>0?'700':'400'};color:${faulty>0?'var(--danger)':'var(--text-3)'};">${faulty}</td>
-      <td style="font-family:'Space Mono',monospace;">${t.boe||'—'}</td>
+      <td style="font-family:'Calibri',Calibri,sans-serif;">${t.boe||'—'}</td>
       <td style="font-size:11px;color:var(--text-3);">${t.ts}</td>
       <td><span class="badge badge-${t.role}">${t.role}</span></td>
     </tr>`;
@@ -3430,12 +3537,12 @@ function renderTodayEntries() {
   if(!entries.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:1.5rem;">No entries today yet.</td></tr>'; return; }
   tbody.innerHTML = entries.map((t,i) => `
     <tr>
-      <td style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-3);">PGL-${String(DB.trips.length-i).padStart(4,'0')}</td>
+      <td style="font-family:'Calibri',Calibri,sans-serif;font-size:11px;color:var(--text-3);">PGL-${String(DB.trips.length-i).padStart(4,'0')}</td>
       <td><span style="display:inline-flex;align-items:center;gap:5px;">
         <span style="width:7px;height:7px;border-radius:50%;background:${STATIONS.find(s=>s.name===t.station)?.color||'#999'};flex-shrink:0;"></span>${t.station}
       </span></td>
       <td>${t.trips}</td><td>${t.devices}</td>
-      <td style="font-family:'Space Mono',monospace;">${t.boe||'—'}</td>
+      <td style="font-family:'Calibri',Calibri,sans-serif;">${t.boe||'—'}</td>
       <td style="font-size:12px;color:var(--text-3);">${t.remarks||'—'}</td>
       <td style="font-size:11px;color:var(--text-3);">${t.ts}</td>
     </tr>
@@ -3787,10 +3894,9 @@ function renderAttend() {
           </div>
           <div style="text-align:right;">
             <div style="display:inline-flex;align-items:center;gap:5px;font-size:12px;background:${sColor}18;color:${sColor};border:1px solid ${sColor}44;border-radius:5px;padding:3px 9px;font-weight:600;margin-bottom:4px;">
-              <span style="width:7px;height:7px;border-radius:50%;background:${sColor};"></span>
               ${t.station}
             </div>
-            <div style="font-size:11px;color:var(--text-3);font-family:'Space Mono',monospace;">${t.ts}</div>
+            <div style="font-size:11px;color:var(--text-3);font-family:'Calibri',Calibri,sans-serif;">${t.ts}</div>
           </div>
         </div>
 
@@ -3819,7 +3925,7 @@ function renderAttend() {
         <div style="margin:0 16px 14px;background:#fff0f0;border:1px solid #f5c6c6;border-radius:7px;padding:10px 14px;">
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--danger);margin-bottom:6px;">Faulty Device Serial Numbers (${t.deviceNums.length})</div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;">
-            ${t.deviceNums.map(n => `<span style="background:#fff;border:1.5px solid var(--danger);border-radius:5px;padding:3px 10px;font-size:12px;font-weight:700;font-family:'Space Mono',monospace;color:var(--danger);">${n}</span>`).join('')}
+            ${t.deviceNums.map(n => `<span style="background:#fff;border:1.5px solid var(--danger);border-radius:5px;padding:3px 10px;font-size:12px;font-weight:700;font-family:'Calibri',Calibri,sans-serif;color:var(--danger);">${n}</span>`).join('')}
           </div>
         </div>` : ''}
 
@@ -4086,7 +4192,7 @@ function processAlertQueue() {
     okBtn.className = 'btn-alert-ok ' + (a.mismatch ? 'warning-btn' : '');
     body.innerHTML = `
       <p><strong>${a.sender}</strong> has submitted a device request for <strong>${a.station}</strong>.</p>
-      <p>Devices Requested: <strong style="font-size:18px;font-family:'Space Mono',monospace;">${a.devices}</strong></p>
+      <p>Devices Requested: <strong style="font-size:18px;font-family:'Calibri',Calibri,sans-serif;">${a.devices}</strong></p>
       ${a.mismatch ? `
       <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:7px;padding:10px 14px;margin-top:8px;">
         <div style="font-weight:700;color:#92400e;margin-bottom:4px;">MISMATCH DETECTED</div>
@@ -4103,7 +4209,7 @@ function processAlertQueue() {
     body.innerHTML = `
       <p>Your faulty device report has been reviewed and confirmed by <strong>${a.sender}</strong>.</p>
       <p>Station: <strong>${a.station}</strong></p>
-      <p>Faulty Devices Acknowledged: <strong style="font-size:18px;font-family:'Space Mono',monospace;color:#c0392b;">${a.faulty}</strong></p>
+      <p>Faulty Devices Acknowledged: <strong style="font-size:18px;font-family:'Calibri',Calibri,sans-serif;color:#c0392b;">${a.faulty}</strong></p>
       <p style="font-size:12px;color:var(--text-3);margin-top:8px;">The supervisor has seen your report. No further action needed.</p>`;
   }
 
@@ -4269,16 +4375,16 @@ function renderOutput() {
             </div>
           </td>
           <td style="font-size:12px;color:var(--text-3);">${u.unit}</td>
-          <td style="font-weight:700;font-family:'Space Mono',monospace;">${u.entries}</td>
+          <td style="font-weight:700;font-family:'Calibri',Calibri,sans-serif;">${u.entries}</td>
           <td>
             <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-weight:700;font-family:'Space Mono',monospace;">${u.trips}</span>
+              <span style="font-weight:700;font-family:'Calibri',Calibri,sans-serif;">${u.trips}</span>
               <div style="flex:1;background:var(--bg3);border-radius:4px;height:6px;min-width:60px;overflow:hidden;">
                 <div style="width:${pct}%;background:var(--accent);height:100%;border-radius:4px;transition:width 0.5s;"></div>
               </div>
             </div>
           </td>
-          <td style="font-family:'Space Mono',monospace;">${u.devices}</td>
+          <td style="font-family:'Calibri',Calibri,sans-serif;">${u.devices}</td>
           <td style="font-weight:${u.faulty>0?'700':'400'};color:${u.faulty>0?'#c0392b':'var(--text-3)'};">${u.faulty}</td>
           <td>${u.stations.size}</td>
           <td style="font-size:11px;color:var(--text-3);">${u.lastEntry || '—'}</td>
@@ -4304,26 +4410,26 @@ function renderOutput() {
             <div style="font-size:11px;color:var(--text-3);">${u.unit} · <span style="text-transform:capitalize;">${u.role}</span></div>
           </div>
           <div style="text-align:right;">
-            <div style="font-size:22px;font-weight:800;font-family:'Space Mono',monospace;">#${i+1}</div>
+            <div style="font-size:22px;font-weight:800;font-family:'Calibri',Calibri,sans-serif;">#${i+1}</div>
           </div>
         </div>
         <div style="padding:1rem 1.2rem;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
             <div style="background:var(--bg2);border-radius:7px;padding:10px;">
               <div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px;">Total Trips</div>
-              <div style="font-size:22px;font-weight:800;font-family:'Space Mono',monospace;">${u.trips}</div>
+              <div style="font-size:22px;font-weight:800;font-family:'Calibri',Calibri,sans-serif;">${u.trips}</div>
             </div>
             <div style="background:var(--bg2);border-radius:7px;padding:10px;">
               <div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px;">Entries</div>
-              <div style="font-size:22px;font-weight:800;font-family:'Space Mono',monospace;">${u.entries}</div>
+              <div style="font-size:22px;font-weight:800;font-family:'Calibri',Calibri,sans-serif;">${u.entries}</div>
             </div>
             <div style="background:var(--bg2);border-radius:7px;padding:10px;">
               <div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px;">Devices</div>
-              <div style="font-size:22px;font-weight:800;font-family:'Space Mono',monospace;">${u.devices}</div>
+              <div style="font-size:22px;font-weight:800;font-family:'Calibri',Calibri,sans-serif;">${u.devices}</div>
             </div>
             <div style="background:${u.faulty>0?'#fdecea':'var(--bg2)'};border-radius:7px;padding:10px;">
               <div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px;">Faulty</div>
-              <div style="font-size:22px;font-weight:800;font-family:'Space Mono',monospace;color:${u.faulty>0?'#c0392b':'var(--text)'};">${u.faulty}</div>
+              <div style="font-size:22px;font-weight:800;font-family:'Calibri',Calibri,sans-serif;color:${u.faulty>0?'#c0392b':'var(--text)'};">${u.faulty}</div>
             </div>
           </div>
           <!-- Trip progress bar -->
@@ -4434,7 +4540,7 @@ function renderReport() {
       let remCell = '<span class="rpt-rem-none">—</span>';
       if(remaining !== null) {
         if(remaining > 0)      remCell = '<span class="rpt-rem-pos">'+remaining+'</span>';
-        else if(remaining===0) remCell = '<span class="rpt-rem-zero">✓ Complete</span>';
+        else if(remaining===0) remCell = '<span class="rpt-rem-zero"> Complete</span>';
         else                   remCell = '<span class="rpt-rem-neg">'+Math.abs(remaining)+' OVER</span>';
       }
 
@@ -4476,8 +4582,8 @@ function renderReport() {
               <tbody>${rows}</tbody>
               <tfoot><tr>
                 <td style="color:var(--accent);">Station Total</td>
-                <td><span style="font-family:'Space Mono',monospace;font-size:15px;font-weight:800;">${stTrips}</span></td>
-                <td><span style="font-family:'Space Mono',monospace;font-size:15px;font-weight:800;">${stTrips}</span></td>
+                <td><span style="font-family:'Calibri',Calibri,sans-serif;font-size:15px;font-weight:800;">${stTrips}</span></td>
+                <td><span style="font-family:'Calibri',Calibri,sans-serif;font-size:15px;font-weight:800;">${stTrips}</span></td>
                 <td colspan="2"></td>
               </tr></tfoot>
             </table>
@@ -4806,20 +4912,18 @@ setInterval(bgPoll, 8000);
       <div class="theme-modal-box">
         <div class="theme-modal-header">
           <h3>Appearance</h3>
-          <button class="icon-btn" onclick="window._themeClose()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-3);padding:2px 6px;border-radius:6px;">✕</button>
+          <button class="icon-btn" onclick="window._themeClose()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-3);padding:2px 6px;border-radius:6px;"></button>
         </div>
         <div class="theme-modal-body">
           <div class="theme-option-grid">
             <div class="theme-option" id="topt-light" onclick="window._themeSelect('light')">
-              <span class="theme-option-icon">☀️</span>
+              <span class="theme-option-icon">️</span>
               <span class="theme-option-label">Light</span>
             </div>
             <div class="theme-option" id="topt-dark" onclick="window._themeSelect('dark')">
-              <span class="theme-option-icon">🌙</span>
               <span class="theme-option-label">Dark</span>
             </div>
             <div class="theme-option" id="topt-auto" onclick="window._themeSelect('auto')">
-              <span class="theme-option-icon">🔄</span>
               <span class="theme-option-label">Auto</span>
             </div>
           </div>
