@@ -302,6 +302,35 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .rec-device-summary-row:last-child { border-bottom: none; }
 .rec-device-summary-label { color: var(--text-3); font-size: 12px; }
 .rec-device-summary-val { font-weight: 700; color: var(--text); }
+
+/* ── INFORM REQUEST QUEUE ── */
+.inform-queue-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.inform-queue-row-info { flex: 1; min-width: 0; }
+.inform-queue-station { font-weight: 700; color: var(--text); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.inform-queue-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.inform-queue-remove {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--danger);
+  font-size: 16px;
+  padding: 0 2px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.inform-queue-remove:hover { opacity: 1; }
 .metric-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:10px; margin-bottom:1.2rem; }
 .metric-card {
   background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius);
@@ -1490,7 +1519,9 @@ input, select, textarea {
         </div>
         <div class="form-card">
           <h3>Inform Request</h3>
-          <p>Notify Device Management of a loading station's device request.</p>
+          <p>Notify Device Management of device requests. Add multiple stations then send all at once.</p>
+
+          <!-- Input row -->
           <div class="form-row">
             <label class="form-label">Loading Station <span style="color:var(--danger);">*</span></label>
             <select class="form-input" id="trip-station">
@@ -1513,10 +1544,23 @@ input, select, textarea {
             <label class="form-label">Additional Notes <span style="color:var(--text-3);font-weight:400;">(optional)</span></label>
             <textarea class="form-input" id="trip-notes" rows="2" placeholder="Any urgency, context or special instructions..." style="resize:vertical;line-height:1.5;font-size:13px;"></textarea>
           </div>
+
+          <!-- Add button -->
           <div id="trip-msg" class="hidden msg-err"></div>
-          <button class="btn-confirm blue" onclick="openInformRequestPreview()" style="background:var(--accent-2);border-color:var(--accent-2);">
+          <button class="btn-confirm" onclick="addInformRequestRow()" style="background:var(--bg2);color:var(--accent);border-color:var(--accent);margin-bottom:12px;">
+            + Add
+          </button>
+
+          <!-- Queue list -->
+          <div id="inform-queue-wrap" style="display:none;margin-bottom:14px;">
+            <div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Queued Requests</div>
+            <div id="inform-queue-list"></div>
+          </div>
+
+          <!-- Send button — only active when queue has items -->
+          <button class="btn-confirm blue" id="inform-send-btn" onclick="openInformRequestPreview()" style="background:var(--accent-2);border-color:var(--accent-2);display:none;">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Send Request
+            Send All Requests
           </button>
         </div>
       </div>
@@ -3615,44 +3659,120 @@ function submitDeviceRequest() {
 
 // ══════════ INFORM REQUEST (Supervisor Panel) ══════════
 let _informRequestDefaultText = '';
+let _informQueue = []; // array of {station, devices, boe, notes}
 
-function openInformRequestPreview() {
+function addInformRequestRow() {
   hideMsg('trip-msg');
   const station = document.getElementById('trip-station').value;
   const devices = parseInt(document.getElementById('trip-devices').value);
   const boe     = document.getElementById('trip-boe').value.trim();
   const notes   = document.getElementById('trip-notes').value.trim();
 
-  if(!station)                         return showMsg('trip-msg', 'Please select a loading station.');
-  if(isNaN(devices) || devices < 1)    return showMsg('trip-msg', 'Enter the number of devices requested (minimum 1).');
-  if(boe && boe.length !== 11)         return showMsg('trip-msg', 'BOE number must be exactly 11 digits.');
+  if (!station)                        return showMsg('trip-msg', 'Please select a loading station.');
+  if (isNaN(devices) || devices < 1)   return showMsg('trip-msg', 'Enter the number of devices requested (minimum 1).');
+  if (boe && boe.length !== 11)        return showMsg('trip-msg', 'BOE number must be exactly 11 digits.');
+
+  _informQueue.push({ station, devices, boe, notes });
+  renderInformQueue();
+
+  // Clear inputs for next entry
+  document.getElementById('trip-station').value = '';
+  document.getElementById('trip-devices').value = '';
+  document.getElementById('trip-boe').value = '';
+  document.getElementById('trip-notes').value = '';
+  document.getElementById('boe-counter2').textContent = '0 / 11 digits';
+  hideMsg('trip-msg');
+}
+
+function removeInformQueueRow(idx) {
+  _informQueue.splice(idx, 1);
+  renderInformQueue();
+}
+
+function renderInformQueue() {
+  const wrap = document.getElementById('inform-queue-wrap');
+  const list = document.getElementById('inform-queue-list');
+  const sendBtn = document.getElementById('inform-send-btn');
+
+  if (_informQueue.length === 0) {
+    wrap.style.display = 'none';
+    sendBtn.style.display = 'none';
+    return;
+  }
+
+  wrap.style.display = 'block';
+  sendBtn.style.display = 'flex';
+
+  list.innerHTML = _informQueue.map((row, i) => `
+    <div class="inform-queue-row">
+      <div class="inform-queue-row-info">
+        <div class="inform-queue-station">${row.station}</div>
+        <div class="inform-queue-meta">
+          ${row.devices} device${row.devices !== 1 ? 's' : ''}
+          ${row.boe ? ' &nbsp;·&nbsp; BOE: ' + row.boe : ''}
+          ${row.notes ? ' &nbsp;·&nbsp; ' + row.notes : ''}
+        </div>
+      </div>
+      <button class="inform-queue-remove" onclick="removeInformQueueRow(${i})" title="Remove">&#215;</button>
+    </div>
+  `).join('');
+}
+
+function openInformRequestPreview() {
+  // If queue is empty but form has values, auto-add them first
+  const station = document.getElementById('trip-station').value;
+  const devices = parseInt(document.getElementById('trip-devices').value);
+  if (_informQueue.length === 0) {
+    if (!station) return showMsg('trip-msg', 'Add at least one station request using the Add button.');
+    // auto-add current form values
+    addInformRequestRow();
+    if (_informQueue.length === 0) return; // validation failed
+  }
 
   const now     = new Date();
   const dateStr = now.toLocaleDateString('en-GB', {weekday:'long', day:'2-digit', month:'long', year:'numeric'});
-  const timeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
   const name    = currentUser ? currentUser.fullname : '';
   const unit    = currentUser ? currentUser.unit : '';
 
+  const stationNames = _informQueue.map(r => r.station);
+  const uniqueStations = [...new Set(stationNames)];
+  const stationList = uniqueStations.length === 1
+    ? uniqueStations[0]
+    : uniqueStations.slice(0, -1).join(', ') + ' and ' + uniqueStations[uniqueStations.length - 1];
+  const totalDevices = _informQueue.reduce((sum, r) => sum + r.devices, 0);
+
   const parts = [];
-  parts.push('Device Management,');
+  parts.push('Good day Team');
   parts.push('');
-  parts.push('I am writing to formally notify you of a device request on behalf of ' + station + '.');
+  parts.push('This is to notify you of Petroleum device requests on behalf of ' + stationList + '.');
   parts.push('');
-  parts.push('The station requires ' + devices + ' device' + (devices !== 1 ? 's' : '') + ' to support ongoing field operations.' + (boe ? ' This request is linked to BOE ' + boe + '.' : ''));
-  if(notes) {
+  parts.push('Total request: ' + totalDevices + ' device' + (totalDevices !== 1 ? 's' : ''));
+  parts.push('');
+
+  if (_informQueue.length > 1) {
+    parts.push("Here's a breakdown:");
     parts.push('');
-    parts.push(notes);
+    _informQueue.forEach((r, i) => {
+      parts.push((i + 1) + '. ' + r.station);
+      parts.push('   Devices Requested: ' + r.devices);
+      if (r.boe)   parts.push('   BOE: ' + r.boe);
+      if (r.notes) parts.push('   Notes: ' + r.notes);
+      parts.push('');
+    });
+  } else {
+    const r = _informQueue[0];
+    if (r.boe)   parts.push('BOE: ' + r.boe);
+    if (r.notes) parts.push('Notes: ' + r.notes);
+    if (r.boe || r.notes) parts.push('');
   }
-  parts.push('');
-  parts.push('Kindly arrange for the allocation at your earliest convenience.');
+
+  parts.push('Kindly arrange for the allocation of the above at your earliest convenience.');
   parts.push('');
   parts.push('Thank you.');
   parts.push('');
-  parts.push(name + ' (Supervisor)');
+  parts.push(name);
   parts.push(unit);
-  parts.push(dateStr + '  ·  ' + timeStr);
-  parts.push('');
-  parts.push('Petroleum Ghana Link — Field Data Management System');
+  parts.push(dateStr);
 
   const text = parts.join('\n');
   _informRequestDefaultText = text;
@@ -3682,25 +3802,26 @@ function closeInformRequestModal(e) {
 }
 
 function _dispatchInformRequest() {
-  // Log the request as a trip record after sending
-  const station = document.getElementById('trip-station').value;
-  const devices = parseInt(document.getElementById('trip-devices').value) || 0;
-  const boe     = document.getElementById('trip-boe').value.trim();
-  DB.trips.push({
-    station, trips: 0, devices, faulty: 0, boe: boe || null,
-    user: currentUser.fullname, role: currentUser.role,
-    unit: currentUser.unit, ts: nowStr(), rawTs: new Date().toISOString(),
-    entryType: 'inform-request'
+  // Log each queued request as a trip record
+  _informQueue.forEach(r => {
+    DB.trips.push({
+      station: r.station, trips: 0, devices: r.devices, faulty: 0, boe: r.boe || null,
+      user: currentUser.fullname, role: currentUser.role,
+      unit: currentUser.unit, ts: nowStr(), rawTs: new Date().toISOString(),
+      entryType: 'inform-request'
+    });
+    addActivity('edit', currentUser.fullname + ' sent device request for ' + r.station + ' — ' + r.devices + ' device(s)');
   });
-  addActivity('edit', currentUser.fullname + ' sent device request for ' + station + ' — ' + devices + ' device(s)');
   saveDB();
-  // Clear form
+  // Clear queue and form
+  _informQueue = [];
+  renderInformQueue();
   ['trip-station','trip-devices','trip-boe','trip-notes'].forEach(id => {
     const el = document.getElementById(id); if(el) el.value = '';
   });
   document.getElementById('boe-counter2').textContent = '0 / 11 digits';
   document.getElementById('inform-request-modal').classList.add('hidden');
-  toast('Request sent!', 'success');
+  toast('Request' + (_informQueue.length !== 1 ? 's' : '') + ' sent!', 'success');
   refreshDashboard();
 }
 
