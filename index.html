@@ -397,7 +397,52 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .pg-title { font-size:20px; font-weight:700; margin-bottom:2px; }
 .pg-sub { font-size:13px; color:var(--text-3); margin-bottom:1.2rem; }
 
-/* ── SUMMARY PAGE ── */
+/* ── AFFIXING PAGE ── */
+.affixing-card {
+  background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius);
+  overflow:hidden; max-width:600px;
+}
+.affixing-card-header {
+  padding:1rem 1.4rem; background:var(--accent);
+}
+.affixing-card-header-title { font-size:15px; font-weight:700; color:#fff; }
+.affixing-card-header-sub { font-size:12px; color:rgba(255,255,255,0.72); margin-top:2px; }
+.affixing-card-body { padding:1.2rem 1.4rem; }
+.affixing-history { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius); margin-top:1.4rem; overflow:hidden; }
+.affixing-history-header { padding:10px 14px; background:var(--bg2); border-bottom:1px solid var(--border); font-size:13px; font-weight:700; }
+.affixing-history-item { padding:10px 14px; border-bottom:1px solid var(--border); font-size:12px; }
+.affixing-history-item:last-child { border-bottom:none; }
+.affixing-status-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; }
+.affixing-status-pending { background:var(--warning-bg); color:var(--warning); }
+.affixing-status-confirmed { background:var(--success-bg); color:var(--success); }
+
+/* ── PERMISSIONS PAGE ── */
+.perm-user-card {
+  background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius);
+  margin-bottom:10px; overflow:hidden;
+}
+.perm-user-header {
+  padding:12px 16px; background:var(--bg2); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
+}
+.perm-user-name { font-size:14px; font-weight:700; }
+.perm-user-meta { font-size:12px; color:var(--text-3); margin-top:2px; }
+.perm-role-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:4px; }
+.perm-role-staff { background:var(--accent-light); color:var(--accent); }
+.perm-role-supervisor { background:var(--warning-bg); color:var(--warning); }
+.perm-role-manager { background:var(--gold-light); color:var(--gold); }
+.perm-checkboxes { padding:12px 16px; display:flex; flex-wrap:wrap; gap:10px; }
+.perm-checkbox-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-2); cursor:pointer; padding:5px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); transition:all 0.15s; }
+.perm-checkbox-item:hover { border-color:var(--accent); background:var(--accent-light); }
+.perm-checkbox-item input[type=checkbox] { width:14px; height:14px; cursor:pointer; accent-color:var(--accent); }
+.perm-checkbox-item.checked { border-color:var(--accent); background:var(--accent-light); }
+.perm-save-btn { margin-top:8px; margin-right:16px; margin-bottom:12px; float:right; padding:7px 18px; border-radius:7px; border:none; background:var(--accent); color:#fff; font-family:'Calibri',Calibri,sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:opacity 0.15s; }
+.perm-save-btn:hover { opacity:0.85; }
+.perm-search { width:100%; max-width:360px; }
+@media (max-width:640px) {
+  .perm-checkboxes { gap:6px; }
+  .perm-checkbox-item { font-size:11px; padding:4px 8px; }
+}
 .summary-header-banner {
   background: linear-gradient(135deg, var(--accent) 0%, #2d6b46 100%);
   border-radius: var(--radius-lg); padding: 2rem 2.4rem; margin-bottom: 1.4rem;
@@ -1159,7 +1204,7 @@ input, select, textarea {
   body { font-size: 13px; }
 
   /* ── AUTH PAGES: full-screen, scrollable, properly centered ── */
-  #page-login, #page-signup { min-height: 100vh; background: var(--bg2); }
+  #page-login, #page-signup, #page-reset { min-height: 100vh; background: var(--bg2); }
   .auth-wrap {
     min-height: 100vh;
     padding: 16px;
@@ -1500,9 +1545,17 @@ input, select, textarea {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     Report
   </button>
+  <button class="mobile-nav-item d-staff" id="mob-btn-affixing" onclick="navTo('page-affixing',this)" aria-label="Affixing">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Affixing
+  </button>
   <button class="mobile-nav-item d-sup" id="mob-btn-summary" onclick="navTo('page-summary',this)" aria-label="Summary">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
     Summary
+  </button>
+  <button class="mobile-nav-item d-mgr" id="mob-btn-permissions" onclick="navTo('page-permissions',this)" aria-label="Permissions">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    Permissions
   </button>
 </nav>
 
@@ -1572,6 +1625,82 @@ input, select, textarea {
         <div id="su-msg" class="hidden msg-err"></div>
         <button class="btn-primary" onclick="doSignup()">Create Account</button>
         <div class="auth-alt">Already have an account? <span class="auth-link" onclick="goTo('page-login')">Sign in</span></div>
+        <div style="text-align:center;margin-top:6px;">
+          <span class="auth-link" style="font-size:13px;" onclick="goTo('page-reset')">Forgot password?</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ PAGE: RESET PASSWORD ════════════ -->
+<div class="page" id="page-reset">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo-row">
+          <svg class="logo-svg" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+            <rect width="44" height="44" rx="10" fill="#1a3a2a"/>
+            <ellipse cx="22" cy="30" rx="10" ry="4" fill="#2d6b46"/>
+            <rect x="14" y="14" width="4" height="16" rx="2" fill="#b8d9c6"/>
+            <rect x="20" y="10" width="4" height="20" rx="2" fill="#e8f2ec"/>
+            <rect x="26" y="16" width="4" height="14" rx="2" fill="#b8d9c6"/>
+            <path d="M12 28 Q22 22 32 28" stroke="#b8860b" stroke-width="1.5" fill="none"/>
+            <circle cx="22" cy="9" r="3" fill="#b8860b"/>
+          </svg>
+          <div>
+            <div style="font-size:15px;font-weight:800;color:var(--accent);letter-spacing:0.3px;">PETROLEUM GHANA LINK</div>
+            <div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;">Field Data Management System</div>
+          </div>
+        </div>
+        <h1>Reset Password</h1>
+        <p>Verify your identity to set a new password</p>
+      </div>
+      <div class="auth-body">
+
+        <!-- Step 1: Identity verification -->
+        <div id="reset-step-1">
+          <div style="background:var(--accent-light);border:1px solid #b8d9c6;border-radius:8px;padding:11px 14px;margin-bottom:16px;font-size:12px;color:var(--accent);line-height:1.6;">
+            Enter your username and staff number. If they match your account, you can set a new password.
+          </div>
+          <div class="form-row">
+            <label class="form-label">Username</label>
+            <input class="form-input" id="rs-username" type="text" placeholder="Your username">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Staff Number</label>
+            <input class="form-input" id="rs-staffno" type="text" placeholder="e.g. STF-0042">
+          </div>
+          <div id="rs-msg-1" class="hidden msg-err"></div>
+          <button class="btn-primary" onclick="doResetVerify()">Verify Identity</button>
+        </div>
+
+        <!-- Step 2: Set new password (hidden until step 1 passes) -->
+        <div id="reset-step-2" style="display:none;">
+          <div style="background:var(--success-bg);border:1px solid #b8d9c6;border-radius:8px;padding:11px 14px;margin-bottom:16px;font-size:12px;color:var(--success);line-height:1.6;">
+            Identity verified. Choose a new password for your account.
+          </div>
+          <div class="form-row">
+            <label class="form-label">New Password</label>
+            <div class="pwd-wrap">
+              <input class="form-input" id="rs-newpwd" type="password" placeholder="Min. 6 characters">
+              <button type="button" class="pwd-eye" onclick="togglePwd('rs-newpwd',this)">Show</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Confirm New Password</label>
+            <div class="pwd-wrap">
+              <input class="form-input" id="rs-confirmpwd" type="password" placeholder="Repeat new password">
+              <button type="button" class="pwd-eye" onclick="togglePwd('rs-confirmpwd',this)">Show</button>
+            </div>
+          </div>
+          <div id="rs-msg-2" class="hidden msg-err"></div>
+          <button class="btn-primary" onclick="doResetSave()">Set New Password</button>
+        </div>
+
+        <div class="auth-alt" style="margin-top:14px;">
+          Remember your password? <span class="auth-link" onclick="cancelReset()">Back to Sign In</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1614,6 +1743,9 @@ input, select, textarea {
         </div>
         <div id="li-msg" class="hidden msg-err"></div>
         <button class="btn-primary" onclick="doLogin()">Sign In</button>
+        <div style="text-align:center;margin-top:10px;">
+          <span class="auth-link" style="font-size:13px;" onclick="goTo('page-reset')">Forgot password?</span>
+        </div>
         <div class="auth-alt">New user? <span class="auth-link" onclick="goTo('page-signup')">Create an account</span></div>
       </div>
     </div>
@@ -1638,6 +1770,7 @@ input, select, textarea {
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="navTo('page-dashboard',this)">Dashboard</button>
       <button class="nav-tab d-staff" onclick="navTo('page-record',this)">Record Entry</button>
+      <button class="nav-tab d-staff" onclick="navTo('page-affixing',this)">Affixing</button>
       <button class="nav-tab" onclick="navTo('page-data',this)">Data Records</button>
       <button class="nav-tab d-sup" onclick="navTo('page-supervisor',this)">Supervisor Panel</button>
       <div class="nav-tab-wrap d-attend" style="display:none;">
@@ -1648,6 +1781,7 @@ input, select, textarea {
       <button class="nav-tab" onclick="navTo('page-declaration',this)">Declaration</button>
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
       <button class="nav-tab d-sup" onclick="navTo('page-summary',this)">Summary</button>
+      <button class="nav-tab d-mgr" onclick="navTo('page-permissions',this)">Permissions</button>
     </div>
     <div class="nav-right">
       <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
@@ -1760,6 +1894,7 @@ input, select, textarea {
     <div class="nav-tabs">
       <button class="nav-tab" onclick="navTo('page-dashboard',this)">Dashboard</button>
       <button class="nav-tab d-staff" onclick="navTo('page-record',this)">Record Entry</button>
+      <button class="nav-tab d-staff" onclick="navTo('page-affixing',this)">Affixing</button>
       <button class="nav-tab active" onclick="navTo('page-data',this)">Data Records</button>
       <button class="nav-tab d-sup" onclick="navTo('page-supervisor',this)">Supervisor Panel</button>
       <div class="nav-tab-wrap d-attend" style="display:none;">
@@ -1770,6 +1905,7 @@ input, select, textarea {
       <button class="nav-tab" onclick="navTo('page-declaration',this)">Declaration</button>
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
       <button class="nav-tab d-sup" onclick="navTo('page-summary',this)">Summary</button>
+      <button class="nav-tab d-mgr" onclick="navTo('page-permissions',this)">Permissions</button>
     </div>
     <div class="nav-right">
       <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
@@ -1830,6 +1966,7 @@ input, select, textarea {
     <div class="nav-tabs">
       <button class="nav-tab" onclick="navTo('page-dashboard',this)">Dashboard</button>
       <button class="nav-tab d-staff" onclick="navTo('page-record',this)">Record Entry</button>
+      <button class="nav-tab d-staff" onclick="navTo('page-affixing',this)">Affixing</button>
       <button class="nav-tab" onclick="navTo('page-data',this)">Data Records</button>
       <button class="nav-tab active d-sup" onclick="navTo('page-supervisor',this)">Supervisor Panel</button>
       <div class="nav-tab-wrap d-attend" style="display:none;">
@@ -1840,6 +1977,7 @@ input, select, textarea {
       <button class="nav-tab" onclick="navTo('page-declaration',this)">Declaration</button>
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
       <button class="nav-tab d-sup" onclick="navTo('page-summary',this)">Summary</button>
+      <button class="nav-tab d-mgr" onclick="navTo('page-permissions',this)">Permissions</button>
     </div>
     <div class="nav-right">
       <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
@@ -1952,6 +2090,7 @@ input, select, textarea {
     <div class="nav-tabs">
       <button class="nav-tab" onclick="navTo('page-dashboard',this)">Dashboard</button>
       <button class="nav-tab d-staff" onclick="navTo('page-record',this)">Record Entry</button>
+      <button class="nav-tab d-staff" onclick="navTo('page-affixing',this)">Affixing</button>
       <button class="nav-tab" onclick="navTo('page-data',this)">Data Records</button>
       <button class="nav-tab d-sup" onclick="navTo('page-supervisor',this)">Supervisor Panel</button>
       <div class="nav-tab-wrap d-attend" style="display:none;">
@@ -1962,6 +2101,7 @@ input, select, textarea {
       <button class="nav-tab" onclick="navTo('page-declaration',this)">Declaration</button>
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
       <button class="nav-tab d-sup" onclick="navTo('page-summary',this)">Summary</button>
+      <button class="nav-tab d-mgr" onclick="navTo('page-permissions',this)">Permissions</button>
     </div>
     <div class="nav-right">
       <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
@@ -2064,6 +2204,7 @@ input, select, textarea {
       <button class="nav-tab" onclick="navTo('page-declaration',this)">Declaration</button>
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
       <button class="nav-tab d-sup" onclick="navTo('page-summary',this)">Summary</button>
+      <button class="nav-tab d-mgr" onclick="navTo('page-permissions',this)">Permissions</button>
     </div>
     <div class="nav-right">
       <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
@@ -2295,6 +2436,7 @@ input, select, textarea {
     <div class="nav-tabs">
       <button class="nav-tab" onclick="navTo('page-dashboard',this)">Dashboard</button>
       <button class="nav-tab d-staff" onclick="navTo('page-record',this)">Record Entry</button>
+      <button class="nav-tab d-staff" onclick="navTo('page-affixing',this)">Affixing</button>
       <button class="nav-tab" onclick="navTo('page-data',this)">Data Records</button>
       <button class="nav-tab d-sup" onclick="navTo('page-supervisor',this)">Supervisor Panel</button>
       <div class="nav-tab-wrap d-attend" style="display:none;">
@@ -2305,6 +2447,7 @@ input, select, textarea {
       <button class="nav-tab" onclick="navTo('page-declaration',this)">Declaration</button>
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
       <button class="nav-tab d-sup" onclick="navTo('page-summary',this)">Summary</button>
+      <button class="nav-tab d-mgr" onclick="navTo('page-permissions',this)">Permissions</button>
     </div>
     <div class="nav-right">
       <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
@@ -2382,6 +2525,146 @@ input, select, textarea {
 </div>
 
 <!-- ════════════ PAGE: ATTEND (Supervisor/Manager — staff record confirmations) ════════════ -->
+<!-- ════════════ PAGE: AFFIXING (Staff) ════════════ -->
+<div class="page" id="page-affixing">
+  <nav>
+    <div class="nav-brand">
+      <svg class="logo-svg" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="44" rx="10" fill="#1a3a2a"/><ellipse cx="22" cy="30" rx="10" ry="4" fill="#2d6b46"/><rect x="14" y="14" width="4" height="16" rx="2" fill="#b8d9c6"/><rect x="20" y="10" width="4" height="20" rx="2" fill="#e8f2ec"/><rect x="26" y="16" width="4" height="14" rx="2" fill="#b8d9c6"/><path d="M12 28 Q22 22 32 28" stroke="#b8860b" stroke-width="1.5" fill="none"/><circle cx="22" cy="9" r="3" fill="#b8860b"/></svg>
+      <div class="brand-text"><span class="brand-name">PETROLEUM GHANA LINK</span><span class="brand-sub">Field Data System</span></div>
+    </div>
+    <div class="nav-tabs" id="nav-tabs-affixing"></div>
+    <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
+      <div class="user-menu" id="um-affixing">
+        <button class="user-btn" onclick="toggleMenu('um-affixing')">
+          <div class="user-avatar" id="ua-affixing"></div>
+          <span class="user-chevron">&#9660;</span>
+        </button>
+        <div class="dropdown">
+          <div class="dd-header"><div class="dd-name" id="dd-name-affixing"></div><div class="dd-unit" id="dd-unit-affixing"></div></div>
+          <button class="dd-item" onclick="openPwdModal()">Change Password</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
+          <div class="dd-sep"></div>
+          <button class="dd-item danger" onclick="doLogout()">Log Out</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="main-wrap">
+    <div class="pg-title">Affixing</div>
+    <div class="pg-sub">Submit your device affixing record for supervisor review</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+      <!-- Form -->
+      <div class="affixing-card">
+        <div class="affixing-card-header">
+          <div class="affixing-card-header-title">Device Affixing Form</div>
+          <div class="affixing-card-header-sub">Fill in all device details accurately before submitting</div>
+        </div>
+        <div class="affixing-card-body">
+          <div class="form-row">
+            <label class="form-label">Allocated Devices <span style="color:var(--danger);">*</span></label>
+            <input class="form-input" id="aff-allocated" type="number" min="0" placeholder="Total devices allocated" oninput="updateAffixingSummary()">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Devices Affixed <span style="color:var(--danger);">*</span></label>
+            <input class="form-input" id="aff-affixed" type="number" min="0" placeholder="Number of devices affixed" oninput="updateAffixingSummary()">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Number of Faulty Devices</label>
+            <input class="form-input" id="aff-faulty" type="number" min="0" value="0" placeholder="0 if none" oninput="updateAffixingSummary()">
+          </div>
+          <div class="form-row">
+            <label class="form-label">
+              Faulty Device Numbers
+              <span style="background:var(--warning-bg);color:var(--warning);font-size:10px;padding:1px 7px;border-radius:4px;font-weight:600;margin-left:4px;">10 digits each</span>
+            </label>
+            <div class="device-tag-wrap" id="aff-device-tag-wrap" onclick="document.getElementById('aff-device-input').focus()">
+              <input class="device-tag-input" id="aff-device-input" type="text" maxlength="10"
+                placeholder="Type 10-digit number, press Enter to add"
+                oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);"
+                onkeydown="handleAffixingDeviceKey(event)">
+            </div>
+            <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Press <strong>Enter</strong> or <strong>,</strong> after each 10-digit number.</div>
+            <div style="font-size:11px;color:var(--danger);margin-top:3px;display:none;" id="aff-device-err"></div>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Remarks <span style="color:var(--text-3);font-weight:400;">(optional)</span></label>
+            <textarea class="form-input" id="aff-remarks" rows="2" placeholder="Any additional notes..." style="resize:vertical;"></textarea>
+          </div>
+
+          <!-- Summary strip -->
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px;">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);margin-bottom:6px;">Summary</div>
+            <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:13px;">
+              <span><span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-3);">Allocated:</span> <strong id="aff-sum-allocated">—</strong></span>
+              <span><span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-3);">Affixed:</span> <strong id="aff-sum-affixed">—</strong></span>
+              <span><span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-3);">Faulty:</span> <strong id="aff-sum-faulty" style="color:var(--danger);">0</strong></span>
+              <span><span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-3);">Unaffixed:</span> <strong id="aff-sum-unaffixed" style="color:var(--warning);">—</strong></span>
+            </div>
+          </div>
+
+          <div id="aff-msg" class="hidden msg-err"></div>
+          <button class="btn-primary" style="background:var(--accent);" onclick="submitAffixing()">Submit</button>
+        </div>
+      </div>
+
+      <!-- Submission history -->
+      <div class="affixing-history">
+        <div class="affixing-history-header" style="display:flex;align-items:center;justify-content:space-between;">
+          <span>My Affixing Submissions</span>
+          <span style="font-size:11px;color:var(--text-3);font-weight:400;" id="aff-history-count"></span>
+        </div>
+        <div id="aff-history-list">
+          <div style="padding:2rem;text-align:center;color:var(--text-3);font-size:13px;">No submissions yet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ PAGE: PERMISSIONS (Manager only) ════════════ -->
+<div class="page" id="page-permissions">
+  <nav>
+    <div class="nav-brand">
+      <svg class="logo-svg" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="44" rx="10" fill="#1a3a2a"/><ellipse cx="22" cy="30" rx="10" ry="4" fill="#2d6b46"/><rect x="14" y="14" width="4" height="16" rx="2" fill="#b8d9c6"/><rect x="20" y="10" width="4" height="20" rx="2" fill="#e8f2ec"/><rect x="26" y="16" width="4" height="14" rx="2" fill="#b8d9c6"/><path d="M12 28 Q22 22 32 28" stroke="#b8860b" stroke-width="1.5" fill="none"/><circle cx="22" cy="9" r="3" fill="#b8860b"/></svg>
+      <div class="brand-text"><span class="brand-name">PETROLEUM GHANA LINK</span><span class="brand-sub">Field Data System</span></div>
+    </div>
+    <div class="nav-tabs" id="nav-tabs-permissions"></div>
+    <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
+      <div class="user-menu" id="um-permissions">
+        <button class="user-btn" onclick="toggleMenu('um-permissions')">
+          <div class="user-avatar" id="ua-permissions"></div>
+          <span class="user-chevron">&#9660;</span>
+        </button>
+        <div class="dropdown">
+          <div class="dd-header"><div class="dd-name" id="dd-name-permissions"></div><div class="dd-unit" id="dd-unit-permissions"></div></div>
+          <button class="dd-item" onclick="openPwdModal()">Change Password</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
+          <div class="dd-sep"></div>
+          <button class="dd-item danger" onclick="doLogout()">Log Out</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="main-wrap">
+    <div id="perm-denied" class="hidden access-denied">
+      <h3>Access Restricted</h3><p>This page is for Managers only.</p>
+    </div>
+    <div id="perm-content">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1.2rem;">
+        <div>
+          <div class="pg-title">Permissions</div>
+          <div class="pg-sub">Manage page access rights for all user accounts</div>
+        </div>
+        <input class="form-input perm-search" id="perm-search" type="text" placeholder="Search users..." oninput="renderPermissions()">
+      </div>
+      <div id="perm-user-list"></div>
+    </div>
+  </div>
+</div>
+
 <div class="page" id="page-attend">
   <nav>
     <div class="nav-brand">
@@ -2399,6 +2682,7 @@ input, select, textarea {
     <div class="nav-tabs">
       <button class="nav-tab" onclick="navTo('page-dashboard',this)">Dashboard</button>
       <button class="nav-tab d-staff" onclick="navTo('page-record',this)">Record Entry</button>
+      <button class="nav-tab d-staff" onclick="navTo('page-affixing',this)">Affixing</button>
       <button class="nav-tab" onclick="navTo('page-data',this)">Data Records</button>
       <button class="nav-tab d-sup" onclick="navTo('page-supervisor',this)">Supervisor Panel</button>
       <div class="nav-tab-wrap d-attend" style="display:none;">
@@ -2409,6 +2693,7 @@ input, select, textarea {
       <button class="nav-tab" onclick="navTo('page-declaration',this)">Declaration</button>
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
       <button class="nav-tab d-sup" onclick="navTo('page-summary',this)">Summary</button>
+      <button class="nav-tab d-mgr" onclick="navTo('page-permissions',this)">Permissions</button>
     </div>
     <div class="nav-right">
       <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
@@ -2504,6 +2789,7 @@ input, select, textarea {
     <div class="nav-tabs">
       <button class="nav-tab" onclick="navTo('page-dashboard',this)">Dashboard</button>
       <button class="nav-tab d-staff" onclick="navTo('page-record',this)">Record Entry</button>
+      <button class="nav-tab d-staff" onclick="navTo('page-affixing',this)">Affixing</button>
       <button class="nav-tab" onclick="navTo('page-data',this)">Data Records</button>
       <button class="nav-tab d-sup" onclick="navTo('page-supervisor',this)">Supervisor Panel</button>
       <div class="nav-tab-wrap d-attend" style="display:none;">
@@ -2655,6 +2941,7 @@ input, select, textarea {
     <div class="nav-tabs" id="nav-decl-tabs">
       <button class="nav-tab" onclick="navTo('page-dashboard',this)">Dashboard</button>
       <button class="nav-tab d-staff" onclick="navTo('page-record',this)">Record Entry</button>
+      <button class="nav-tab d-staff" onclick="navTo('page-affixing',this)">Affixing</button>
       <button class="nav-tab" onclick="navTo('page-data',this)">Data Records</button>
       <button class="nav-tab d-sup" onclick="navTo('page-supervisor',this)">Supervisor Panel</button>
       <div class="nav-tab-wrap d-attend" style="display:none;">
@@ -2665,6 +2952,7 @@ input, select, textarea {
       <button class="nav-tab active" onclick="navTo('page-declaration',this)">Declaration</button>
       <button class="nav-tab d-staff" onclick="navTo('page-report',this)">Report</button>
       <button class="nav-tab d-sup" onclick="navTo('page-summary',this)">Summary</button>
+      <button class="nav-tab d-mgr" onclick="navTo('page-permissions',this)">Permissions</button>
     </div>
     <div class="nav-right">
       <button class="notif-btn" onclick="toggleNotifPanel(event)" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
@@ -3460,7 +3748,7 @@ function goTo(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
   document.querySelectorAll('.user-menu').forEach(m => m.classList.remove('open'));
-  const authPages = ['page-login','page-signup'];
+  const authPages = ['page-login','page-signup','page-reset'];
   const mobileNavBar = document.getElementById('mobile-nav-bar');
   if (mobileNavBar) {
     mobileNavBar.style.display = authPages.includes(id) ? 'none' : '';
@@ -3472,6 +3760,8 @@ function navTo(id, btn) {
   const authPages = ['page-login','page-signup'];
   if (!authPages.includes(id)) showSkeleton(id);
 
+  if(id === 'page-affixing') setupAffixingPage();
+  if(id === 'page-permissions') setupPermissionsPage();
   if(id === 'page-data') checkDataAccess();
   if(id === 'page-supervisor') checkSupAccess();
   if(id === 'page-dashboard') refreshDashboard();
@@ -3493,6 +3783,8 @@ function navTo(id, btn) {
     'page-declaration': 'mob-btn-declaration',
     'page-report': 'mob-btn-report',
     'page-summary': 'mob-btn-summary',
+    'page-affixing': 'mob-btn-affixing',
+    'page-permissions': 'mob-btn-permissions',
   };
   document.querySelectorAll('.mobile-nav-item').forEach(b => b.classList.remove('active'));
   const mobBtn = document.getElementById(pageToMobBtn[id]);
@@ -4232,6 +4524,78 @@ function doSignup() {
   goTo('page-login');
 }
 
+// ══════════ PASSWORD RESET ══════════
+let _resetTargetUsername = null;
+
+function doResetVerify() {
+  hideMsg('rs-msg-1');
+  const username = document.getElementById('rs-username').value.trim();
+  const staffno  = document.getElementById('rs-staffno').value.trim();
+
+  if (!username || !staffno) return showMsg('rs-msg-1', 'Please enter both your username and staff number.');
+
+  if (!DB.users || !DB.users.length)
+    return showMsg('rs-msg-1', 'Still connecting to server. Please wait a moment and try again.');
+
+  const user = DB.users.find(u =>
+    u.username.toLowerCase() === username.toLowerCase() &&
+    u.staffno.toLowerCase() === staffno.toLowerCase()
+  );
+
+  if (!user) return showMsg('rs-msg-1', 'No account found matching that username and staff number. Please check your details.');
+
+  _resetTargetUsername = user.username;
+  document.getElementById('reset-step-1').style.display = 'none';
+  document.getElementById('reset-step-2').style.display = 'block';
+  document.getElementById('rs-newpwd').value = '';
+  document.getElementById('rs-confirmpwd').value = '';
+  document.getElementById('rs-newpwd').focus();
+}
+
+function doResetSave() {
+  hideMsg('rs-msg-2');
+  const newPwd     = document.getElementById('rs-newpwd').value;
+  const confirmPwd = document.getElementById('rs-confirmpwd').value;
+
+  if (!newPwd) return showMsg('rs-msg-2', 'Please enter a new password.');
+  if (newPwd.length < 6) return showMsg('rs-msg-2', 'Password must be at least 6 characters.');
+  if (newPwd !== confirmPwd) return showMsg('rs-msg-2', 'Passwords do not match. Please try again.');
+
+  if (!_resetTargetUsername) return showMsg('rs-msg-2', 'Session expired. Please start over.');
+
+  const idx = DB.users.findIndex(u => u.username === _resetTargetUsername);
+  if (idx === -1) return showMsg('rs-msg-2', 'Account not found. Please start over.');
+
+  DB.users[idx].password = newPwd;
+  addActivity('login', DB.users[idx].fullname + ' reset their password');
+  saveDB();
+
+  // Notify managers and supervisors
+  pushNotif({
+    text: DB.users[idx].fullname + ' successfully reset their password.',
+    type: 'activity',
+    roles: ['manager', 'supervisor']
+  });
+
+  _resetTargetUsername = null;
+  toast('Password reset successfully. Please sign in with your new password.', 'success');
+  cancelReset();
+}
+
+function cancelReset() {
+  _resetTargetUsername = null;
+  // Reset form back to step 1
+  document.getElementById('reset-step-1').style.display = 'block';
+  document.getElementById('reset-step-2').style.display = 'none';
+  document.getElementById('rs-username').value = '';
+  document.getElementById('rs-staffno').value = '';
+  document.getElementById('rs-newpwd').value = '';
+  document.getElementById('rs-confirmpwd').value = '';
+  hideMsg('rs-msg-1');
+  hideMsg('rs-msg-2');
+  goTo('page-login');
+}
+
 function doLogin() {
   hideMsg('li-msg');
   const username = document.getElementById('li-username').value.trim();
@@ -4304,6 +4668,7 @@ function setupNav() {
   });
   document.querySelectorAll('.d-sup').forEach(el => el.style.display = canAccess ? '' : 'none');
   document.querySelectorAll('.d-attend').forEach(el => el.style.display = canAccess ? '' : 'none');
+  document.querySelectorAll('.d-mgr').forEach(el => el.style.display = currentUser.role === 'manager' ? '' : 'none');
 
   // Hide live activity feed from staff
   const feedWrap = document.getElementById('dash-activity-wrap');
@@ -4892,14 +5257,24 @@ function confirmEntry(idx) {
   DB.trips[idx].confirmedBy = currentUser.fullname;
   DB.trips[idx].confirmedAt = nowStr();
 
-  addActivity('edit', currentUser.fullname + ' confirmed entry from ' + trip.user + ' at ' + trip.station);
+  addActivity('edit', currentUser.fullname + ' confirmed entry from ' + trip.user + ' at ' + (trip.station || 'Affixing'));
+
+  // Notify the staff member whose entry was confirmed
+  pushNotif({
+    text: currentUser.fullname + ' confirmed your ' + (trip.entryType === 'affixing' ? 'affixing' : 'trip') + ' submission' + (trip.station ? ' at ' + trip.station : '') + '.',
+    type: 'activity',
+    roles: ['staff', 'supervisor', 'manager'],
+    detail: 'Confirmed by: ' + currentUser.fullname + '\nConfirmed at: ' + nowStr() +
+      (trip.station ? '\nStation: ' + trip.station : '') +
+      (trip.entryType === 'affixing' ? '\nAllocated: ' + (trip.allocated||0) + '\nAffixed: ' + (trip.affixed||0) + '\nFaulty: ' + (trip.faulty||0) : '\nTrips: ' + (trip.trips||0) + '\nDevices: ' + (trip.devices||0))
+  });
 
   if((trip.faulty||0) > 0) {
     if(!DB.alerts) DB.alerts = [];
     DB.alerts.push({
       id: 'faulty_ack_' + Date.now(),
       type: 'faulty-acknowledged',
-      station: trip.station,
+      station: trip.station || 'Affixing',
       faulty: trip.faulty,
       staffName: trip.user,
       sender: currentUser.fullname,
@@ -4907,7 +5282,7 @@ function confirmEntry(idx) {
       forUsers: [trip.user],
       seen: [currentUser.username]
     });
-    addActivity('edit', currentUser.fullname + ' acknowledged ' + trip.faulty + ' faulty device(s) from ' + trip.user + ' at ' + trip.station);
+    addActivity('edit', currentUser.fullname + ' acknowledged ' + trip.faulty + ' faulty device(s) from ' + trip.user);
   }
 
   saveDB();
@@ -4915,6 +5290,288 @@ function confirmEntry(idx) {
   renderAttend();
   SFX.confirm();
   toast('Entry confirmed!', 'success');
+}
+
+// ══════════ AFFIXING PAGE ══════════
+let _affixingDeviceNums = [];
+
+function handleAffixingDeviceKey(e) {
+  const input = document.getElementById('aff-device-input');
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = input.value.trim();
+    if (val) addAffixingDeviceTag(val);
+  }
+}
+
+function addAffixingDeviceTag(val) {
+  const errEl = document.getElementById('aff-device-err');
+  if (val.length !== 10) {
+    errEl.textContent = 'Device number must be exactly 10 digits.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (_affixingDeviceNums.includes(val)) {
+    errEl.textContent = 'Device number ' + val + ' already added.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+  _affixingDeviceNums.push(val);
+  renderAffixingTags();
+  document.getElementById('aff-device-input').value = '';
+  updateAffixingSummary();
+}
+
+function removeAffixingDeviceTag(idx) {
+  _affixingDeviceNums.splice(idx, 1);
+  renderAffixingTags();
+  updateAffixingSummary();
+}
+
+function renderAffixingTags() {
+  const wrap = document.getElementById('aff-device-tag-wrap');
+  const input = document.getElementById('aff-device-input');
+  wrap.querySelectorAll('.device-tag').forEach(t => t.remove());
+  _affixingDeviceNums.forEach((num, idx) => {
+    const tag = document.createElement('span');
+    tag.className = 'device-tag';
+    tag.innerHTML = num + '<button class="device-tag-remove" onclick="removeAffixingDeviceTag(' + idx + ')">&#215;</button>';
+    wrap.insertBefore(tag, input);
+  });
+}
+
+function updateAffixingSummary() {
+  const alloc   = parseInt(document.getElementById('aff-allocated').value) || 0;
+  const affixed = parseInt(document.getElementById('aff-affixed').value) || 0;
+  const faulty  = parseInt(document.getElementById('aff-faulty').value) || 0;
+  document.getElementById('aff-sum-allocated').textContent = alloc || '—';
+  document.getElementById('aff-sum-affixed').textContent   = affixed || '—';
+  document.getElementById('aff-sum-faulty').textContent    = faulty;
+  document.getElementById('aff-sum-unaffixed').textContent = alloc > 0 ? Math.max(0, alloc - affixed) : '—';
+}
+
+function setupAffixingPage() {
+  if (!currentUser) return;
+  renderAffixingHistory();
+  _populateNavTabs(document.getElementById('nav-tabs-affixing'));
+  const av = document.getElementById('ua-affixing');
+  const dn = document.getElementById('dd-name-affixing');
+  const du = document.getElementById('dd-unit-affixing');
+  if (av) av.textContent = initials(currentUser.fullname);
+  if (dn) dn.textContent = currentUser.fullname;
+  if (du) du.textContent = currentUser.unit;
+}
+
+function renderAffixingHistory() {
+  const list = document.getElementById('aff-history-list');
+  const countEl = document.getElementById('aff-history-count');
+  if (!list || !currentUser) return;
+  const entries = (DB.trips || []).filter(t => t.entryType === 'affixing' && t.user === currentUser.fullname)
+    .sort((a,b) => new Date(b.rawTs) - new Date(a.rawTs));
+  if (countEl) countEl.textContent = entries.length + ' record' + (entries.length !== 1 ? 's' : '');
+  if (!entries.length) {
+    list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);font-size:13px;">No submissions yet.</div>';
+    return;
+  }
+  list.innerHTML = entries.map(e => `
+    <div class="affixing-history-item">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+        <strong style="font-size:13px;">${e.ts}</strong>
+        <span class="affixing-status-badge ${e.confirmed ? 'affixing-status-confirmed' : 'affixing-status-pending'}">${e.confirmed ? 'Confirmed' : 'Pending'}</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-2);">
+        Allocated: <strong>${e.allocated||0}</strong> &nbsp;·&nbsp;
+        Affixed: <strong>${e.affixed||0}</strong> &nbsp;·&nbsp;
+        Faulty: <strong style="color:${(e.faulty||0)>0?'var(--danger)':'var(--text-2)'};">${e.faulty||0}</strong>
+        ${e.remarks ? ' &nbsp;·&nbsp; ' + e.remarks : ''}
+      </div>
+      ${e.confirmed ? '<div style="font-size:11px;color:var(--success);margin-top:3px;">Confirmed by ' + e.confirmedBy + ' at ' + e.confirmedAt + '</div>' : ''}
+      ${(e.deviceNums||[]).length ? '<div style="font-size:11px;color:var(--text-3);margin-top:3px;">Device Nos: ' + e.deviceNums.join(', ') + '</div>' : ''}
+    </div>`).join('');
+}
+
+function submitAffixing() {
+  hideMsg('aff-msg');
+  const allocated = parseInt(document.getElementById('aff-allocated').value);
+  const affixed   = parseInt(document.getElementById('aff-affixed').value);
+  const faulty    = parseInt(document.getElementById('aff-faulty').value) || 0;
+  const remarks   = document.getElementById('aff-remarks').value.trim();
+
+  if (isNaN(allocated) || allocated < 0) return showMsg('aff-msg', 'Please enter the number of allocated devices.');
+  if (isNaN(affixed) || affixed < 0)     return showMsg('aff-msg', 'Please enter the number of devices affixed.');
+  if (affixed > allocated) return showMsg('aff-msg', 'Devices affixed cannot exceed allocated devices (' + allocated + ').');
+  if (faulty < 0) return showMsg('aff-msg', 'Faulty count cannot be negative.');
+  if (faulty > affixed) return showMsg('aff-msg', 'Faulty devices cannot exceed affixed devices (' + affixed + ').');
+
+  const entry = {
+    entryType: 'affixing',
+    allocated, affixed, faulty,
+    deviceNums: [..._affixingDeviceNums],
+    remarks: remarks || '',
+    user: currentUser.fullname,
+    staffno: currentUser.staffno || '—',
+    role: currentUser.role,
+    unit: currentUser.unit,
+    station: null,
+    trips: 0,
+    devices: affixed,
+    confirmed: false,
+    confirmedBy: null,
+    confirmedAt: null,
+    ts: nowStr(),
+    rawTs: new Date().toISOString()
+  };
+
+  if (!DB.trips) DB.trips = [];
+  DB.trips.push(entry);
+
+  const detail = 'Submitted by: ' + currentUser.fullname + ' (' + currentUser.unit + ')' +
+    '\nAllocated: ' + allocated + '\nAffixed: ' + affixed + '\nFaulty: ' + faulty +
+    (_affixingDeviceNums.length ? '\nFaulty Device Numbers: ' + _affixingDeviceNums.join(', ') : '') +
+    (remarks ? '\nRemarks: ' + remarks : '');
+
+  addActivity('entry', currentUser.fullname + ' submitted affixing record — Allocated: ' + allocated + ', Affixed: ' + affixed + (faulty > 0 ? ', Faulty: ' + faulty : ''));
+
+  // Notify managers and supervisors
+  pushNotif({
+    text: currentUser.fullname + ' submitted an affixing record. Allocated: ' + allocated + ', Affixed: ' + affixed + (faulty > 0 ? ', Faulty: ' + faulty : '') + '.',
+    type: faulty > 0 ? 'alert' : 'activity',
+    roles: ['manager', 'supervisor'],
+    detail
+  });
+
+  saveDB();
+  updateAttendBadge();
+
+  // Reset form
+  ['aff-allocated','aff-affixed','aff-faulty','aff-remarks'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = id === 'aff-faulty' ? '0' : '';
+  });
+  _affixingDeviceNums = [];
+  renderAffixingTags();
+  updateAffixingSummary();
+
+  SFX.success();
+  toast('Affixing record submitted for review!', 'success');
+  renderAffixingHistory();
+}
+
+// ══════════ PERMISSIONS PAGE ══════════
+const ALL_PAGES = [
+  { id:'page-dashboard',   label:'Dashboard' },
+  { id:'page-record',      label:'Record Entry' },
+  { id:'page-affixing',    label:'Affixing' },
+  { id:'page-data',        label:'Data Records' },
+  { id:'page-supervisor',  label:'Supervisor Panel' },
+  { id:'page-attend',      label:'Attend' },
+  { id:'page-output',      label:'Output' },
+  { id:'page-declaration', label:'Declaration' },
+  { id:'page-report',      label:'Report' },
+  { id:'page-summary',     label:'Summary' },
+  { id:'page-permissions', label:'Permissions' },
+];
+
+function getDefaultPages(role) {
+  if (role === 'manager')    return ALL_PAGES.map(p => p.id);
+  if (role === 'supervisor') return ['page-dashboard','page-data','page-supervisor','page-attend','page-output','page-declaration','page-summary'];
+  return ['page-dashboard','page-record','page-affixing','page-data','page-declaration','page-report'];
+}
+
+function getUserPages(user) {
+  if (user.permissions) return user.permissions;
+  return getDefaultPages(user.role);
+}
+
+function setupPermissionsPage() {
+  if (!currentUser) return;
+  const denied = document.getElementById('perm-denied');
+  const content = document.getElementById('perm-content');
+  if (currentUser.role !== 'manager') {
+    denied.classList.remove('hidden');
+    content.style.display = 'none';
+    return;
+  }
+  denied.classList.add('hidden');
+  content.style.display = '';
+  renderPermissions();
+  _populateNavTabs(document.getElementById('nav-tabs-permissions'));
+  const av = document.getElementById('ua-permissions');
+  const dn = document.getElementById('dd-name-permissions');
+  const du = document.getElementById('dd-unit-permissions');
+  if (av) av.textContent = initials(currentUser.fullname);
+  if (dn) dn.textContent = currentUser.fullname;
+  if (du) du.textContent = currentUser.unit;
+}
+
+function renderPermissions() {
+  const search = (document.getElementById('perm-search')?.value || '').toLowerCase();
+  const container = document.getElementById('perm-user-list');
+  if (!container || !DB.users) return;
+
+  const users = DB.users.filter(u => u.username !== currentUser.username &&
+    (u.fullname.toLowerCase().includes(search) || u.username.toLowerCase().includes(search) || u.role.toLowerCase().includes(search)));
+
+  if (!users.length) {
+    container.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);">No users found.</div>';
+    return;
+  }
+
+  container.innerHTML = users.map((u, i) => {
+    const pages = getUserPages(u);
+    const roleClass = u.role === 'manager' ? 'perm-role-manager' : u.role === 'supervisor' ? 'perm-role-supervisor' : 'perm-role-staff';
+    const checkboxes = ALL_PAGES.map(p => {
+      const checked = pages.includes(p.id);
+      return `<label class="perm-checkbox-item ${checked ? 'checked' : ''}" id="perm-label-${u.username}-${p.id.replace('page-','')}">
+        <input type="checkbox" ${checked ? 'checked' : ''} onchange="togglePermCheckbox('${u.username}','${p.id}',this)">
+        ${p.label}
+      </label>`;
+    }).join('');
+
+    return `<div class="perm-user-card">
+      <div class="perm-user-header">
+        <div>
+          <div class="perm-user-name">${u.fullname}</div>
+          <div class="perm-user-meta">@${u.username} &nbsp;·&nbsp; ${u.staffno || '—'} &nbsp;·&nbsp; ${u.unit}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="perm-role-badge ${roleClass}">${u.role.charAt(0).toUpperCase()+u.role.slice(1)}</span>
+          <button class="perm-save-btn" onclick="saveUserPermissions('${u.username}')">Save Changes</button>
+        </div>
+      </div>
+      <div class="perm-checkboxes" id="perm-checkboxes-${u.username}">${checkboxes}</div>
+    </div>`;
+  }).join('');
+}
+
+function togglePermCheckbox(username, pageId, checkbox) {
+  const label = checkbox.closest('label');
+  if (label) label.classList.toggle('checked', checkbox.checked);
+}
+
+function saveUserPermissions(username) {
+  const userIdx = DB.users.findIndex(u => u.username === username);
+  if (userIdx === -1) return;
+
+  const checkboxes = document.querySelectorAll(`#perm-checkboxes-${username} input[type=checkbox]`);
+  const granted = [];
+  checkboxes.forEach((cb, i) => { if (cb.checked) granted.push(ALL_PAGES[i].id); });
+
+  // Always keep dashboard
+  if (!granted.includes('page-dashboard')) granted.unshift('page-dashboard');
+
+  DB.users[userIdx].permissions = granted;
+  addActivity('edit', currentUser.fullname + ' updated permissions for ' + DB.users[userIdx].fullname + ' (' + granted.length + ' pages)');
+
+  pushNotif({
+    text: 'Your page access has been updated by ' + currentUser.fullname + '.',
+    type: 'activity',
+    roles: ['staff', 'supervisor', 'manager'],
+    detail: 'Updated by: ' + currentUser.fullname + '\nPages granted: ' + granted.map(p => ALL_PAGES.find(a=>a.id===p)?.label||p).join(', ')
+  });
+
+  saveDB();
+  toast('Permissions saved for ' + DB.users[userIdx].fullname + '.', 'success');
 }
 
 function confirmAllEntries() {
