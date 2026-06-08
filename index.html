@@ -2638,8 +2638,10 @@ input, select, textarea {
       <!-- Filter tabs -->
       <div class="filter-tabs">
         <button class="chart-tab active" onclick="switchAttendFilter('all',this)">All Entries</button>
-        <button class="chart-tab" onclick="switchAttendFilter('unconfirmed',this)">! Unconfirmed</button>
-        <button class="chart-tab" onclick="switchAttendFilter('faulty',this)">[ F ] Faulty Devices</button>
+        <button class="chart-tab" onclick="switchAttendFilter('unconfirmed',this)">Unconfirmed</button>
+        <button class="chart-tab" onclick="switchAttendFilter('faulty',this)">Faulty Devices</button>
+        <button class="chart-tab" onclick="switchAttendFilter('trips',this)">Trip Records</button>
+        <button class="chart-tab" onclick="switchAttendFilter('affixing',this)">Affixing</button>
         <button class="chart-tab" onclick="switchAttendFilter('confirmed',this)">Confirmed</button>
         <button class="chart-tab" onclick="switchAttendFilter('today',this)">Today Only</button>
       </div>
@@ -5139,7 +5141,9 @@ function submitTrip() { openInformRequestPreview(); }
 let currentAttendFilter = 'all';
 
 function updateAttendBadge() {
-  const unconfirmed = DB.trips.filter(t => t.entryType === 'staff-record' && !t.confirmed).length;
+  const unconfirmed = (DB.trips||[]).filter(t =>
+    (t.entryType === 'staff-record' || t.entryType === 'affixing') && !t.confirmed
+  ).length;
   const prev = parseInt(document.getElementById('attend-badge-1')?.textContent || '0');
   for(let i = 1; i <= 8; i++) {
     const badge = document.getElementById('attend-badge-' + i);
@@ -5148,13 +5152,11 @@ function updateAttendBadge() {
       badge.style.display = unconfirmed > 0 ? 'flex' : 'none';
     }
   }
-  // Update mobile bottom nav badge
   const mobBadge = document.getElementById('mob-attend-badge');
   if(mobBadge) {
     mobBadge.textContent = unconfirmed;
     mobBadge.style.display = unconfirmed > 0 ? 'flex' : 'none';
   }
-  // Ping when badge count increases (new entry arrived)
   if(unconfirmed > prev && prev >= 0 && currentUser) SFX.ping();
 }
 
@@ -5529,44 +5531,45 @@ function confirmAllEntries() {
 }
 
 function renderAttend() {
-  let entries = DB.trips
+  const allEntries = (DB.trips || [])
     .map((t, idx) => ({...t, _idx: idx}))
-    .filter(t => t.entryType === 'staff-record')
-    .reverse();
+    .filter(t => t.entryType === 'staff-record' || t.entryType === 'affixing');
 
   const today = new Date().toDateString();
 
-  if(currentAttendFilter === 'unconfirmed') entries = entries.filter(t => !t.confirmed);
-  else if(currentAttendFilter === 'faulty') entries = entries.filter(t => (t.faulty||0) > 0);
-  else if(currentAttendFilter === 'confirmed') entries = entries.filter(t => t.confirmed);
-  else if(currentAttendFilter === 'today') entries = entries.filter(t => { try{ return new Date(t.rawTs||t.ts).toDateString()===today; }catch(e){return false;} });
+  let entries = [...allEntries].reverse();
 
-  const allStaffEntries = DB.trips.filter(t => t.entryType === 'staff-record');
-  const unconfirmedCount = allStaffEntries.filter(t => !t.confirmed).length;
-  const confirmedCount = allStaffEntries.filter(t => t.confirmed).length;
-  const faultyTotal = allStaffEntries.reduce((a,t) => a+(t.faulty||0), 0);
+  if (currentAttendFilter === 'unconfirmed')  entries = entries.filter(t => !t.confirmed);
+  else if (currentAttendFilter === 'faulty')  entries = entries.filter(t => (t.faulty||0) > 0);
+  else if (currentAttendFilter === 'confirmed') entries = entries.filter(t => t.confirmed);
+  else if (currentAttendFilter === 'today')   entries = entries.filter(t => { try{ return new Date(t.rawTs||t.ts).toDateString()===today; }catch(e){return false;} });
+  else if (currentAttendFilter === 'affixing') entries = entries.filter(t => t.entryType === 'affixing');
+  else if (currentAttendFilter === 'trips')    entries = entries.filter(t => t.entryType === 'staff-record');
+
+  const unconfirmedCount = allEntries.filter(t => !t.confirmed).length;
+  const confirmedCount   = allEntries.filter(t =>  t.confirmed).length;
+  const faultyTotal      = allEntries.reduce((a,t) => a+(t.faulty||0), 0);
 
   document.getElementById('attend-unconfirmed-count').textContent = unconfirmedCount;
-  document.getElementById('attend-confirmed-count').textContent = confirmedCount;
-  document.getElementById('attend-faulty-total').textContent = faultyTotal;
+  document.getElementById('attend-confirmed-count').textContent   = confirmedCount;
+  document.getElementById('attend-faulty-total').textContent      = faultyTotal;
 
-  // Update draft report button with device number count
+  // Update draft report button
   const allDeviceNums = [];
-  allStaffEntries.forEach(t => { (t.deviceNums||[]).forEach(n => { if(!allDeviceNums.includes(n)) allDeviceNums.push(n); }); });
+  allEntries.forEach(t => { (t.deviceNums||[]).forEach(n => { if(!allDeviceNums.includes(n)) allDeviceNums.push(n); }); });
   const draftBtn = document.getElementById('attend-draft-btn');
-  if(draftBtn) {
+  if (draftBtn) {
     draftBtn.textContent = allDeviceNums.length > 0
       ? 'Draft Faulty Device Report (' + allDeviceNums.length + ' device' + (allDeviceNums.length > 1 ? 's' : '') + ')'
       : 'Draft Faulty Device Report';
   }
 
   const container = document.getElementById('attend-cards-container');
-  const empty = document.getElementById('attend-empty');
-  // Action bar always stays visible — only hide "Confirm All" button when nothing to confirm
+  const empty     = document.getElementById('attend-empty');
   const confirmAllBtn = document.getElementById('attend-confirm-all-btn');
-  if(confirmAllBtn) confirmAllBtn.style.display = unconfirmedCount > 0 ? 'inline-flex' : 'none';
+  if (confirmAllBtn) confirmAllBtn.style.display = unconfirmedCount > 0 ? 'inline-flex' : 'none';
 
-  if(!entries.length) {
+  if (!entries.length) {
     empty.classList.remove('hidden');
     container.innerHTML = '';
     return;
@@ -5578,46 +5581,49 @@ function renderAttend() {
 
   // Sort: unconfirmed first, then faulty, then by time
   entries.sort((a, b) => {
-    if(!a.confirmed && b.confirmed) return -1;
-    if(a.confirmed && !b.confirmed) return 1;
-    if((b.faulty||0) !== (a.faulty||0)) return (b.faulty||0) - (a.faulty||0);
+    if (!a.confirmed && b.confirmed) return -1;
+    if (a.confirmed && !b.confirmed) return  1;
+    if ((b.faulty||0) !== (a.faulty||0)) return (b.faulty||0) - (a.faulty||0);
     return 0;
   });
 
   container.innerHTML = entries.map(t => {
-    const hasFaulty = (t.faulty||0) > 0;
+    const isAffixing    = t.entryType === 'affixing';
+    const hasFaulty     = (t.faulty||0) > 0;
     const isUnconfirmed = !t.confirmed;
-    const cardClass = hasFaulty ? 'attend-card has-faulty' : isUnconfirmed ? 'attend-card unconfirmed' : 'attend-card';
-    const sColor = stationColors[t.station] || '#888';
+    const cardClass     = hasFaulty ? 'attend-card has-faulty' : isUnconfirmed ? 'attend-card unconfirmed' : 'attend-card';
+    const sColor        = stationColors[t.station] || 'var(--accent)';
 
-    return `
-      <div class="${cardClass}">
-        ${hasFaulty ? `
-        <div class="attend-faulty-banner">
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:2px solid rgba(255,255,255,0.6);border-radius:4px;flex-shrink:0;font-size:13px;font-weight:900;color:#fff;">!</span>
-          <div style="flex:1;">
-            <div>FAULTY DEVICES REPORTED</div>
-            <div style="font-size:11px;font-weight:400;opacity:0.85;">Immediate attention required</div>
-          </div>
-          <div class="attend-faulty-num">${t.faulty}</div>
-        </div>` : ''}
+    // Entry type badge
+    const typeBadge = isAffixing
+      ? `<span style="background:var(--gold-light);color:var(--gold);border:1px solid var(--gold);border-radius:5px;font-size:10px;font-weight:700;padding:2px 8px;letter-spacing:0.4px;">AFFIXING</span>`
+      : `<span style="background:var(--accent-light);color:var(--accent);border:1px solid var(--accent);border-radius:5px;font-size:10px;font-weight:700;padding:2px 8px;letter-spacing:0.4px;">TRIP RECORD</span>`;
 
-        <div class="attend-card-header">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">${initials(t.user)}</div>
-            <div>
-              <div style="font-size:14px;font-weight:700;">${t.user}</div>
-              <div style="font-size:11px;color:var(--text-3);">${t.unit || '—'} · ${t.staffno || '—'}</div>
-            </div>
-          </div>
-          <div style="text-align:right;">
-            <div style="display:inline-flex;align-items:center;gap:5px;font-size:12px;background:${sColor}18;color:${sColor};border:1px solid ${sColor}44;border-radius:5px;padding:3px 9px;font-weight:600;margin-bottom:4px;">
-              ${t.station}
-            </div>
-            <div style="font-size:11px;color:var(--text-3);font-family:'Calibri',Calibri,sans-serif;">${t.ts}</div>
-          </div>
-        </div>
+    // Station / type header tag
+    const locationTag = isAffixing
+      ? `<div style="font-size:12px;background:var(--gold-light);color:var(--gold);border:1px solid var(--gold);border-radius:5px;padding:3px 9px;font-weight:600;margin-bottom:4px;">Affixing Submission</div>`
+      : `<div style="display:inline-flex;align-items:center;gap:5px;font-size:12px;background:${sColor}18;color:${sColor};border:1px solid ${sColor}44;border-radius:5px;padding:3px 9px;font-weight:600;margin-bottom:4px;">${t.station}</div>`;
 
+    // Fields section — different layout for each type
+    const fieldsHtml = isAffixing ? `
+        <div class="attend-fields">
+          <div>
+            <div class="attend-field-label">Allocated Devices</div>
+            <div class="attend-field-val">${t.allocated ?? '—'}</div>
+          </div>
+          <div>
+            <div class="attend-field-label">Devices Affixed</div>
+            <div class="attend-field-val">${t.affixed ?? '—'}</div>
+          </div>
+          <div>
+            <div class="attend-field-label">Unaffixed</div>
+            <div class="attend-field-val" style="color:${((t.allocated||0)-(t.affixed||0))>0?'var(--warning)':'var(--text)'};">${Math.max(0,(t.allocated||0)-(t.affixed||0))}</div>
+          </div>
+          <div style="${hasFaulty ? 'background:var(--danger-bg);border-radius:7px;padding:8px 10px;' : ''}">
+            <div class="attend-field-label" style="${hasFaulty?'color:var(--danger);':''}">Faulty Devices</div>
+            <div class="attend-field-val" style="font-size:${hasFaulty?'28px':'16px'};color:${hasFaulty?'var(--danger)':'var(--text)'};">${t.faulty||0}${hasFaulty?'<span style="font-size:11px;font-weight:700;background:rgba(192,57,43,0.15);color:var(--danger);border-radius:3px;padding:1px 6px;margin-left:6px;">ALERT</span>':''}</div>
+          </div>
+        </div>` : `
         <div class="attend-fields">
           <div>
             <div class="attend-field-label">Trips Made</div>
@@ -5627,23 +5633,52 @@ function renderAttend() {
             <div class="attend-field-label">Devices Allocated</div>
             <div class="attend-field-val">${t.devices}</div>
           </div>
-          <div style="${hasFaulty ? 'background:#fdecea;border-radius:7px;padding:8px 10px;' : ''}">
+          <div style="${hasFaulty ? 'background:var(--danger-bg);border-radius:7px;padding:8px 10px;' : ''}">
             <div class="attend-field-label" style="${hasFaulty?'color:var(--danger);':''}">Faulty Devices</div>
-            <div class="attend-field-val" style="font-size:${hasFaulty?'28px':'16px'};color:${hasFaulty?'var(--danger)':'var(--text)'};">${t.faulty||0}${hasFaulty?'<span style="font-size:11px;font-weight:700;background:rgba(192,57,43,0.15);color:var(--danger);border-radius:3px;padding:1px 6px;margin-left:6px;letter-spacing:0.3px;">ALERT</span>':''}</div>
+            <div class="attend-field-val" style="font-size:${hasFaulty?'28px':'16px'};color:${hasFaulty?'var(--danger)':'var(--text)'};">${t.faulty||0}${hasFaulty?'<span style="font-size:11px;font-weight:700;background:rgba(192,57,43,0.15);color:var(--danger);border-radius:3px;padding:1px 6px;margin-left:6px;">ALERT</span>':''}</div>
           </div>
           <div>
             <div class="attend-field-label">BOE Number</div>
             <div class="attend-field-val" style="font-size:13px;">${t.boe||'—'}</div>
           </div>
+        </div>`;
+
+    return `
+      <div class="${cardClass}">
+        ${hasFaulty ? `
+        <div class="attend-faulty-banner">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:2px solid rgba(255,255,255,0.6);border-radius:4px;flex-shrink:0;font-size:13px;font-weight:900;color:#fff;">!</span>
+          <div style="flex:1;">
+            <div>FAULTY DEVICES REPORTED</div>
+            <div style="font-size:11px;font-weight:400;opacity:0.85;">${isAffixing ? 'Affixing submission' : 'Trip record'} — immediate attention required</div>
+          </div>
+          <div class="attend-faulty-num">${t.faulty}</div>
+        </div>` : ''}
+
+        <div class="attend-card-header">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:${isAffixing?'var(--gold)':'var(--accent)'};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">${initials(t.user)}</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">${typeBadge}</div>
+              <div style="font-size:14px;font-weight:700;">${t.user}</div>
+              <div style="font-size:11px;color:var(--text-3);">${t.unit||'—'} · ${t.staffno||'—'}</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            ${locationTag}
+            <div style="font-size:11px;color:var(--text-3);">${t.ts}</div>
+          </div>
         </div>
 
-        ${t.remarks ? `<div style="padding:0 16px 12px;font-size:12px;color:var(--text-3);font-style:italic;border-top:1px solid var(--border);padding-top:10px;margin-top:-2px;">"${t.remarks}"</div>` : ''}
+        ${fieldsHtml}
 
-        ${t.deviceNums && t.deviceNums.length > 0 ? `
-        <div style="margin:0 16px 14px;background:#fff0f0;border:1px solid #f5c6c6;border-radius:7px;padding:10px 14px;">
+        ${t.remarks ? `<div style="padding:10px 16px 12px;font-size:12px;color:var(--text-3);font-style:italic;border-top:1px solid var(--border);">"${t.remarks}"</div>` : ''}
+
+        ${(t.deviceNums||[]).length > 0 ? `
+        <div style="margin:0 16px 14px;background:var(--danger-bg);border:1px solid #f5c6c6;border-radius:7px;padding:10px 14px;">
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--danger);margin-bottom:6px;">Faulty Device Serial Numbers (${t.deviceNums.length})</div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;">
-            ${t.deviceNums.map(n => `<span style="background:#fff;border:1.5px solid var(--danger);border-radius:5px;padding:3px 10px;font-size:12px;font-weight:700;font-family:'Calibri',Calibri,sans-serif;color:var(--danger);">${n}</span>`).join('')}
+            ${t.deviceNums.map(n => `<span style="background:var(--bg);border:1.5px solid var(--danger);border-radius:5px;padding:3px 10px;font-size:12px;font-weight:700;color:var(--danger);">${n}</span>`).join('')}
           </div>
         </div>` : ''}
 
@@ -5659,8 +5694,7 @@ function renderAttend() {
             : `<button class="btn-confirm-entry confirmed-btn" disabled>Confirmed</button>`
           }
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
