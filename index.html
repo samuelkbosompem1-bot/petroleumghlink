@@ -397,7 +397,30 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .pg-title { font-size:20px; font-weight:700; margin-bottom:2px; }
 .pg-sub { font-size:13px; color:var(--text-3); margin-bottom:1.2rem; }
 
-/* ── AUDIT TRAIL PAGE ── */
+/* ── OVERFLOW / HAMBURGER MENU ── */
+.nav-overflow-btn {
+  position:relative; background:none; border:none; cursor:pointer;
+  width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+  color:var(--text-2); transition:background 0.15s, color 0.15s; flex-shrink:0;
+}
+.nav-overflow-btn:hover { background:var(--bg2); color:var(--accent); }
+.nav-overflow-btn svg { width:18px; height:18px; }
+.nav-overflow-dropdown {
+  position:absolute; top:calc(100% + 8px); right:0; z-index:600;
+  background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius);
+  box-shadow:var(--shadow-md); min-width:190px; overflow:hidden;
+  display:none;
+}
+.nav-overflow-dropdown.open { display:block; }
+.nav-overflow-item {
+  display:flex; align-items:center; gap:10px; padding:11px 16px;
+  font-size:13px; font-weight:500; color:var(--text-2); cursor:pointer;
+  border:none; background:none; width:100%; text-align:left;
+  font-family:'Calibri',Calibri,sans-serif; transition:background 0.12s;
+}
+.nav-overflow-item:hover { background:var(--bg2); color:var(--text); }
+.nav-overflow-item.active { color:var(--accent); background:var(--accent-light); font-weight:700; }
+.nav-overflow-divider { height:1px; background:var(--border); margin:4px 0; }
 .audit-row { display:flex; gap:12px; padding:10px 16px; border-bottom:1px solid var(--border); align-items:flex-start; transition:background 0.12s; }
 .audit-row:hover { background:var(--bg2); }
 .audit-row:last-child { border-bottom:none; }
@@ -2888,20 +2911,26 @@ input, select, textarea {
     </div>
 
     <!-- Controls row -->
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1.4rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1.2rem;">
       <!-- View toggle -->
-      <div style="display:flex;align-items:center;gap:6px;">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
         <button class="rpt-view-btn active" id="rpt-btn-today" onclick="switchReportView('today',this)">Today</button>
         <button class="rpt-view-btn" id="rpt-btn-all" onclick="switchReportView('all',this)">All My Entries</button>
-        <button onclick="reportExpandAll()" style="margin-left:6px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:none;font-family:'Calibri',Calibri,sans-serif;font-size:12px;color:var(--text-3);cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-3)'">
-          Expand All
-        </button>
+        <button class="rpt-view-btn" id="rpt-btn-date" onclick="switchReportView('date',this)">Pick Date</button>
+        <button onclick="reportExpandAll()" style="margin-left:6px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:none;font-family:'Calibri',Calibri,sans-serif;font-size:12px;color:var(--text-3);cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-3)'">Expand All</button>
       </div>
-      <!-- Big send button -->
       <button class="rpt-send-btn" onclick="openReportPreview()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         Preview &amp; Send Report
       </button>
+    </div>
+
+    <!-- Date picker row (only shown when Pick Date is active) -->
+    <div id="rpt-date-picker-row" style="display:none;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:1rem;display:none;align-items:center;gap:12px;flex-wrap:wrap;">
+      <label style="font-size:13px;font-weight:600;color:var(--text-2);">Select Date:</label>
+      <input type="date" id="rpt-date-pick" class="form-input" style="width:180px;height:38px;" oninput="renderReport()">
+      <button onclick="document.getElementById('rpt-date-pick').value=new Date().toISOString().slice(0,10);renderReport();" style="padding:7px 14px;border-radius:7px;border:1.5px solid var(--border);background:none;font-family:'Calibri',Calibri,sans-serif;font-size:12px;cursor:pointer;color:var(--text-2);">Today</button>
+      <button onclick="const d=new Date();d.setDate(d.getDate()-1);document.getElementById('rpt-date-pick').value=d.toISOString().slice(0,10);renderReport();" style="padding:7px 14px;border-radius:7px;border:1.5px solid var(--border);background:none;font-family:'Calibri',Calibri,sans-serif;font-size:12px;cursor:pointer;color:var(--text-2);">Yesterday</button>
     </div>
 
     <!-- Report date label -->
@@ -3549,6 +3578,10 @@ let DB = { users:[], trips:[], stationRequests:{}, activity:[] };
 let currentUser = null;
 let tripsChart = null, devicesChart = null, currentPeriod = 'daily';
 
+// Offline state — declared early so saveDB and confirmAndSaveEntry can reference it
+let _isOnline = navigator.onLine;
+let _offlineQueue = [];
+
 // ══════════ FIREBASE SETUP ══════════
 const _fbConfig = {
   apiKey: "AIzaSyBymighXhcPNcgMOafxQSKr86x9yPvpHw8",
@@ -4149,8 +4182,20 @@ function addActivity(type, text) {
   DB.activity.unshift({ type, text, time: nowStr(), rawTs: new Date().toISOString() });
   if (DB.activity.length > 120) DB.activity.pop();
   saveDB();
-  // Push to managers & supervisors for all activity
-  pushNotif({ text, type: type === 'alert' ? 'alert' : 'activity', roles: ['manager', 'supervisor'] });
+
+  // Route notifications to correct roles only:
+  // - 'alert' type → managers + supervisors (faulty devices, anomalies)
+  // - login/auth events → managers + supervisors only
+  // - entries/edits → managers + supervisors (they oversee operations)
+  // Staff get notified separately for device requests and confirmations via explicit pushNotif calls
+  if (type === 'alert') {
+    pushNotif({ text, type: 'alert', roles: ['manager', 'supervisor'] });
+  } else if (type === 'login') {
+    pushNotif({ text, type: 'activity', roles: ['manager', 'supervisor'] });
+  } else if (type === 'entry' || type === 'edit') {
+    pushNotif({ text, type: 'activity', roles: ['manager', 'supervisor'] });
+  }
+  // type === 'login' for staff own logins etc are fine going to sup/mgr for oversight
 }
 
 function initials(name) {
@@ -5309,11 +5354,19 @@ function submitTrip() { openInformRequestPreview(); }
 // ══════════ ATTEND PAGE ══════════
 let currentAttendFilter = 'all';
 
+let _lastAttendUnconfirmedCount = -1;
+
 function updateAttendBadge() {
   const unconfirmed = (DB.trips||[]).filter(t =>
     (t.entryType === 'staff-record' || t.entryType === 'affixing') && !t.confirmed
   ).length;
-  const prev = parseInt(document.getElementById('attend-badge-1')?.textContent || '0');
+
+  // Only ping if count genuinely increased since last check
+  if (unconfirmed > _lastAttendUnconfirmedCount && _lastAttendUnconfirmedCount >= 0 && currentUser) {
+    SFX.ping();
+  }
+  _lastAttendUnconfirmedCount = unconfirmed;
+
   for(let i = 1; i <= 8; i++) {
     const badge = document.getElementById('attend-badge-' + i);
     if(badge) {
@@ -5326,7 +5379,6 @@ function updateAttendBadge() {
     mobBadge.textContent = unconfirmed;
     mobBadge.style.display = unconfirmed > 0 ? 'flex' : 'none';
   }
-  if(unconfirmed > prev && prev >= 0 && currentUser) SFX.ping();
 }
 
 function checkAttendAccess() {
@@ -5749,12 +5801,14 @@ function renderAttend() {
   const stationColors = {};
   STATIONS.forEach(s => stationColors[s.name] = s.color);
 
-  // Sort: unconfirmed first, then faulty, then by time
+  // Sort: unconfirmed first, then newest first within each group
   entries.sort((a, b) => {
     if (!a.confirmed && b.confirmed) return -1;
-    if (a.confirmed && !b.confirmed) return  1;
-    if ((b.faulty||0) !== (a.faulty||0)) return (b.faulty||0) - (a.faulty||0);
-    return 0;
+    if (a.confirmed && !b.confirmed) return 1;
+    // Within same confirmation status: newest first
+    const timeA = a.rawTs ? new Date(a.rawTs).getTime() : 0;
+    const timeB = b.rawTs ? new Date(b.rawTs).getTime() : 0;
+    return timeB - timeA;
   });
 
   container.innerHTML = entries.map(t => {
@@ -6582,6 +6636,11 @@ function switchReportView(view, btn) {
   currentReportView = view;
   btn.closest('div').querySelectorAll('.rpt-view-btn').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
+  const pickerRow = document.getElementById('rpt-date-picker-row');
+  if (pickerRow) pickerRow.style.display = (view === 'date') ? 'flex' : 'none';
+  if (view === 'date' && !document.getElementById('rpt-date-pick').value) {
+    document.getElementById('rpt-date-pick').value = new Date().toISOString().slice(0,10);
+  }
   renderReport();
 }
 
@@ -6589,17 +6648,28 @@ function renderReport() {
   if(!currentUser) return;
   const today = new Date().toDateString();
 
-  const myTrips = DB.trips.filter(t => {
+  const myTrips = (DB.trips||[]).filter(t => {
     if(t.user !== currentUser.fullname) return false;
     if(currentReportView === 'today') {
       try { return new Date(t.rawTs || t.ts).toDateString() === today; } catch(e) { return false; }
     }
+    if(currentReportView === 'date') {
+      const picked = document.getElementById('rpt-date-pick')?.value;
+      if (!picked) return true;
+      try { return new Date(t.rawTs || t.ts).toDateString() === new Date(picked + 'T12:00:00').toDateString(); } catch(e) { return false; }
+    }
     return true;
   });
 
-  const dateLabel = currentReportView === 'today'
-    ? new Date().toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})
-    : 'All entries · ' + currentUser.fullname;
+  let dateLabel;
+  if (currentReportView === 'today') {
+    dateLabel = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  } else if (currentReportView === 'date') {
+    const picked = document.getElementById('rpt-date-pick')?.value;
+    dateLabel = picked ? new Date(picked + 'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}) : 'Pick a date above';
+  } else {
+    dateLabel = 'All entries · ' + currentUser.fullname;
+  }
   document.getElementById('rpt-date-label').textContent = dateLabel;
 
   const totalTrips   = myTrips.reduce((a,t)=>a+(t.trips||0),0);
@@ -7251,26 +7321,70 @@ function _topByKey(arr, keyField, valueField) {
   return sorted.length ? { key: sorted[0][0], value: sorted[0][1] } : null;
 }
 
+// Pages always hidden from main nav strip — accessed via hamburger menu only
+const OVERFLOW_PAGES = ['page-output','page-summary','page-permissions','page-data','page-audit'];
+
 function _populateNavTabs(container, activePage) {
   if (!currentUser || !container) return;
   const allTabs = [
     { label:'Dashboard',        page:'page-dashboard'   },
     { label:'Record Entry',     page:'page-record'      },
     { label:'Affixing',         page:'page-affixing'    },
-    { label:'Data Records',     page:'page-data'        },
     { label:'Supervisor Panel', page:'page-supervisor'  },
     { label:'Attend',           page:'page-attend'      },
-    { label:'Output',           page:'page-output'      },
     { label:'Declaration',      page:'page-declaration' },
     { label:'Report',           page:'page-report'      },
+    { label:'Data Records',     page:'page-data'        },
+    { label:'Output',           page:'page-output'      },
     { label:'Summary',          page:'page-summary'     },
     { label:'Permissions',      page:'page-permissions' },
+    { label:'Audit Trail',      page:'page-audit'       },
   ];
-  container.innerHTML = allTabs
-    .filter(t => hasPageAccess(t.page))
+
+  const primaryTabs  = allTabs.filter(t => !OVERFLOW_PAGES.includes(t.page) && hasPageAccess(t.page));
+  const overflowTabs = allTabs.filter(t =>  OVERFLOW_PAGES.includes(t.page) && hasPageAccess(t.page));
+  const overflowActive = overflowTabs.some(t => t.page === activePage);
+
+  container.innerHTML = primaryTabs
     .map(t => `<button class="nav-tab${t.page === activePage ? ' active' : ''}" onclick="navTo('${t.page}',this)">${t.label}</button>`)
     .join('');
+
+  if (overflowTabs.length > 0) {
+    const menuId = 'nav-ovf-' + container.id;
+    const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    wrap.style.display  = 'inline-flex';
+    wrap.innerHTML = `
+      <button class="nav-overflow-btn" id="${menuId}-btn" onclick="toggleNavOverflow(event,'${menuId}')" title="More pages" style="${overflowActive?'color:var(--accent);':''}" >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        ${overflowActive ? `<span style="position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--accent);border-radius:50%;border:1.5px solid var(--bg);"></span>` : ''}
+      </button>
+      <div class="nav-overflow-dropdown" id="${menuId}">
+        ${overflowTabs.map(t => `<button class="nav-overflow-item${t.page===activePage?' active':''}" onclick="navTo('${t.page}',this);closeNavOverflow('${menuId}')">${t.label}</button>`).join('')}
+      </div>`;
+    container.appendChild(wrap);
+  }
 }
+
+function toggleNavOverflow(e, menuId) {
+  e.stopPropagation();
+  // Close any others first
+  document.querySelectorAll('.nav-overflow-dropdown.open').forEach(d => { if (d.id !== menuId) d.classList.remove('open'); });
+  const dd = document.getElementById(menuId);
+  if (dd) dd.classList.toggle('open');
+}
+
+function closeNavOverflow(menuId) {
+  const dd = document.getElementById(menuId);
+  if (dd) dd.classList.remove('open');
+}
+
+// Close overflow menus on outside click
+document.addEventListener('click', () => {
+  document.querySelectorAll('.nav-overflow-dropdown.open').forEach(d => d.classList.remove('open'));
+});
 
 function _populateUserMenu(avatarId, unameId, roleId, ddId) {
   if (!currentUser) return;
@@ -7491,9 +7605,12 @@ function renderAuditAnomalies() {
       </div>`).join('')}`;
 }
 
-// Also show anomaly count on dashboard for managers
+let _anomalyCheckedThisSession = false;
+
 function checkAnomaliesForDashboard() {
   if (!currentUser || currentUser.role !== 'manager') return;
+  if (_anomalyCheckedThisSession) return;
+  _anomalyCheckedThisSession = true;
   const anomalies = detectAnomalies();
   if (!anomalies.length) return;
   pushNotif({
@@ -7615,11 +7732,7 @@ function sendPushNotification(title, body, icon) {
 }
 
 // ══════════ OFFLINE MODE ══════════
-let _offlineQueue = [];
-let _isOnline = navigator.onLine;
-
 function initOfflineMode() {
-  // Listen for online/offline events
   window.addEventListener('online',  () => { _isOnline = true;  updateOfflineUI(); flushOfflineQueue(); });
   window.addEventListener('offline', () => { _isOnline = false; updateOfflineUI(); });
   updateOfflineUI();
