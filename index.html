@@ -397,7 +397,55 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .pg-title { font-size:20px; font-weight:700; margin-bottom:2px; }
 .pg-sub { font-size:13px; color:var(--text-3); margin-bottom:1.2rem; }
 
-/* ── AFFIXING PAGE ── */
+/* ── AUDIT TRAIL PAGE ── */
+.audit-row { display:flex; gap:12px; padding:10px 16px; border-bottom:1px solid var(--border); align-items:flex-start; transition:background 0.12s; }
+.audit-row:hover { background:var(--bg2); }
+.audit-row:last-child { border-bottom:none; }
+.audit-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.audit-dot-login  { background:#1a73e8; }
+.audit-dot-entry  { background:var(--success); }
+.audit-dot-edit   { background:var(--warning); }
+.audit-dot-alert  { background:var(--danger); }
+.audit-dot-delete { background:#7b1fa2; }
+.audit-body { flex:1; min-width:0; }
+.audit-text { font-size:12px; color:var(--text); line-height:1.45; }
+.audit-meta { font-size:10px; color:var(--text-3); margin-top:2px; }
+.audit-type-badge { display:inline-block; padding:1px 7px; border-radius:4px; font-size:10px; font-weight:700; margin-right:4px; }
+.audit-badge-login  { background:#e3f0ff; color:#1a73e8; }
+.audit-badge-entry  { background:var(--success-bg); color:var(--success); }
+.audit-badge-edit   { background:var(--warning-bg); color:var(--warning); }
+.audit-badge-alert  { background:var(--danger-bg); color:var(--danger); }
+.audit-badge-delete { background:#f3e5f5; color:#7b1fa2; }
+.audit-filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1rem; align-items:center; }
+.audit-export-btn { padding:7px 16px; border-radius:7px; border:1.5px solid var(--border); background:var(--bg2); color:var(--text-2); font-family:'Calibri',Calibri,sans-serif; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; display:flex; align-items:center; gap:6px; }
+.audit-export-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* ── 2FA MODAL ── */
+.twofa-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:3000; display:flex; align-items:center; justify-content:center; padding:1rem; }
+.twofa-box { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); width:100%; max-width:380px; overflow:hidden; animation:alertPop 0.2s cubic-bezier(.34,1.56,.64,1); }
+.twofa-header { padding:1.2rem 1.4rem; background:var(--accent); color:#fff; text-align:center; }
+.twofa-header h3 { font-size:16px; font-weight:700; margin:0 0 4px; }
+.twofa-header p { font-size:12px; color:rgba(255,255,255,0.75); margin:0; }
+.twofa-body { padding:1.4rem; }
+.twofa-digits { display:flex; gap:10px; justify-content:center; margin:1rem 0; }
+.twofa-digit { width:48px; height:58px; border:2px solid var(--border); border-radius:10px; font-size:24px; font-weight:700; text-align:center; background:var(--bg2); color:var(--text); font-family:'Calibri',Calibri,sans-serif; transition:border-color 0.15s; outline:none; }
+.twofa-digit:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-light); }
+.twofa-timer { text-align:center; font-size:12px; color:var(--text-3); margin-bottom:1rem; }
+.twofa-timer span { color:var(--danger); font-weight:700; }
+
+/* ── ANOMALY ALERT BANNER ── */
+.anomaly-banner { background:linear-gradient(135deg,var(--danger) 0%,#c0392b 100%); color:#fff; border-radius:var(--radius); padding:12px 16px; margin-bottom:1rem; display:flex; align-items:flex-start; gap:12px; }
+.anomaly-banner-icon { width:28px; height:28px; border:2px solid rgba(255,255,255,0.5); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900; flex-shrink:0; }
+.anomaly-item { background:var(--danger-bg); border:1.5px solid var(--danger); border-radius:8px; padding:10px 14px; margin-bottom:8px; font-size:13px; }
+.anomaly-item-title { font-weight:700; color:var(--danger); margin-bottom:2px; }
+.anomaly-item-desc { font-size:12px; color:var(--text-2); }
+
+/* ── OFFLINE INDICATOR ── */
+.offline-bar { position:fixed; top:0; left:0; right:0; z-index:9000; background:#b45309; color:#fff; text-align:center; font-size:12px; font-weight:600; padding:6px; display:none; }
+.offline-bar.visible { display:block; animation:slideDown 0.3s ease; }
+@keyframes slideDown { from{transform:translateY(-100%);} to{transform:translateY(0);} }
+.offline-queue-badge { display:none; position:fixed; bottom:60px; right:14px; z-index:800; background:#b45309; color:#fff; border-radius:20px; padding:6px 14px; font-size:12px; font-weight:700; box-shadow:var(--shadow-md); }
+.offline-queue-badge.visible { display:block; }
 .affixing-card {
   background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius);
   overflow:hidden; max-width:600px;
@@ -1553,6 +1601,10 @@ input, select, textarea {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
     Summary
   </button>
+  <button class="mobile-nav-item d-mgr" id="mob-btn-audit" onclick="navTo('page-audit',this)" aria-label="Audit Trail">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    Audit Trail
+  </button>
   <button class="mobile-nav-item d-mgr" id="mob-btn-permissions" onclick="navTo('page-permissions',this)" aria-label="Permissions">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
     Permissions
@@ -2436,6 +2488,105 @@ input, select, textarea {
 </div>
 
 <!-- ════════════ PAGE: ATTEND (Supervisor/Manager — staff record confirmations) ════════════ -->
+<!-- ── OFFLINE BAR ── -->
+<div class="offline-bar" id="offline-bar">You are offline — entries are queued and will sync when connection returns</div>
+<div class="offline-queue-badge" id="offline-queue-badge">0 queued</div>
+
+<!-- ── 2FA MODAL ── -->
+<div class="twofa-overlay hidden" id="twofa-modal">
+  <div class="twofa-box">
+    <div class="twofa-header">
+      <h3>Two-Factor Verification</h3>
+      <p>Enter the 6-digit code sent to verify your identity</p>
+    </div>
+    <div class="twofa-body">
+      <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:12px;color:var(--accent);line-height:1.6;text-align:center;">
+        Your verification code is: <strong id="twofa-display-code" style="font-size:20px;letter-spacing:4px;display:block;margin-top:4px;color:var(--accent);"></strong>
+        <div style="font-size:11px;color:var(--text-3);margin-top:4px;">In a real deployment this would be sent via SMS or email</div>
+      </div>
+      <div class="twofa-digits" id="twofa-digits-wrap">
+        <input class="twofa-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="moveTwofaFocus(this,0)" onkeydown="twofaKeydown(event,0)">
+        <input class="twofa-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="moveTwofaFocus(this,1)" onkeydown="twofaKeydown(event,1)">
+        <input class="twofa-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="moveTwofaFocus(this,2)" onkeydown="twofaKeydown(event,2)">
+        <input class="twofa-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="moveTwofaFocus(this,3)" onkeydown="twofaKeydown(event,3)">
+        <input class="twofa-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="moveTwofaFocus(this,4)" onkeydown="twofaKeydown(event,4)">
+        <input class="twofa-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="moveTwofaFocus(this,5)" onkeydown="twofaKeydown(event,5)">
+      </div>
+      <div class="twofa-timer">Code expires in <span id="twofa-countdown">5:00</span></div>
+      <div id="twofa-msg" class="hidden msg-err" style="margin-bottom:10px;"></div>
+      <button class="btn-primary" onclick="verifyTwofa()">Verify & Sign In</button>
+      <button onclick="cancelTwofa()" style="width:100%;margin-top:8px;padding:10px;border:none;background:none;font-family:'Calibri',Calibri,sans-serif;font-size:13px;color:var(--text-3);cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ PAGE: AUDIT TRAIL (Manager only) ════════════ -->
+<div class="page" id="page-audit">
+  <nav>
+    <div class="nav-brand">
+      <svg class="logo-svg" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="44" rx="10" fill="#1a3a2a"/><ellipse cx="22" cy="30" rx="10" ry="4" fill="#2d6b46"/><rect x="14" y="14" width="4" height="16" rx="2" fill="#b8d9c6"/><rect x="20" y="10" width="4" height="20" rx="2" fill="#e8f2ec"/><rect x="26" y="16" width="4" height="14" rx="2" fill="#b8d9c6"/><path d="M12 28 Q22 22 32 28" stroke="#b8860b" stroke-width="1.5" fill="none"/><circle cx="22" cy="9" r="3" fill="#b8860b"/></svg>
+      <div class="brand-text"><span class="brand-name">PETROLEUM GHANA LINK</span><span class="brand-sub">Field Data System</span></div>
+    </div>
+    <div class="nav-tabs" id="nav-tabs-audit"></div>
+    <div class="nav-right">
+      <button class="notif-btn" onclick="toggleNotifPanel(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
+      <div class="user-menu" id="um-audit">
+        <button class="user-btn" onclick="toggleMenu('um-audit')">
+          <div class="user-avatar" id="ua-audit"></div>
+          <span class="user-chevron">&#9660;</span>
+        </button>
+        <div class="dropdown">
+          <div class="dd-header"><div class="dd-name" id="dd-name-audit"></div><div class="dd-unit" id="dd-unit-audit"></div></div>
+          <button class="dd-item" onclick="openPwdModal()">Change Password</button>
+          <button class="dd-item" onclick="openThemeModal()">Appearance</button>
+          <div class="dd-sep"></div>
+          <button class="dd-item danger" onclick="doLogout()">Log Out</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="main-wrap">
+    <div id="audit-denied" class="hidden access-denied"><h3>Access Restricted</h3><p>This page is for Managers only.</p></div>
+    <div id="audit-content">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
+        <div>
+          <div class="pg-title">Full Audit Trail</div>
+          <div class="pg-sub">Complete record of every action taken in the system</div>
+        </div>
+        <button class="audit-export-btn" onclick="exportAuditCSV()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+      </div>
+
+      <!-- Anomaly section -->
+      <div id="audit-anomaly-section" style="margin-bottom:1rem;"></div>
+
+      <!-- Filters -->
+      <div class="audit-filter-bar">
+        <select class="form-input" id="audit-type-filter" style="width:160px;height:36px;" onchange="renderAudit()">
+          <option value="">All Types</option>
+          <option value="login">Login / Auth</option>
+          <option value="entry">Trip Entries</option>
+          <option value="edit">Edits</option>
+          <option value="alert">Alerts</option>
+        </select>
+        <select class="form-input" id="audit-user-filter" style="width:180px;height:36px;" onchange="renderAudit()">
+          <option value="">All Users</option>
+        </select>
+        <input class="form-input" id="audit-search" type="text" placeholder="Search..." style="width:200px;height:36px;" oninput="renderAudit()">
+        <div style="font-size:12px;color:var(--text-3);margin-left:auto;" id="audit-count-label"></div>
+      </div>
+
+      <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+        <div id="audit-list">
+          <div style="padding:3rem;text-align:center;color:var(--text-3);font-size:13px;">Loading audit trail...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ════════════ PAGE: AFFIXING (Staff) ════════════ -->
 <div class="page" id="page-affixing">
   <nav>
@@ -3487,11 +3638,14 @@ function _loadFromLocal() {
 
 function saveDB() {
   refreshBoeDatalist();
-  // Mirror to localStorage as offline fallback
+  // Always mirror to localStorage as offline fallback
   try { localStorage.setItem('pgl_db', JSON.stringify(DB)); } catch(e) {}
-  // Push to Firebase
-  if (_fbRef) {
-    _fbRef.set(DB).catch(err => console.warn('Firebase save error:', err));
+  // Push to Firebase only when online
+  if (_fbRef && _isOnline) {
+    _fbRef.set(DB).catch(err => {
+      console.warn('Firebase save error:', err);
+      // Mark as needing sync
+    });
   }
 }
 
@@ -3624,7 +3778,7 @@ function goTo(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
   document.querySelectorAll('.user-menu').forEach(m => m.classList.remove('open'));
-  const authPages = ['page-login','page-signup','page-reset'];
+  const authPages = ['page-login','page-signup','page-reset','page-audit-redirect'];
   const mobileNavBar = document.getElementById('mobile-nav-bar');
   if (mobileNavBar) {
     mobileNavBar.style.display = authPages.includes(id) ? 'none' : '';
@@ -3633,7 +3787,7 @@ function goTo(id) {
 
 function navTo(id, btn) {
   // Auth pages never need permission check
-  const authPages = ['page-login','page-signup','page-reset'];
+  const authPages = ['page-login','page-signup','page-reset','page-audit-redirect'];
   if (!authPages.includes(id) && !hasPageAccess(id)) {
     toast('You do not have access to that page.', 'error');
     return;
@@ -3642,6 +3796,7 @@ function navTo(id, btn) {
   const authPagesList = ['page-login','page-signup','page-reset'];
   if (!authPagesList.includes(id)) showSkeleton(id);
 
+  if(id === 'page-audit') setupAuditPage();
   if(id === 'page-affixing') setupAffixingPage();
   if(id === 'page-permissions') setupPermissionsPage();
   if(id === 'page-data') checkDataAccess();
@@ -3667,6 +3822,7 @@ function navTo(id, btn) {
     'page-summary': 'mob-btn-summary',
     'page-affixing': 'mob-btn-affixing',
     'page-permissions': 'mob-btn-permissions',
+    'page-audit': 'mob-btn-audit',
   };
   document.querySelectorAll('.mobile-nav-item').forEach(b => b.classList.remove('active'));
   const mobBtn = document.getElementById(pageToMobBtn[id]);
@@ -3812,6 +3968,12 @@ function pushNotif({ text, type = 'activity', roles = ['manager','supervisor'], 
   _saveNotifStore(store);
   renderNotifPanel();
   showNotifToast(notif);
+
+  // Browser push notification (fires when app is in background)
+  if (currentUser && roles.includes(currentUser.role)) {
+    const typeLabel = type === 'request' ? 'Device Request' : type === 'alert' ? 'Alert' : 'Activity';
+    sendPushNotification('PGL — ' + typeLabel, text);
+  }
 }
 
 function _visibleNotifs() {
@@ -4485,16 +4647,21 @@ function doLogin() {
 
   if(!username || !password) return showMsg('li-msg','Please enter your username and password.');
 
-  // Always search the live in-memory DB (kept current by Firebase listener)
-  if(!DB.users || !DB.users.length) {
+  if(!DB.users || !DB.users.length)
     return showMsg('li-msg','Still connecting to server. Please wait a moment and try again.');
-  }
 
   const user = DB.users.find(u =>
     u.username.toLowerCase() === username.toLowerCase() && u.password === password
   );
   if(!user) return showMsg('li-msg','Invalid username or password. Please try again.');
 
+  // Managers require 2FA
+  if(user.role === 'manager') {
+    startTwofaFlow(user);
+    return;
+  }
+
+  // Staff / Supervisor — direct login
   currentUser = user;
   addActivity('login', user.fullname + ' logged in as ' + user.role);
   saveDB();
@@ -4503,6 +4670,7 @@ function doLogin() {
   setupNav();
   refreshDashboard();
   checkPendingAlerts();
+  requestPushPermission();
   const fbDot = document.getElementById('fb-status');
   if (fbDot) fbDot.style.display = 'block';
   goTo('page-dashboard');
@@ -4565,6 +4733,7 @@ function setupNav() {
     'nav-tabs-9': 'page-declaration',
     'nav-tabs-affixing': 'page-affixing',
     'nav-tabs-permissions': 'page-permissions',
+    'nav-tabs-audit': 'page-audit',
     'nav-tabs-summary': 'page-summary',
   };
   Object.entries(navPageMap).forEach(([containerId, activePage]) => {
@@ -5402,6 +5571,7 @@ const ALL_PAGES = [
   { id:'page-report',      label:'Report' },
   { id:'page-summary',     label:'Summary' },
   { id:'page-permissions', label:'Permissions' },
+  { id:'page-audit',       label:'Audit Trail' },
 ];
 
 function getDefaultPages(role) {
@@ -5841,11 +6011,23 @@ function closeEntryConfirm() {
   _pendingEntryData = null;
 }
 
+function _resetRecordForm() {
+  ['r-station','r-trips','r-devices','r-faulty','r-boe','r-remarks','r-expected-trips'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = id === 'r-faulty' ? '0' : '';
+  });
+  if (typeof _deviceNums !== 'undefined') _deviceNums = [];
+  if (typeof renderDeviceTags === 'function') renderDeviceTags();
+  const counter = document.getElementById('r-boe-counter');
+  if (counter) counter.textContent = '0 / 11 digits';
+  const conflict = document.getElementById('r-boe-conflict');
+  if (conflict) conflict.style.display = 'none';
+}
+
 function confirmAndSaveEntry() {
   if (!_pendingEntryData) return;
   const data = _pendingEntryData;
 
-  DB.trips.push({
+  const entryObj = {
     station: data.station, trips: data.trips, devices: data.devices,
     faulty: data.faulty, boe: data.boe || null, remarks: data.remarks || '',
     user: data.user, staffno: data.staffno, role: data.role,
@@ -5853,7 +6035,20 @@ function confirmAndSaveEntry() {
     confirmed: false, confirmedBy: null, confirmedAt: null,
     entryType: 'staff-record',
     deviceNums: data.deviceNums || []
-  });
+  };
+
+  _pendingEntryData = null;
+
+  // If offline, queue the entry
+  if (!_isOnline) {
+    queueOfflineEntry(entryObj);
+    closeEntryConfirm();
+    _resetRecordForm();
+    return;
+  }
+
+  if (!DB.trips) DB.trips = [];
+  DB.trips.push(entryObj);
 
   if (data.boe && data.expectedTrips) {
     if (!DB.boeExpected) DB.boeExpected = {};
@@ -5867,24 +6062,13 @@ function confirmAndSaveEntry() {
 
   addActivity('entry', data.user + ' logged ' + data.trips + ' trip(s) at ' + data.station + ' [BOE: ' + (data.boe||'—') + ']');
   saveDB();
-
-  // Clear the record form
-  ['r-station','r-trips','r-devices','r-faulty','r-boe','r-remarks','r-expected-trips'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
-  });
-  if (typeof _deviceNums !== 'undefined') _deviceNums = [];
-  if (typeof renderDeviceTags === 'function') renderDeviceTags();
-  const counter = document.getElementById('r-boe-counter');
-  if (counter) counter.textContent = '0 / 11 digits';
-
   closeEntryConfirm();
+  _resetRecordForm();
   SFX.success();
   toast('Entry saved successfully!', 'success');
   refreshDashboard();
   renderDeclaration();
-
-  const todayList = document.getElementById('rec-today-list');
-  if (todayList && typeof renderTodayEntries === 'function') renderTodayEntries();
+  updateAttendBadge();
 }
 
 function setBOEExpected(boe) {
@@ -6802,6 +6986,9 @@ function _onFirebaseReady() {
   const overlay = document.getElementById('loading-overlay');
   if (overlay) overlay.style.display = 'none';
 
+  // Initialize offline mode
+  initOfflineMode();
+
   refreshBoeDatalist();
 
   // Restore session or show login
@@ -7124,6 +7311,368 @@ function viewMonthlySummary() {
   _summaryPeriod = 'last_month';
   document.querySelectorAll('.summary-period-tab').forEach((b,i) => b.classList.toggle('active', i===1));
   navTo('page-summary', null);
+}
+
+// ══════════ AUDIT TRAIL ══════════
+function setupAuditPage() {
+  if (!currentUser || currentUser.role !== 'manager') {
+    document.getElementById('audit-denied').classList.remove('hidden');
+    document.getElementById('audit-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('audit-denied').classList.add('hidden');
+  document.getElementById('audit-content').style.display = '';
+
+  // Populate user filter dropdown
+  const sel = document.getElementById('audit-user-filter');
+  if (sel && DB.users) {
+    const existing = [...sel.options].map(o => o.value);
+    DB.users.forEach(u => {
+      if (!existing.includes(u.fullname)) {
+        const opt = document.createElement('option');
+        opt.value = u.fullname;
+        opt.textContent = u.fullname;
+        sel.appendChild(opt);
+      }
+    });
+  }
+
+  _populateNavTabs(document.getElementById('nav-tabs-audit'), 'page-audit');
+  const av = document.getElementById('ua-audit');
+  const dn = document.getElementById('dd-name-audit');
+  const du = document.getElementById('dd-unit-audit');
+  if (av) av.textContent = initials(currentUser.fullname);
+  if (dn) dn.textContent = currentUser.fullname;
+  if (du) du.textContent = currentUser.unit;
+
+  renderAuditAnomalies();
+  renderAudit();
+}
+
+function renderAudit() {
+  const typeFilter = document.getElementById('audit-type-filter')?.value || '';
+  const userFilter = document.getElementById('audit-user-filter')?.value || '';
+  const searchTerm = (document.getElementById('audit-search')?.value || '').toLowerCase();
+
+  let entries = [...(DB.activity || [])];
+
+  if (typeFilter) entries = entries.filter(a => a.type === typeFilter);
+  if (userFilter) entries = entries.filter(a => a.text && a.text.includes(userFilter));
+  if (searchTerm) entries = entries.filter(a => (a.text||'').toLowerCase().includes(searchTerm));
+
+  const countEl = document.getElementById('audit-count-label');
+  if (countEl) countEl.textContent = entries.length + ' record' + (entries.length !== 1 ? 's' : '');
+
+  const list = document.getElementById('audit-list');
+  if (!list) return;
+
+  if (!entries.length) {
+    list.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--text-3);font-size:13px;">No audit records match your filters.</div>';
+    return;
+  }
+
+  const dotClass  = { login:'audit-dot-login', entry:'audit-dot-entry', edit:'audit-dot-edit', alert:'audit-dot-alert', delete:'audit-dot-delete' };
+  const badgeClass = { login:'audit-badge-login', entry:'audit-badge-entry', edit:'audit-badge-edit', alert:'audit-badge-alert', delete:'audit-badge-delete' };
+  const typeLabel  = { login:'Auth', entry:'Entry', edit:'Edit', alert:'Alert', delete:'Delete' };
+
+  list.innerHTML = entries.map(a => `
+    <div class="audit-row">
+      <div class="audit-dot ${dotClass[a.type]||'audit-dot-edit'}"></div>
+      <div class="audit-body">
+        <div class="audit-text">
+          <span class="audit-type-badge ${badgeClass[a.type]||'audit-badge-edit'}">${typeLabel[a.type]||a.type}</span>
+          ${a.text||'—'}
+        </div>
+        <div class="audit-meta">${a.rawTs ? new Date(a.rawTs).toLocaleString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}) : a.time||'—'}</div>
+      </div>
+    </div>`).join('');
+}
+
+function exportAuditCSV() {
+  const entries = DB.activity || [];
+  const rows = [['Type','Description','Timestamp']];
+  entries.forEach(a => rows.push([
+    a.type||'', '"'+(a.text||'').replace(/"/g,'""')+'"',
+    a.rawTs ? new Date(a.rawTs).toLocaleString('en-GB') : a.time||''
+  ]));
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'audit_trail_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ══════════ ANOMALY DETECTION ══════════
+function detectAnomalies() {
+  const anomalies = [];
+  const trips = (DB.trips||[]).filter(t => t.entryType === 'staff-record' && t.devices > 0);
+
+  // 1. High faulty device rate (>30% of devices allocated)
+  const userStats = {};
+  trips.forEach(t => {
+    const u = t.user;
+    if (!userStats[u]) userStats[u] = { trips:[], totalDevices:0, totalFaulty:0 };
+    userStats[u].trips.push(t);
+    userStats[u].totalDevices += (t.devices||0);
+    userStats[u].totalFaulty  += (t.faulty||0);
+  });
+
+  Object.entries(userStats).forEach(([user, s]) => {
+    if (s.totalDevices < 5) return; // not enough data
+    const rate = s.totalFaulty / s.totalDevices;
+    if (rate > 0.3) {
+      anomalies.push({
+        title: 'High Faulty Device Rate — ' + user,
+        desc: Math.round(rate*100) + '% of devices reported faulty (' + s.totalFaulty + ' of ' + s.totalDevices + '). Threshold is 30%.',
+        severity: 'high'
+      });
+    }
+  });
+
+  // 2. Single BOE used across different stations
+  const boeStations = {};
+  trips.filter(t => t.boe).forEach(t => {
+    if (!boeStations[t.boe]) boeStations[t.boe] = new Set();
+    boeStations[t.boe].add(t.station);
+  });
+  Object.entries(boeStations).forEach(([boe, stations]) => {
+    if (stations.size > 1) {
+      anomalies.push({
+        title: 'BOE Used Across Multiple Stations — ' + boe,
+        desc: 'BOE ' + boe + ' has entries at: ' + [...stations].join(', ') + '. This may indicate an error.',
+        severity: 'high'
+      });
+    }
+  });
+
+  // 3. Unusually high trip count in a single entry (outlier: >10 trips in one entry)
+  trips.filter(t => (t.trips||0) > 10).forEach(t => {
+    anomalies.push({
+      title: 'Unusually High Trip Count — ' + t.user,
+      desc: t.user + ' logged ' + t.trips + ' trips in a single entry at ' + t.station + ' on ' + t.ts + '. Please verify.',
+      severity: 'medium'
+    });
+  });
+
+  // 4. Staff member with zero confirmed entries (all pending for >1 day)
+  Object.entries(userStats).forEach(([user, s]) => {
+    const unconfirmedOld = s.trips.filter(t => !t.confirmed && t.rawTs && (Date.now()-new Date(t.rawTs).getTime())>86400000);
+    if (unconfirmedOld.length >= 3) {
+      anomalies.push({
+        title: 'Multiple Unconfirmed Entries — ' + user,
+        desc: user + ' has ' + unconfirmedOld.length + ' entries pending confirmation for over 24 hours.',
+        severity: 'medium'
+      });
+    }
+  });
+
+  return anomalies;
+}
+
+function renderAuditAnomalies() {
+  const section = document.getElementById('audit-anomaly-section');
+  if (!section) return;
+  const anomalies = detectAnomalies();
+  if (!anomalies.length) { section.innerHTML = ''; return; }
+
+  section.innerHTML = `
+    <div class="anomaly-banner">
+      <div class="anomaly-banner-icon">!</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px;">${anomalies.length} Anomal${anomalies.length===1?'y':'ies'} Detected</div>
+        <div style="font-size:12px;opacity:0.85;">These patterns in the data require your attention</div>
+      </div>
+    </div>
+    ${anomalies.map(a => `
+      <div class="anomaly-item">
+        <div class="anomaly-item-title">${a.title}</div>
+        <div class="anomaly-item-desc">${a.desc}</div>
+      </div>`).join('')}`;
+}
+
+// Also show anomaly count on dashboard for managers
+function checkAnomaliesForDashboard() {
+  if (!currentUser || currentUser.role !== 'manager') return;
+  const anomalies = detectAnomalies();
+  if (!anomalies.length) return;
+  pushNotif({
+    text: anomalies.length + ' data anomal' + (anomalies.length===1?'y':'ies') + ' detected. Review the Audit Trail page.',
+    type: 'alert', roles: ['manager'],
+    detail: anomalies.map(a => a.title + '\n' + a.desc).join('\n\n')
+  });
+}
+
+// ══════════ TWO-FACTOR AUTH (Managers) ══════════
+let _twofa_code = null;
+let _twofa_user = null;
+let _twofa_timer = null;
+let _twofa_seconds = 300;
+
+function generateTwofaCode() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function startTwofaFlow(user) {
+  _twofa_user = user;
+  _twofa_code = generateTwofaCode();
+  _twofa_seconds = 300;
+
+  document.getElementById('twofa-display-code').textContent = _twofa_code;
+  document.getElementById('twofa-modal').classList.remove('hidden');
+  document.getElementById('twofa-msg').classList.add('hidden');
+
+  // Clear digit inputs
+  document.querySelectorAll('.twofa-digit').forEach(d => { d.value = ''; d.style.borderColor = ''; });
+  document.querySelectorAll('.twofa-digit')[0].focus();
+
+  // Start countdown
+  if (_twofa_timer) clearInterval(_twofa_timer);
+  _twofa_timer = setInterval(() => {
+    _twofa_seconds--;
+    const m = Math.floor(_twofa_seconds/60);
+    const s = _twofa_seconds%60;
+    const el = document.getElementById('twofa-countdown');
+    if (el) el.textContent = m + ':' + String(s).padStart(2,'0');
+    if (_twofa_seconds <= 0) {
+      clearInterval(_twofa_timer);
+      cancelTwofa();
+      showMsg('li-msg','Verification code expired. Please sign in again.');
+    }
+  }, 1000);
+}
+
+function moveTwofaFocus(input, idx) {
+  input.value = input.value.replace(/\D/g,'').slice(-1);
+  if (input.value && idx < 5) {
+    document.querySelectorAll('.twofa-digit')[idx+1].focus();
+  }
+  // Auto-verify when all 6 filled
+  const digits = [...document.querySelectorAll('.twofa-digit')];
+  if (digits.every(d => d.value)) verifyTwofa();
+}
+
+function twofaKeydown(e, idx) {
+  if (e.key === 'Backspace') {
+    const digits = document.querySelectorAll('.twofa-digit');
+    if (!digits[idx].value && idx > 0) {
+      digits[idx-1].value = '';
+      digits[idx-1].focus();
+    }
+  }
+}
+
+function verifyTwofa() {
+  const entered = [...document.querySelectorAll('.twofa-digit')].map(d => d.value).join('');
+  if (entered.length < 6) return showMsg('twofa-msg', 'Please enter all 6 digits.');
+  if (entered !== _twofa_code) {
+    showMsg('twofa-msg', 'Incorrect code. Please try again.');
+    document.querySelectorAll('.twofa-digit').forEach(d => { d.value=''; d.style.borderColor='var(--danger)'; });
+    document.querySelectorAll('.twofa-digit')[0].focus();
+    return;
+  }
+  // Code correct — complete login
+  clearInterval(_twofa_timer);
+  document.getElementById('twofa-modal').classList.add('hidden');
+  currentUser = _twofa_user;
+  _twofa_user = null; _twofa_code = null;
+  addActivity('login', currentUser.fullname + ' logged in as manager (2FA verified)');
+  saveDB(); saveSession(); SFX.login();
+  setupNav(); refreshDashboard(); checkPendingAlerts();
+  requestPushPermission();
+  const fbDot = document.getElementById('fb-status');
+  if (fbDot) fbDot.style.display = 'block';
+  goTo('page-dashboard');
+  checkMonthlyBanner();
+  setTimeout(checkAnomaliesForDashboard, 3000);
+}
+
+function cancelTwofa() {
+  clearInterval(_twofa_timer);
+  _twofa_user = null; _twofa_code = null;
+  document.getElementById('twofa-modal').classList.add('hidden');
+}
+
+// ══════════ PUSH NOTIFICATIONS ══════════
+async function requestPushPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') return;
+  if (Notification.permission !== 'denied') {
+    await Notification.requestPermission();
+  }
+}
+
+function sendPushNotification(title, body, icon) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  if (document.visibilityState === 'visible') return; // only when app is in background
+  try {
+    new Notification(title, {
+      body, icon: icon || '/favicon.ico',
+      badge: '/favicon.ico',
+      tag: 'pgl-' + Date.now()
+    });
+  } catch(e) {}
+}
+
+// ══════════ OFFLINE MODE ══════════
+let _offlineQueue = [];
+let _isOnline = navigator.onLine;
+
+function initOfflineMode() {
+  // Listen for online/offline events
+  window.addEventListener('online',  () => { _isOnline = true;  updateOfflineUI(); flushOfflineQueue(); });
+  window.addEventListener('offline', () => { _isOnline = false; updateOfflineUI(); });
+  updateOfflineUI();
+
+  // Load any queued entries from localStorage
+  try {
+    const q = localStorage.getItem('pgl_offline_queue');
+    if (q) _offlineQueue = JSON.parse(q);
+  } catch(e) { _offlineQueue = []; }
+  updateOfflineQueueBadge();
+}
+
+function updateOfflineUI() {
+  const bar = document.getElementById('offline-bar');
+  if (bar) {
+    bar.classList.toggle('visible', !_isOnline);
+    // Shift content down to make room for the offline bar
+    document.body.style.paddingTop = _isOnline ? '' : '32px';
+  }
+}
+
+function updateOfflineQueueBadge() {
+  const badge = document.getElementById('offline-queue-badge');
+  if (badge) {
+    badge.textContent = _offlineQueue.length + ' queued';
+    badge.classList.toggle('visible', _offlineQueue.length > 0 && !_isOnline);
+  }
+}
+
+function queueOfflineEntry(entry) {
+  _offlineQueue.push({ ...entry, _queued: Date.now() });
+  try { localStorage.setItem('pgl_offline_queue', JSON.stringify(_offlineQueue)); } catch(e) {}
+  updateOfflineQueueBadge();
+  toast(_offlineQueue.length + ' entr' + (_offlineQueue.length===1?'y':'ies') + ' queued — will sync when online', 'success');
+}
+
+function flushOfflineQueue() {
+  if (!_offlineQueue.length || !_fbRef) return;
+  const toSync = [..._offlineQueue];
+  _offlineQueue = [];
+  try { localStorage.removeItem('pgl_offline_queue'); } catch(e) {}
+  updateOfflineQueueBadge();
+
+  toSync.forEach(entry => {
+    delete entry._queued;
+    if (!DB.trips) DB.trips = [];
+    DB.trips.push(entry);
+  });
+
+  saveDB();
+  toast(toSync.length + ' offline entr' + (toSync.length===1?'y':'ies') + ' synced to server!', 'success');
+  addActivity('entry', (currentUser?.fullname||'System') + ' synced ' + toSync.length + ' offline entr' + (toSync.length===1?'y':'ies'));
+  refreshDashboard();
 }
 
 // ══════════ THEME ENGINE ══════════
