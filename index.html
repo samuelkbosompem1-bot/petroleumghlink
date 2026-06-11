@@ -2543,6 +2543,55 @@ input, select, textarea {
   </div>
 </div>
 
+<!-- ════════════ AUDIT DETAIL MODAL ════════════ -->
+<div class="notif-detail-overlay hidden" id="audit-detail-modal" onclick="if(event.target===this)document.getElementById('audit-detail-modal').classList.add('hidden')">
+  <div class="notif-detail-box" style="max-width:520px;">
+    <div class="notif-detail-header" style="padding:14px 16px;border-bottom:1.5px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+      <div style="flex:1;">
+        <span class="audit-type-badge" id="audit-detail-badge" style="margin-bottom:6px;display:inline-block;"></span>
+        <div style="font-size:14px;font-weight:600;color:var(--text);line-height:1.5;" id="audit-detail-text"></div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:4px;" id="audit-detail-time"></div>
+      </div>
+      <button class="notif-detail-close" onclick="document.getElementById('audit-detail-modal').classList.add('hidden')">&#215;</button>
+    </div>
+    <div style="padding:14px 16px 6px;" id="audit-detail-extra"></div>
+    <div style="padding:6px 16px 16px;display:flex;justify-content:flex-end;">
+      <button onclick="document.getElementById('audit-detail-modal').classList.add('hidden')" style="padding:9px 22px;border-radius:8px;border:1.5px solid var(--border);background:none;color:var(--text-2);font-family:'Calibri',Calibri,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ AFFIXING EDIT MODAL ════════════ -->
+<div class="edit-trip-overlay hidden" id="aff-edit-modal">
+  <div class="edit-trip-box">
+    <div class="edit-trip-header">
+      <div>
+        <h3>Edit Affixing Submission</h3>
+        <div style="font-size:12px;color:var(--text-3);margin-top:2px;" id="aff-edit-subtitle"></div>
+      </div>
+      <button onclick="document.getElementById('aff-edit-modal').classList.add('hidden')" style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--text-3);padding:2px 6px;line-height:1;">&#215;</button>
+    </div>
+    <div class="edit-trip-body">
+      <div style="background:var(--warning-bg);border:1px solid var(--warning);border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:12px;color:var(--warning);font-weight:600;">All changes are permanently logged to the Audit Trail.</div>
+      <input type="hidden" id="aff-edit-idx">
+      <div class="form-row"><label class="form-label">Allocated Devices <span style="color:var(--danger);">*</span></label><input class="form-input" id="aff-edit-allocated" type="number" min="0"></div>
+      <div class="form-row"><label class="form-label">Devices Affixed <span style="color:var(--danger);">*</span></label><input class="form-input" id="aff-edit-affixed" type="number" min="0"></div>
+      <div class="form-row"><label class="form-label">Faulty Devices</label><input class="form-input" id="aff-edit-faulty" type="number" min="0" value="0"></div>
+      <div class="form-row"><label class="form-label">Remarks</label><textarea class="form-input" id="aff-edit-remarks" rows="2" style="resize:vertical;"></textarea></div>
+      <div class="form-row">
+        <label class="form-label" style="color:var(--danger);">Reason for Change <span style="color:var(--danger);">*</span></label>
+        <textarea class="form-input" id="aff-edit-reason" rows="3" placeholder="State clearly why this submission is being changed..." style="resize:vertical;border-color:var(--danger);"></textarea>
+        <div style="font-size:11px;color:var(--danger);margin-top:3px;">This reason will be filed as a permanent report on the Audit Trail.</div>
+      </div>
+      <div id="aff-edit-msg" class="hidden msg-err"></div>
+    </div>
+    <div class="edit-trip-footer">
+      <button onclick="document.getElementById('aff-edit-modal').classList.add('hidden')" style="padding:10px 20px;border-radius:8px;border:1.5px solid var(--border);background:none;color:var(--text-2);font-family:'Calibri',Calibri,sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Cancel</button>
+      <button onclick="saveAffixingEdit()" style="padding:10px 24px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'Calibri',Calibri,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Save &amp; File Report</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════════════ PAGE: AUDIT TRAIL (Manager only) ════════════ -->
 <div class="page" id="page-audit">
   <nav>
@@ -2597,7 +2646,10 @@ input, select, textarea {
         <select class="form-input" id="audit-user-filter" style="width:180px;height:36px;" onchange="renderAudit()">
           <option value="">All Users</option>
         </select>
-        <input class="form-input" id="audit-search" type="text" placeholder="Search..." style="width:200px;height:36px;" oninput="renderAudit()">
+        <input type="date" id="audit-date-from" class="form-input" style="height:36px;width:155px;" oninput="renderAudit()" title="From date">
+        <input type="date" id="audit-date-to" class="form-input" style="height:36px;width:155px;" oninput="renderAudit()" title="To date">
+        <input class="form-input" id="audit-search" type="text" placeholder="Search..." style="width:180px;height:36px;" oninput="renderAudit()">
+        <button onclick="document.getElementById('audit-date-from').value='';document.getElementById('audit-date-to').value='';renderAudit();" style="padding:7px 12px;border-radius:7px;border:1.5px solid var(--border);background:none;font-size:12px;cursor:pointer;color:var(--text-3);">Clear Dates</button>
         <div style="font-size:12px;color:var(--text-3);margin-left:auto;" id="audit-count-label"></div>
       </div>
 
@@ -2696,9 +2748,13 @@ input, select, textarea {
 
       <!-- Submission history -->
       <div class="affixing-history">
-        <div class="affixing-history-header" style="display:flex;align-items:center;justify-content:space-between;">
-          <span>My Affixing Submissions</span>
-          <span style="font-size:11px;color:var(--text-3);font-weight:400;" id="aff-history-count"></span>
+        <div class="affixing-history-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 14px;">
+          <span style="font-size:14px;font-weight:700;">My Affixing Submissions</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input type="date" id="aff-date-filter" class="form-input" style="height:34px;width:160px;font-size:12px;" oninput="renderAffixingHistory()" title="Filter by date">
+            <button onclick="document.getElementById('aff-date-filter').value='';renderAffixingHistory();" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:none;font-size:11px;cursor:pointer;color:var(--text-3);">Clear</button>
+            <span style="font-size:11px;color:var(--text-3);font-weight:400;" id="aff-history-count"></span>
+          </div>
         </div>
         <div id="aff-history-list">
           <div style="padding:2rem;text-align:center;color:var(--text-3);font-size:13px;">No submissions yet.</div>
@@ -2815,7 +2871,8 @@ input, select, textarea {
         <button class="chart-tab" onclick="switchAttendFilter('unconfirmed',this)">Unconfirmed</button>
         <button class="chart-tab" onclick="switchAttendFilter('faulty',this)">Faulty Devices</button>
         <button class="chart-tab" onclick="switchAttendFilter('trips',this)">Trip Records</button>
-        <button class="chart-tab" onclick="switchAttendFilter('affixing',this)">Affixing</button>
+        <button class="chart-tab" onclick="switchAttendFilter('affixing',this)">Affixing (Faulty)</button>
+        <button class="chart-tab" onclick="switchAttendFilter('resolved',this)">Resolved</button>
         <button class="chart-tab" onclick="switchAttendFilter('confirmed',this)">Confirmed</button>
         <button class="chart-tab" onclick="switchAttendFilter('today',this)">Today Only</button>
       </div>
@@ -5395,6 +5452,28 @@ function switchAttendFilter(filter, btn) {
   renderAttend();
 }
 
+function markFaultyResolved(idx) {
+  if (!DB.trips[idx]) return;
+  const trip = DB.trips[idx];
+  DB.trips[idx].faultyResolved = true;
+  DB.trips[idx].faultyResolvedBy = currentUser.fullname;
+  DB.trips[idx].faultyResolvedAt = nowStr();
+  const entryType = trip.entryType === 'affixing' ? 'affixing submission' : 'trip record';
+  addActivity('edit', currentUser.fullname + ' marked faulty devices as Resolved — ' + entryType +
+    (trip.station ? ' at ' + trip.station : '') + ' (' + (trip.faulty||0) + ' device(s))');
+  pushNotif({
+    text: 'Faulty device' + ((trip.faulty||0)===1?'':'s') + ' from ' + trip.user + ' marked as Resolved by ' + currentUser.fullname + '.',
+    type: 'activity', roles: ['staff', 'manager', 'supervisor'],
+    detail: 'Resolved by: ' + currentUser.fullname + '\nAt: ' + nowStr() +
+      (trip.station ? '\nStation: ' + trip.station : '') +
+      '\nFaulty count: ' + (trip.faulty||0) +
+      ((trip.deviceNums||[]).length ? '\nDevice Nos: ' + trip.deviceNums.join(', ') : '')
+  });
+  saveDB();
+  renderAttend();
+  toast('Marked as resolved.', 'success');
+}
+
 function confirmEntry(idx) {
   if(!DB.trips[idx]) return;
   const trip = DB.trips[idx];
@@ -5517,31 +5596,157 @@ function setupAffixingPage() {
 }
 
 function renderAffixingHistory() {
-  const list = document.getElementById('aff-history-list');
+  const list    = document.getElementById('aff-history-list');
   const countEl = document.getElementById('aff-history-count');
   if (!list || !currentUser) return;
-  const entries = (DB.trips || []).filter(t => t.entryType === 'affixing' && t.user === currentUser.fullname)
-    .sort((a,b) => new Date(b.rawTs) - new Date(a.rawTs));
+
+  const dateFilter = document.getElementById('aff-date-filter')?.value || '';
+
+  let entries = (DB.trips || [])
+    .map((t, idx) => ({...t, _idx: idx}))
+    .filter(t => t.entryType === 'affixing' && t.user === currentUser.fullname);
+
+  if (dateFilter) {
+    entries = entries.filter(t => {
+      try { return new Date(t.rawTs || t.ts).toDateString() === new Date(dateFilter + 'T12:00:00').toDateString(); }
+      catch(e) { return false; }
+    });
+  }
+
+  entries.sort((a, b) => new Date(b.rawTs||0) - new Date(a.rawTs||0));
+
   if (countEl) countEl.textContent = entries.length + ' record' + (entries.length !== 1 ? 's' : '');
+
   if (!entries.length) {
-    list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);font-size:13px;">No submissions yet.</div>';
+    list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);font-size:13px;">' + (dateFilter ? 'No submissions on that date.' : 'No submissions yet.') + '</div>';
     return;
   }
-  list.innerHTML = entries.map(e => `
-    <div class="affixing-history-item">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
-        <strong style="font-size:13px;">${e.ts}</strong>
-        <span class="affixing-status-badge ${e.confirmed ? 'affixing-status-confirmed' : 'affixing-status-pending'}">${e.confirmed ? 'Confirmed' : 'Pending'}</span>
+
+  list.innerHTML = entries.map(e => {
+    const hasFaulty = (e.faulty||0) > 0;
+    const statusColor = e.confirmed ? 'var(--success)' : 'var(--warning)';
+    const statusLabel = e.confirmed ? 'Confirmed' : 'Pending';
+    const resolvedBadge = e.faultyResolved
+      ? `<span style="background:var(--success-bg);color:var(--success);border:1px solid var(--success);border-radius:4px;font-size:10px;font-weight:700;padding:1px 7px;margin-left:6px;">RESOLVED</span>`
+      : '';
+
+    return `<div class="affixing-history-item">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);">${e.ts}</div>
+          <span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:4px;background:${e.confirmed?'var(--success-bg)':'var(--warning-bg)'};color:${statusColor};">${statusLabel}</span>
+          ${resolvedBadge}
+        </div>
+        <button onclick="openAffixingEdit(${e._idx})"
+          style="padding:5px 14px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text-2);font-family:'Calibri',Calibri,sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s;"
+          onmouseover="this.style.background='var(--accent)';this.style.color='#fff';this.style.borderColor='var(--accent)';"
+          onmouseout="this.style.background='var(--bg2)';this.style.color='var(--text-2)';this.style.borderColor='var(--border)';">
+          Edit
+        </button>
       </div>
-      <div style="font-size:12px;color:var(--text-2);">
-        Allocated: <strong>${e.allocated||0}</strong> &nbsp;·&nbsp;
-        Affixed: <strong>${e.affixed||0}</strong> &nbsp;·&nbsp;
-        Faulty: <strong style="color:${(e.faulty||0)>0?'var(--danger)':'var(--text-2)'};">${e.faulty||0}</strong>
-        ${e.remarks ? ' &nbsp;·&nbsp; ' + e.remarks : ''}
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;font-size:12px;margin-bottom:${e.editHistory?'6px':'0'};">
+        <div style="background:var(--bg2);border-radius:6px;padding:6px 10px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-3);margin-bottom:2px;">Allocated</div>
+          <div style="font-weight:700;">${e.allocated||0}</div>
+        </div>
+        <div style="background:var(--bg2);border-radius:6px;padding:6px 10px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-3);margin-bottom:2px;">Affixed</div>
+          <div style="font-weight:700;">${e.affixed||0}</div>
+        </div>
+        <div style="background:${hasFaulty?'var(--danger-bg)':'var(--bg2)'};border-radius:6px;padding:6px 10px;${hasFaulty?'border:1px solid var(--danger);':''}">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:${hasFaulty?'var(--danger)':'var(--text-3)'};margin-bottom:2px;">Faulty</div>
+          <div style="font-weight:700;color:${hasFaulty?'var(--danger)':'var(--text)'};">${e.faulty||0}</div>
+        </div>
+        <div style="background:var(--bg2);border-radius:6px;padding:6px 10px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-3);margin-bottom:2px;">Unaffixed</div>
+          <div style="font-weight:700;color:${((e.allocated||0)-(e.affixed||0))>0?'var(--warning)':'var(--text)'};">${Math.max(0,(e.allocated||0)-(e.affixed||0))}</div>
+        </div>
       </div>
-      ${e.confirmed ? '<div style="font-size:11px;color:var(--success);margin-top:3px;">Confirmed by ' + e.confirmedBy + ' at ' + e.confirmedAt + '</div>' : ''}
-      ${(e.deviceNums||[]).length ? '<div style="font-size:11px;color:var(--text-3);margin-top:3px;">Device Nos: ' + e.deviceNums.join(', ') + '</div>' : ''}
-    </div>`).join('');
+      ${e.remarks ? `<div style="font-size:11px;color:var(--text-3);font-style:italic;margin-top:4px;">"${e.remarks}"</div>` : ''}
+      ${e.confirmed ? `<div style="font-size:11px;color:var(--success);margin-top:4px;">Confirmed by ${e.confirmedBy} · ${e.confirmedAt}</div>` : ''}
+      ${(e.deviceNums||[]).length ? `<div style="font-size:11px;color:var(--danger);margin-top:4px;">Faulty Device Nos: ${e.deviceNums.join(', ')}</div>` : ''}
+      ${e.editHistory?.length ? `
+        <div style="margin-top:8px;padding:8px 10px;background:var(--warning-bg);border:1px solid var(--warning);border-radius:6px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--warning);margin-bottom:4px;">Edit History</div>
+          ${e.editHistory.map(h => `<div style="font-size:11px;color:var(--text-2);margin-bottom:2px;">· ${h.at} — <strong>${h.by}</strong>: ${h.reason}</div>`).join('')}
+        </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function openAffixingEdit(idx) {
+  const t = DB.trips[idx];
+  if (!t) return;
+  document.getElementById('aff-edit-idx').value     = idx;
+  document.getElementById('aff-edit-subtitle').textContent = 'Submitted ' + t.ts;
+  document.getElementById('aff-edit-allocated').value = t.allocated || 0;
+  document.getElementById('aff-edit-affixed').value   = t.affixed || 0;
+  document.getElementById('aff-edit-faulty').value    = t.faulty || 0;
+  document.getElementById('aff-edit-remarks').value   = t.remarks || '';
+  document.getElementById('aff-edit-reason').value    = '';
+  document.getElementById('aff-edit-msg').classList.add('hidden');
+  document.getElementById('aff-edit-modal').classList.remove('hidden');
+}
+
+function saveAffixingEdit() {
+  const idx      = parseInt(document.getElementById('aff-edit-idx').value);
+  const t        = DB.trips[idx];
+  const msgEl    = document.getElementById('aff-edit-msg');
+  if (!t) return;
+
+  const allocated = parseInt(document.getElementById('aff-edit-allocated').value);
+  const affixed   = parseInt(document.getElementById('aff-edit-affixed').value);
+  const faulty    = parseInt(document.getElementById('aff-edit-faulty').value) || 0;
+  const remarks   = document.getElementById('aff-edit-remarks').value.trim();
+  const reason    = document.getElementById('aff-edit-reason').value.trim();
+
+  if (isNaN(allocated) || allocated < 0) { msgEl.textContent = 'Enter a valid allocated count.'; msgEl.classList.remove('hidden'); return; }
+  if (isNaN(affixed)   || affixed < 0)   { msgEl.textContent = 'Enter a valid affixed count.';   msgEl.classList.remove('hidden'); return; }
+  if (!reason) { msgEl.textContent = 'A reason for the change is required.'; msgEl.classList.remove('hidden'); return; }
+
+  // Store edit history on the entry
+  if (!DB.trips[idx].editHistory) DB.trips[idx].editHistory = [];
+  DB.trips[idx].editHistory.push({
+    by: currentUser.fullname, at: nowStr(), rawTs: new Date().toISOString(), reason
+  });
+
+  const before = { allocated: t.allocated, affixed: t.affixed, faulty: t.faulty, remarks: t.remarks };
+  DB.trips[idx].allocated = allocated;
+  DB.trips[idx].affixed   = affixed;
+  DB.trips[idx].faulty    = faulty;
+  DB.trips[idx].remarks   = remarks;
+  DB.trips[idx].editedBy  = currentUser.fullname;
+  DB.trips[idx].editedAt  = nowStr();
+
+  // Permanently file to audit trail as 'edit' with full detail
+  const detail = 'Edited by: ' + currentUser.fullname + '\nAt: ' + nowStr() +
+    '\nReason: ' + reason +
+    '\nBefore → Allocated: ' + before.allocated + ', Affixed: ' + before.affixed + ', Faulty: ' + (before.faulty||0) +
+    '\nAfter  → Allocated: ' + allocated + ', Affixed: ' + affixed + ', Faulty: ' + faulty +
+    (remarks ? '\nRemarks: ' + remarks : '');
+
+  // Add to activity with full detail (permanently stored)
+  if (!DB.activity) DB.activity = [];
+  DB.activity.unshift({
+    type: 'edit',
+    text: currentUser.fullname + ' edited affixing submission (submitted ' + t.ts + '). Reason: ' + reason,
+    detail,
+    time: nowStr(),
+    rawTs: new Date().toISOString()
+  });
+  if (DB.activity.length > 500) DB.activity.pop(); // keep more for audit
+
+  pushNotif({
+    text: currentUser.fullname + ' edited an affixing submission. Reason: ' + reason,
+    type: 'activity', roles: ['manager', 'supervisor'],
+    detail
+  });
+
+  saveDB();
+  document.getElementById('aff-edit-modal').classList.add('hidden');
+  toast('Affixing entry updated and filed to Audit Trail.', 'success');
+  renderAffixingHistory();
+  updateAttendBadge();
 }
 
 function submitAffixing() {
@@ -5753,9 +5958,10 @@ function confirmAllEntries() {
 }
 
 function renderAttend() {
+  // Affixing entries only appear on Attend if they have faulty devices
   const allEntries = (DB.trips || [])
     .map((t, idx) => ({...t, _idx: idx}))
-    .filter(t => t.entryType === 'staff-record' || t.entryType === 'affixing');
+    .filter(t => t.entryType === 'staff-record' || (t.entryType === 'affixing' && (t.faulty||0) > 0));
 
   const today = new Date().toDateString();
 
@@ -5764,8 +5970,9 @@ function renderAttend() {
   if (currentAttendFilter === 'unconfirmed')  entries = entries.filter(t => !t.confirmed);
   else if (currentAttendFilter === 'faulty')  entries = entries.filter(t => (t.faulty||0) > 0);
   else if (currentAttendFilter === 'confirmed') entries = entries.filter(t => t.confirmed);
+  else if (currentAttendFilter === 'resolved') entries = entries.filter(t => t.faultyResolved);
   else if (currentAttendFilter === 'today')   entries = entries.filter(t => { try{ return new Date(t.rawTs||t.ts).toDateString()===today; }catch(e){return false;} });
-  else if (currentAttendFilter === 'affixing') entries = entries.filter(t => t.entryType === 'affixing');
+  else if (currentAttendFilter === 'affixing') entries = entries.filter(t => t.entryType === 'affixing' && (t.faulty||0) > 0);
   else if (currentAttendFilter === 'trips')    entries = entries.filter(t => t.entryType === 'staff-record');
 
   const unconfirmedCount = allEntries.filter(t => !t.confirmed).length;
@@ -5912,11 +6119,18 @@ function renderAttend() {
               ? `<span class="confirmed-stamp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg> Confirmed by <strong>${t.confirmedBy}</strong> · ${t.confirmedAt}</span>`
               : `<span style="font-size:12px;color:var(--warning);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;">Pending Confirmation</span>`
             }
+            ${t.faultyResolved ? `<span style="margin-left:10px;font-size:11px;font-weight:700;color:var(--success);background:var(--success-bg);border:1px solid var(--success);border-radius:4px;padding:2px 8px;">RESOLVED</span>` : ''}
           </div>
-          ${!t.confirmed
-            ? `<button class="btn-confirm-entry" onclick="confirmEntry(${t._idx})">Confirm Receipt</button>`
-            : `<button class="btn-confirm-entry confirmed-btn" disabled>Confirmed</button>`
-          }
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            ${hasFaulty && !t.faultyResolved
+              ? `<button onclick="markFaultyResolved(${t._idx})" style="padding:8px 14px;border-radius:7px;border:1.5px solid var(--success);background:var(--success-bg);color:var(--success);font-family:'Calibri',Calibri,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='var(--success)';this.style.color='#fff';" onmouseout="this.style.background='var(--success-bg)';this.style.color='var(--success)';">Resolved</button>`
+              : ''
+            }
+            ${!t.confirmed
+              ? `<button class="btn-confirm-entry" onclick="confirmEntry(${t._idx})">Confirm Receipt</button>`
+              : `<button class="btn-confirm-entry confirmed-btn" disabled>Confirmed</button>`
+            }
+          </div>
         </div>
       </div>`;
   }).join('');
@@ -7467,12 +7681,22 @@ function renderAudit() {
   const typeFilter = document.getElementById('audit-type-filter')?.value || '';
   const userFilter = document.getElementById('audit-user-filter')?.value || '';
   const searchTerm = (document.getElementById('audit-search')?.value || '').toLowerCase();
+  const dateFrom   = document.getElementById('audit-date-from')?.value || '';
+  const dateTo     = document.getElementById('audit-date-to')?.value || '';
 
   let entries = [...(DB.activity || [])];
 
   if (typeFilter) entries = entries.filter(a => a.type === typeFilter);
   if (userFilter) entries = entries.filter(a => a.text && a.text.includes(userFilter));
   if (searchTerm) entries = entries.filter(a => (a.text||'').toLowerCase().includes(searchTerm));
+  if (dateFrom) entries = entries.filter(a => {
+    if (!a.rawTs) return true;
+    return new Date(a.rawTs) >= new Date(dateFrom + 'T00:00:00');
+  });
+  if (dateTo) entries = entries.filter(a => {
+    if (!a.rawTs) return true;
+    return new Date(a.rawTs) <= new Date(dateTo + 'T23:59:59');
+  });
 
   const countEl = document.getElementById('audit-count-label');
   if (countEl) countEl.textContent = entries.length + ' record' + (entries.length !== 1 ? 's' : '');
@@ -7485,21 +7709,52 @@ function renderAudit() {
     return;
   }
 
-  const dotClass  = { login:'audit-dot-login', entry:'audit-dot-entry', edit:'audit-dot-edit', alert:'audit-dot-alert', delete:'audit-dot-delete' };
+  const dotClass   = { login:'audit-dot-login', entry:'audit-dot-entry', edit:'audit-dot-edit', alert:'audit-dot-alert', delete:'audit-dot-delete' };
   const badgeClass = { login:'audit-badge-login', entry:'audit-badge-entry', edit:'audit-badge-edit', alert:'audit-badge-alert', delete:'audit-badge-delete' };
   const typeLabel  = { login:'Auth', entry:'Entry', edit:'Edit', alert:'Alert', delete:'Delete' };
 
-  list.innerHTML = entries.map(a => `
-    <div class="audit-row">
+  list.innerHTML = entries.map((a, i) => {
+    const timeStr = a.rawTs
+      ? new Date(a.rawTs).toLocaleString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'})
+      : a.time || '—';
+    const encodedIdx = i;
+    return `<div class="audit-row" onclick="openAuditDetail(${encodedIdx})" style="cursor:pointer;" title="Click to view full details">
       <div class="audit-dot ${dotClass[a.type]||'audit-dot-edit'}"></div>
       <div class="audit-body">
         <div class="audit-text">
           <span class="audit-type-badge ${badgeClass[a.type]||'audit-badge-edit'}">${typeLabel[a.type]||a.type}</span>
           ${a.text||'—'}
         </div>
-        <div class="audit-meta">${a.rawTs ? new Date(a.rawTs).toLocaleString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'}) : a.time||'—'}</div>
+        <div class="audit-meta">${timeStr}</div>
       </div>
-    </div>`).join('');
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px;"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>`;
+  }).join('');
+
+  // Store filtered entries for detail lookup
+  window._auditFilteredEntries = entries;
+}
+
+function openAuditDetail(idx) {
+  const entries = window._auditFilteredEntries || (DB.activity||[]);
+  const a = entries[idx];
+  if (!a) return;
+
+  const timeStr = a.rawTs
+    ? new Date(a.rawTs).toLocaleString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'})
+    : a.time || '—';
+  const badgeClass = { login:'audit-badge-login', entry:'audit-badge-entry', edit:'audit-badge-edit', alert:'audit-badge-alert', delete:'audit-badge-delete' };
+  const typeLabel  = { login:'Auth', entry:'Entry', edit:'Edit', alert:'Alert', delete:'Delete' };
+
+  const modal = document.getElementById('audit-detail-modal');
+  document.getElementById('audit-detail-badge').textContent  = typeLabel[a.type] || a.type;
+  document.getElementById('audit-detail-badge').className    = 'audit-type-badge ' + (badgeClass[a.type]||'audit-badge-edit');
+  document.getElementById('audit-detail-text').textContent   = a.text || '—';
+  document.getElementById('audit-detail-time').textContent   = timeStr;
+  document.getElementById('audit-detail-extra').innerHTML    = a.detail
+    ? `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--text-2);line-height:1.8;white-space:pre-wrap;">${a.detail}</div>`
+    : '<div style="color:var(--text-3);font-size:13px;font-style:italic;">No additional details recorded.</div>';
+  modal.classList.remove('hidden');
 }
 
 function exportAuditCSV() {
@@ -7533,10 +7788,11 @@ function detectAnomalies() {
   });
 
   Object.entries(userStats).forEach(([user, s]) => {
-    if (s.totalDevices < 5) return; // not enough data
+    if (s.totalDevices < 5) return;
     const rate = s.totalFaulty / s.totalDevices;
     if (rate > 0.3) {
       anomalies.push({
+        id: 'faulty_rate_' + user.replace(/\s/g,'_'),
         title: 'High Faulty Device Rate — ' + user,
         desc: Math.round(rate*100) + '% of devices reported faulty (' + s.totalFaulty + ' of ' + s.totalDevices + '). Threshold is 30%.',
         severity: 'high'
@@ -7553,27 +7809,20 @@ function detectAnomalies() {
   Object.entries(boeStations).forEach(([boe, stations]) => {
     if (stations.size > 1) {
       anomalies.push({
+        id: 'boe_multi_' + boe,
         title: 'BOE Used Across Multiple Stations — ' + boe,
-        desc: 'BOE ' + boe + ' has entries at: ' + [...stations].join(', ') + '. This may indicate an error.',
+        desc: 'BOE ' + boe + ' has entries at: ' + [...stations].join(', ') + '. This may indicate a data entry error.',
         severity: 'high'
       });
     }
   });
 
-  // 3. Unusually high trip count in a single entry (outlier: >10 trips in one entry)
-  trips.filter(t => (t.trips||0) > 10).forEach(t => {
-    anomalies.push({
-      title: 'Unusually High Trip Count — ' + t.user,
-      desc: t.user + ' logged ' + t.trips + ' trips in a single entry at ' + t.station + ' on ' + t.ts + '. Please verify.',
-      severity: 'medium'
-    });
-  });
-
-  // 4. Staff member with zero confirmed entries (all pending for >1 day)
+  // 3. Staff member with 3+ unconfirmed entries older than 24 hours
   Object.entries(userStats).forEach(([user, s]) => {
     const unconfirmedOld = s.trips.filter(t => !t.confirmed && t.rawTs && (Date.now()-new Date(t.rawTs).getTime())>86400000);
     if (unconfirmedOld.length >= 3) {
       anomalies.push({
+        id: 'unconfirmed_' + user.replace(/\s/g,'_'),
         title: 'Multiple Unconfirmed Entries — ' + user,
         desc: user + ' has ' + unconfirmedOld.length + ' entries pending confirmation for over 24 hours.',
         severity: 'medium'
@@ -7581,28 +7830,72 @@ function detectAnomalies() {
     }
   });
 
-  return anomalies;
+  // Filter out anomalies that have been marked Done
+  const resolved = DB.anomalyResolved || {};
+  return anomalies.filter(a => !resolved[a.id]);
+}
+
+function getAnomalyHistory() {
+  // Returns all anomalies ever resolved (stored permanently)
+  return DB.anomalyHistory || [];
+}
+
+function markAnomalyDone(anomalyId, title) {
+  if (!DB.anomalyResolved) DB.anomalyResolved = {};
+  if (!DB.anomalyHistory) DB.anomalyHistory = [];
+  DB.anomalyResolved[anomalyId] = { by: currentUser.fullname, at: nowStr(), rawTs: new Date().toISOString() };
+  DB.anomalyHistory.push({
+    id: anomalyId, title, resolvedBy: currentUser.fullname,
+    resolvedAt: nowStr(), rawTs: new Date().toISOString()
+  });
+  addActivity('edit', currentUser.fullname + ' marked anomaly as Done: ' + title);
+  saveDB();
+  renderAuditAnomalies();
+  toast('Anomaly marked as resolved.', 'success');
 }
 
 function renderAuditAnomalies() {
   const section = document.getElementById('audit-anomaly-section');
   if (!section) return;
   const anomalies = detectAnomalies();
-  if (!anomalies.length) { section.innerHTML = ''; return; }
+  const history   = getAnomalyHistory();
 
-  section.innerHTML = `
-    <div class="anomaly-banner">
+  let html = '';
+
+  if (anomalies.length > 0) {
+    html += `<div class="anomaly-banner" style="margin-bottom:8px;">
       <div class="anomaly-banner-icon">!</div>
       <div>
-        <div style="font-size:14px;font-weight:700;margin-bottom:2px;">${anomalies.length} Anomal${anomalies.length===1?'y':'ies'} Detected</div>
-        <div style="font-size:12px;opacity:0.85;">These patterns in the data require your attention</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px;">${anomalies.length} Active Anomal${anomalies.length===1?'y':'ies'}</div>
+        <div style="font-size:12px;opacity:0.85;">These patterns require your attention. Click Done once resolved.</div>
       </div>
-    </div>
-    ${anomalies.map(a => `
-      <div class="anomaly-item">
-        <div class="anomaly-item-title">${a.title}</div>
-        <div class="anomaly-item-desc">${a.desc}</div>
-      </div>`).join('')}`;
+    </div>`;
+    html += anomalies.map(a => `
+      <div class="anomaly-item" style="display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;">
+        <div style="flex:1;">
+          <div class="anomaly-item-title">${a.title}</div>
+          <div class="anomaly-item-desc">${a.desc}</div>
+        </div>
+        <button onclick="markAnomalyDone('${a.id}','${a.title.replace(/'/g,"\\'")}');"
+          style="flex-shrink:0;padding:6px 14px;border-radius:7px;border:1.5px solid var(--success);background:var(--success-bg);color:var(--success);font-family:'Calibri',Calibri,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s;white-space:nowrap;"
+          onmouseover="this.style.background='var(--success)';this.style.color='#fff';"
+          onmouseout="this.style.background='var(--success-bg)';this.style.color='var(--success)';">Done</button>
+      </div>`).join('');
+  }
+
+  if (history.length > 0) {
+    html += `<div style="margin-top:${anomalies.length?'12px':'0'};background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);margin-bottom:8px;">Resolved Anomalies History</div>
+      ${history.slice().reverse().map(h => `
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-2);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span style="flex:1;">${h.title}</span>
+          <span style="color:var(--text-3);font-size:11px;">Resolved by ${h.resolvedBy} · ${h.resolvedAt}</span>
+        </div>`).join('')}
+    </div>`;
+  }
+
+  section.innerHTML = html;
 }
 
 let _anomalyCheckedThisSession = false;
