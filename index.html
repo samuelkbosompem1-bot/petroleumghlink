@@ -422,6 +422,26 @@ select.form-input option { background:var(--bg); color:var(--text); }
 .nav-overflow-item:hover { background:var(--bg2); color:var(--text); }
 .nav-overflow-item.active { color:var(--accent); background:var(--accent-light); font-weight:700; }
 .nav-overflow-divider { height:1px; background:var(--border); margin:4px 0; }
+/* ── BOE CUSTOM AUTOCOMPLETE ── */
+.boe-wrap { position:relative; }
+.boe-dropdown {
+  position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:500;
+  background:var(--bg); border:1.5px solid var(--accent); border-radius:8px;
+  box-shadow:var(--shadow-md); max-height:200px; overflow-y:auto;
+  display:none; flex-direction:column; scrollbar-width:thin;
+}
+.boe-dropdown.open { display:flex; }
+.boe-option {
+  padding:9px 14px; font-size:13px; cursor:pointer; color:var(--text);
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  border-bottom:1px solid var(--border); transition:background 0.1s; flex-shrink:0;
+}
+.boe-option:last-child { border-bottom:none; }
+.boe-option:hover, .boe-option.highlighted { background:var(--accent-light); color:var(--accent); }
+.boe-option-code { font-weight:700; letter-spacing:1px; font-size:13px; }
+.boe-option-meta { font-size:11px; color:var(--text-3); white-space:nowrap; }
+.boe-no-results { padding:10px 14px; font-size:12px; color:var(--text-3); font-style:italic; }
+
 .audit-row { display:flex; gap:12px; padding:10px 16px; border-bottom:1px solid var(--border); align-items:flex-start; transition:background 0.12s; }
 .audit-row:hover { background:var(--bg2); }
 .audit-row:last-child { border-bottom:none; }
@@ -1646,8 +1666,7 @@ input, select, textarea {
   </button>
 </nav>
 
-<!-- Shared BOE datalist — populated dynamically from all known BOEs -->
-<datalist id="boe-datalist"></datalist>
+<!-- BOE search handled by custom autocomplete -->
 
 <!-- ════════════ PAGE: SIGN UP ════════════ -->
 <div class="page" id="page-signup">
@@ -2083,7 +2102,14 @@ input, select, textarea {
           </div>
           <div class="form-row">
             <label class="form-label">BOE Number <span style="color:var(--text-3);font-weight:400;">(optional — 11 digits)</span></label>
-            <input class="form-input" id="trip-boe" type="text" maxlength="11" placeholder="00000000000" list="boe-datalist" autocomplete="off" oninput="onBoeInput(this,'boe-counter2',null)">
+            <div class="boe-wrap" id="wrap-trip-boe">
+              <input class="form-input" id="trip-boe" type="text" maxlength="11" placeholder="00000000000" autocomplete="off"
+                oninput="onBoeInput(this,'boe-counter2',null);handleBoeSearch('trip-boe')"
+                onkeydown="boeKeydown(event,'trip-boe')"
+                onfocus="handleBoeSearch('trip-boe')"
+                onblur="setTimeout(()=>closeBoeDropdown('trip-boe'),180)">
+              <div class="boe-dropdown" id="boe-dd-trip-boe"></div>
+            </div>
             <div class="boe-note" id="boe-counter2">0 / 11 digits</div>
           </div>
           <div class="form-row">
@@ -2176,7 +2202,14 @@ input, select, textarea {
       </div>
       <div class="form-row">
         <label class="form-label">BOE Number <span style="color:var(--text-3);font-weight:400">(11 digits — required)</span></label>
-        <input class="form-input" id="e-boe" type="text" maxlength="11" placeholder="00000000000" list="boe-datalist" autocomplete="off" oninput="onBoeInput(this,'e-boe-counter',null)">
+        <div class="boe-wrap" id="wrap-e-boe">
+          <input class="form-input" id="e-boe" type="text" maxlength="11" placeholder="00000000000" autocomplete="off"
+            oninput="onBoeInput(this,'e-boe-counter',null);handleBoeSearch('e-boe')"
+            onkeydown="boeKeydown(event,'e-boe')"
+            onfocus="handleBoeSearch('e-boe')"
+            onblur="setTimeout(()=>closeBoeDropdown('e-boe'),180)">
+          <div class="boe-dropdown" id="boe-dd-e-boe"></div>
+        </div>
         <div class="boe-note" id="e-boe-counter">0 / 11 digits</div>
       </div>
       <div class="form-row">
@@ -2310,7 +2343,14 @@ input, select, textarea {
 
           <div class="form-row">
             <label class="form-label">BOE Number <span style="color:var(--danger);">*</span> <span style="color:var(--text-3);font-weight:400;font-size:11px;">(exactly 11 digits)</span></label>
-            <input class="form-input" id="r-boe" type="text" maxlength="11" placeholder="00000000000" list="boe-datalist" autocomplete="off" oninput="onBoeInput(this,'r-boe-counter','r-expected-trips')">
+            <div class="boe-wrap" id="wrap-r-boe">
+              <input class="form-input" id="r-boe" type="text" maxlength="11" placeholder="00000000000" autocomplete="off"
+                oninput="onBoeInput(this,'r-boe-counter','r-expected-trips');handleBoeSearch('r-boe')"
+                onkeydown="boeKeydown(event,'r-boe')"
+                onfocus="handleBoeSearch('r-boe')"
+                onblur="setTimeout(()=>closeBoeDropdown('r-boe'),180)">
+              <div class="boe-dropdown" id="boe-dd-r-boe"></div>
+            </div>
             <div style="display:flex;justify-content:space-between;margin-top:4px;">
               <div style="font-size:11px;color:var(--text-3);" id="r-boe-counter">0 / 11 digits</div>
               <div style="font-size:11px;color:var(--danger);display:none;" id="r-boe-warn">Must be exactly 11 digits</div>
@@ -2648,20 +2688,21 @@ input, select, textarea {
 
       <!-- Filters -->
       <div class="audit-filter-bar">
-        <select class="form-input" id="audit-type-filter" style="width:160px;height:36px;" onchange="renderAudit()">
+        <select class="form-input" id="audit-type-filter" style="width:160px;height:36px;">
           <option value="">All Types</option>
           <option value="login">Login / Auth</option>
           <option value="entry">Trip Entries</option>
           <option value="edit">Edits</option>
           <option value="alert">Alerts</option>
         </select>
-        <select class="form-input" id="audit-user-filter" style="width:180px;height:36px;" onchange="renderAudit()">
+        <select class="form-input" id="audit-user-filter" style="width:180px;height:36px;">
           <option value="">All Users</option>
         </select>
-        <input type="date" id="audit-date-from" class="form-input" style="height:36px;width:155px;" oninput="renderAudit()" title="From date">
-        <input type="date" id="audit-date-to" class="form-input" style="height:36px;width:155px;" oninput="renderAudit()" title="To date">
-        <input class="form-input" id="audit-search" type="text" placeholder="Search..." style="width:180px;height:36px;" oninput="renderAudit()">
-        <button onclick="document.getElementById('audit-date-from').value='';document.getElementById('audit-date-to').value='';renderAudit();" style="padding:7px 12px;border-radius:7px;border:1.5px solid var(--border);background:none;font-size:12px;cursor:pointer;color:var(--text-3);">Clear Dates</button>
+        <input type="date" id="audit-date-from" class="form-input" style="height:36px;width:155px;" title="From date">
+        <input type="date" id="audit-date-to" class="form-input" style="height:36px;width:155px;" title="To date">
+        <input class="form-input" id="audit-search" type="text" placeholder="Search..." style="width:180px;height:36px;">
+        <button onclick="renderAudit()" style="padding:7px 18px;border-radius:7px;border:none;background:var(--accent);color:#fff;font-family:'Calibri',Calibri,sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;transition:opacity 0.15s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">COMB</button>
+        <button onclick="document.getElementById('audit-date-from').value='';document.getElementById('audit-date-to').value='';document.getElementById('audit-type-filter').value='';document.getElementById('audit-user-filter').value='';document.getElementById('audit-search').value='';renderAudit();" style="padding:7px 12px;border-radius:7px;border:1.5px solid var(--border);background:none;font-size:12px;cursor:pointer;color:var(--text-3);">Clear All</button>
         <div style="font-size:12px;color:var(--text-3);margin-left:auto;" id="audit-count-label"></div>
       </div>
 
@@ -2729,12 +2770,12 @@ input, select, textarea {
               <span style="background:var(--warning-bg);color:var(--warning);font-size:10px;padding:1px 7px;border-radius:4px;font-weight:600;margin-left:4px;">10 digits each</span>
             </label>
             <div class="device-tag-wrap" id="aff-device-tag-wrap" onclick="document.getElementById('aff-device-input').focus()">
-              <input class="device-tag-input" id="aff-device-input" type="text" maxlength="10"
-                placeholder="Type 10-digit number, press Enter to add"
-                oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);"
+              <input class="device-tag-input" id="aff-device-input" type="text" maxlength="12"
+                placeholder="Type 10–12 digit number, press Enter to add"
+                oninput="this.value=this.value.replace(/\D/g,'').slice(0,12);"
                 onkeydown="handleAffixingDeviceKey(event)">
             </div>
-            <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Press <strong>Enter</strong> or <strong>,</strong> after each 10-digit number.</div>
+            <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Press <strong>Enter</strong> or <strong>,</strong> after each number (10, 11, or 12 digits accepted).</div>
             <div style="font-size:11px;color:var(--danger);margin-top:3px;display:none;" id="aff-device-err"></div>
           </div>
           <div class="form-row">
@@ -3111,13 +3152,22 @@ input, select, textarea {
           <!-- Left: BOE number -->
           <div>
             <label class="form-label">BOE Number <span style="color:var(--danger);">*</span></label>
+            <div class="boe-wrap" id="wrap-qr-boe">
             <input class="form-input" id="qr-boe" type="text" maxlength="11" placeholder="Enter 11-digit BOE number"
-              list="boe-datalist" autocomplete="off"
+              autocomplete="off"
               oninput="this.value=this.value.replace(/\D/g,'').slice(0,11);
                        const n=this.value.length;
-                       const c=document.getElementById('qr-boe-count');
-                       c.textContent=n+' / 11 digits';
-                       c.style.color=n>0&&n!==11?'#c0392b':'var(--text-3)';
+                       const ct=document.getElementById('qr-boe-count');
+                       ct.textContent=n+' / 11 digits';
+                       ct.style.color=n>0&&n!==11?'#c0392b':'var(--text-3)';
+                       this.classList.toggle('err',n>0&&n!==11);
+                       if(n===11) autoFillBoeExpected(this.value,'qr-expected');
+                       handleBoeSearch('qr-boe');"
+              onkeydown="boeKeydown(event,'qr-boe')"
+              onfocus="handleBoeSearch('qr-boe')"
+              onblur="setTimeout(()=>closeBoeDropdown('qr-boe'),180)">
+            <div class="boe-dropdown" id="boe-dd-qr-boe"></div>
+            </div>0&&n!==11?'#c0392b':'var(--text-3)';
                        this.classList.toggle('err',n>0&&n!==11);
                        if(n===11) autoFillBoeExpected(this.value,'qr-expected');">
             <div style="font-size:11px;color:var(--text-3);margin-top:4px;" id="qr-boe-count">0 / 11 digits</div>
@@ -3258,7 +3308,7 @@ input, select, textarea {
           <button class="summary-period-tab" onclick="setSummaryPeriod('last_3',this)">Last 3 Months</button>
           <button class="summary-period-tab" onclick="setSummaryPeriod('all',this)">All Time</button>
         </div>
-        <button class="summary-print-btn" onclick="window.print()">
+        <button class="summary-print-btn" onclick="exportSummaryReport()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Print / Export
         </button>
@@ -3483,7 +3533,14 @@ input, select, textarea {
       </div>
       <div class="form-row">
         <label class="form-label">BOE Number <span style="font-size:11px;color:var(--text-3);font-weight:400;">(11 digits)</span></label>
-        <input class="form-input" id="edit-trip-boe" type="text" maxlength="11" placeholder="00000000000" oninput="this.value=this.value.replace(/\D/g,'').slice(0,11)">
+        <div class="boe-wrap" id="wrap-edit-trip-boe">
+              <input class="form-input" id="edit-trip-boe" type="text" maxlength="11" placeholder="00000000000" autocomplete="off"
+                oninput="this.value=this.value.replace(/\D/g,'').slice(0,11);handleBoeSearch('edit-trip-boe')"
+                onkeydown="boeKeydown(event,'edit-trip-boe')"
+                onfocus="handleBoeSearch('edit-trip-boe')"
+                onblur="setTimeout(()=>closeBoeDropdown('edit-trip-boe'),180)">
+              <div class="boe-dropdown" id="boe-dd-edit-trip-boe"></div>
+            </div>
       </div>
       <div class="form-row">
         <label class="form-label">Remarks / Notes</label>
@@ -4669,15 +4726,36 @@ function doSignup() {
   if(password.length < 6)
     return showMsg('su-msg','Password must be at least 6 characters.');
 
-  // Re-check against live DB (Firebase synced)
+  // Username: alphanumeric + underscore only, 3-30 chars
+  if(!/^[a-zA-Z0-9_]{3,30}$/.test(username))
+    return showMsg('su-msg','Username must be 3–30 characters using only letters, numbers, and underscores.');
+
+  // Prevent manager self-signup — managers must be created by existing managers via Permissions
+  if(role === 'manager')
+    return showMsg('su-msg','Manager accounts cannot be self-created. Contact your system administrator.');
+
+  // Prevent HTML/script injection in stored fields
+  const htmlPattern = /<[^>]+>/;
+  if(htmlPattern.test(fullname) || htmlPattern.test(staffno) || htmlPattern.test(unit) || htmlPattern.test(supname))
+    return showMsg('su-msg','Special characters like < > are not allowed in text fields.');
+
   if(!DB.users) DB.users = [];
   if(DB.users.find(u => u.username.toLowerCase() === username.toLowerCase()))
     return showMsg('su-msg','Username already taken. Please choose another.');
 
-  const newUser = { fullname, staffno, role, supname: supname || '', unit, username, password };
+  if(DB.users.find(u => u.staffno.toLowerCase() === staffno.toLowerCase()))
+    return showMsg('su-msg','Staff number already registered. Contact your administrator.');
+
+  const newUser = {
+    fullname: fullname.slice(0,80),
+    staffno:  staffno.slice(0,20),
+    role, supname: (supname||'').slice(0,80),
+    unit: unit.slice(0,80),
+    username: username.slice(0,30),
+    password
+  };
   DB.users.push(newUser);
 
-  // Log activity and notify managers/supervisors immediately
   const notifText = fullname + ' created a new ' + role + ' account';
   const detail    = 'Name: ' + fullname + '\nStaff No: ' + staffno + '\nRole: ' + role +
                     '\nUnit: ' + unit + (supname ? '\nSupervisor: ' + supname : '') +
@@ -4687,9 +4765,7 @@ function doSignup() {
   DB.activity.unshift({ type:'login', text: notifText, time: nowStr(), rawTs: new Date().toISOString() });
   if(DB.activity.length > 120) DB.activity.pop();
 
-  // Push notification to managers and supervisors
   pushNotif({ text: notifText, type:'activity', roles:['manager','supervisor'], detail });
-
   saveDB();
   SFX.success();
   toast('Account created! Please log in with your new credentials.', 'success');
@@ -4705,17 +4781,24 @@ function doResetVerify() {
   const staffno  = document.getElementById('rs-staffno').value.trim();
 
   if (!username || !staffno) return showMsg('rs-msg-1', 'Please enter both your username and staff number.');
-
   if (!DB.users || !DB.users.length)
     return showMsg('rs-msg-1', 'Still connecting to server. Please wait a moment and try again.');
+
+  // Rate limit reset attempts same as login
+  const rateCheck = _checkLoginRateLimit('reset_' + username);
+  if (rateCheck.blocked) return showMsg('rs-msg-1', rateCheck.msg);
 
   const user = DB.users.find(u =>
     u.username.toLowerCase() === username.toLowerCase() &&
     u.staffno.toLowerCase() === staffno.toLowerCase()
   );
 
-  if (!user) return showMsg('rs-msg-1', 'No account found matching that username and staff number. Please check your details.');
+  if (!user) {
+    _recordLoginFailure('reset_' + username);
+    return showMsg('rs-msg-1', 'No account found matching that username and staff number. Please check your details.');
+  }
 
+  _clearLoginAttempts('reset_' + username);
   _resetTargetUsername = user.username;
   document.getElementById('reset-step-1').style.display = 'none';
   document.getElementById('reset-step-2').style.display = 'block';
@@ -4768,20 +4851,76 @@ function cancelReset() {
   goTo('page-login');
 }
 
+// ── XSS SANITISER — strip HTML tags from user-supplied text before rendering ──
+function sanitize(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+// ── LOGIN RATE LIMITING ──
+const _loginAttempts = {};
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_MS   = 15 * 60 * 1000; // 15 minutes
+
+function _checkLoginRateLimit(username) {
+  const key = username.toLowerCase();
+  const now = Date.now();
+  if (!_loginAttempts[key]) _loginAttempts[key] = { count: 0, lockedUntil: 0 };
+  const rec = _loginAttempts[key];
+  if (rec.lockedUntil > now) {
+    const mins = Math.ceil((rec.lockedUntil - now) / 60000);
+    return { blocked: true, msg: 'Account temporarily locked after too many failed attempts. Try again in ' + mins + ' minute' + (mins !== 1 ? 's' : '') + '.' };
+  }
+  return { blocked: false };
+}
+
+function _recordLoginFailure(username) {
+  const key = username.toLowerCase();
+  if (!_loginAttempts[key]) _loginAttempts[key] = { count: 0, lockedUntil: 0 };
+  _loginAttempts[key].count++;
+  if (_loginAttempts[key].count >= MAX_ATTEMPTS) {
+    _loginAttempts[key].lockedUntil = Date.now() + LOCKOUT_MS;
+    _loginAttempts[key].count = 0;
+  }
+}
+
+function _clearLoginAttempts(username) {
+  delete _loginAttempts[username.toLowerCase()];
+}
+
 function doLogin() {
   hideMsg('li-msg');
   const username = document.getElementById('li-username').value.trim();
   const password = document.getElementById('li-password').value;
 
   if(!username || !password) return showMsg('li-msg','Please enter your username and password.');
-
   if(!DB.users || !DB.users.length)
     return showMsg('li-msg','Still connecting to server. Please wait a moment and try again.');
+
+  // Brute force protection
+  const rateCheck = _checkLoginRateLimit(username);
+  if (rateCheck.blocked) return showMsg('li-msg', rateCheck.msg);
 
   const user = DB.users.find(u =>
     u.username.toLowerCase() === username.toLowerCase() && u.password === password
   );
-  if(!user) return showMsg('li-msg','Invalid username or password. Please try again.');
+
+  if(!user) {
+    _recordLoginFailure(username);
+    const rec = _loginAttempts[username.toLowerCase()];
+    const remaining = rec ? Math.max(0, MAX_ATTEMPTS - rec.count) : MAX_ATTEMPTS;
+    const warn = remaining > 0 && remaining <= 2
+      ? ' (' + remaining + ' attempt' + (remaining !== 1 ? 's' : '') + ' remaining before lockout)'
+      : '';
+    return showMsg('li-msg', 'Invalid username or password.' + warn);
+  }
+
+  _clearLoginAttempts(username);
 
   // Managers require 2FA
   if(user.role === 'manager') {
@@ -5482,7 +5621,10 @@ function switchAttendFilter(filter, btn) {
 }
 
 function markFaultyResolved(idx) {
-  if (!DB.trips[idx]) return;
+  if(!currentUser || (currentUser.role !== 'supervisor' && currentUser.role !== 'manager')) {
+    toast('Only supervisors and managers can mark entries as resolved.', 'error'); return;
+  }
+  if(!DB.trips[idx]) return;
   const trip = DB.trips[idx];
   DB.trips[idx].faultyResolved = true;
   DB.trips[idx].faultyResolvedBy = currentUser.fullname;
@@ -5505,7 +5647,14 @@ function markFaultyResolved(idx) {
 
 function confirmEntry(idx) {
   if(!DB.trips[idx]) return;
+  if(!currentUser || (currentUser.role !== 'supervisor' && currentUser.role !== 'manager')) {
+    toast('Only supervisors and managers can confirm entries.', 'error'); return;
+  }
   const trip = DB.trips[idx];
+  // Prevent staff from confirming their own entries
+  if(trip.user === currentUser.fullname && currentUser.role === 'staff') {
+    toast('You cannot confirm your own submission.', 'error'); return;
+  }
   DB.trips[idx].confirmed = true;
   DB.trips[idx].confirmedBy = currentUser.fullname;
   DB.trips[idx].confirmedAt = nowStr();
@@ -5546,10 +5695,21 @@ function confirmEntry(idx) {
 }
 
 function deleteUserAccount(username) {
+  if (!currentUser || currentUser.role !== 'manager') {
+    toast('Only managers can delete accounts.', 'error'); return;
+  }
   const user = DB.users.find(u => u.username === username);
   if (!user) return;
-  if (!confirm(`Delete account for "${user.fullname}" (@${username})?\n\nThis cannot be undone.`)) return;
+  if (user.role === 'manager') {
+    toast('Manager accounts cannot be deleted from this panel.', 'error'); return;
+  }
+  if (!confirm(`Delete account for "${user.fullname}" (@${username})?\n\nThis cannot be undone. Any active session will be terminated.`)) return;
   DB.users = DB.users.filter(u => u.username !== username);
+  // Invalidate session in sessionStorage if it matches the deleted user
+  try {
+    const s = sessionStorage.getItem('pgl_session');
+    if (s) { const d = JSON.parse(s); if (d.username === username) sessionStorage.removeItem('pgl_session'); }
+  } catch(e) {}
   addActivity('login', currentUser.fullname + ' deleted account for ' + user.fullname + ' (' + user.role + ')');
   saveDB();
   toast(user.fullname + "'s account has been deleted.", 'success');
@@ -5568,8 +5728,8 @@ function handleAffixingDeviceKey(e) {
 
 function addAffixingDeviceTag(val) {
   const errEl = document.getElementById('aff-device-err');
-  if (val.length !== 10) {
-    errEl.textContent = 'Device number must be exactly 10 digits.';
+  if (val.length < 10 || val.length > 12) {
+    errEl.textContent = 'Device number must be 10, 11, or 12 digits. You entered ' + val.length + '.';
     errEl.style.display = 'block';
     return;
   }
@@ -5706,6 +5866,10 @@ function renderAffixingHistory() {
 function openAffixingEdit(idx) {
   const t = DB.trips[idx];
   if (!t) return;
+  // Only the original submitter (or a manager) can edit
+  if (t.user !== currentUser.fullname && currentUser.role !== 'manager') {
+    toast('You can only edit your own affixing submissions.', 'error'); return;
+  }
   document.getElementById('aff-edit-idx').value     = idx;
   document.getElementById('aff-edit-subtitle').textContent = 'Submitted ' + t.ts;
   document.getElementById('aff-edit-allocated').value = t.allocated || 0;
@@ -5938,6 +6102,9 @@ function togglePermCheckbox(username, pageId, checkbox) {
 }
 
 function saveUserPermissions(username) {
+  if(!currentUser || currentUser.role !== 'manager') {
+    toast('Only managers can change permissions.', 'error'); return;
+  }
   const userIdx = DB.users.findIndex(u => u.username === username);
   if (userIdx === -1) return;
 
@@ -5969,6 +6136,9 @@ function saveUserPermissions(username) {
 }
 
 function confirmAllEntries() {
+  if(!currentUser || (currentUser.role !== 'supervisor' && currentUser.role !== 'manager')) {
+    toast('Only supervisors and managers can confirm entries.', 'error'); return;
+  }
   const unconfirmed = DB.trips.filter(t => t.entryType === 'staff-record' && !t.confirmed);
   if(!unconfirmed.length) { toast('No unconfirmed entries.', 'error'); return; }
   DB.trips.forEach((t, idx) => {
@@ -6243,6 +6413,13 @@ function saveEditedTrip() {
   const idx = parseInt(document.getElementById('edit-trip-idx').value);
   const t = DB.trips[idx];
   if (!t) return;
+  const msgEl = document.getElementById('edit-trip-msg');
+
+  // Only the original submitter or a supervisor/manager can edit
+  if (t.user !== currentUser?.fullname && currentUser?.role === 'staff') {
+    msgEl.textContent = 'You can only edit your own trip entries.';
+    msgEl.classList.remove('hidden'); return;
+  }
 
   const station = document.getElementById('edit-trip-station').value;
   const trips   = parseInt(document.getElementById('edit-trip-trips').value);
@@ -6251,10 +6428,18 @@ function saveEditedTrip() {
   const boe     = document.getElementById('edit-trip-boe').value.trim();
   const remarks = document.getElementById('edit-trip-remarks').value.trim();
 
-  const msgEl = document.getElementById('edit-trip-msg');
   if (!station) { msgEl.textContent = 'Please select a station.'; msgEl.classList.remove('hidden'); return; }
   if (isNaN(trips) || trips < 1) { msgEl.textContent = 'Number of trips must be at least 1.'; msgEl.classList.remove('hidden'); return; }
   if (boe && boe.length !== 11) { msgEl.textContent = 'BOE must be exactly 11 digits.'; msgEl.classList.remove('hidden'); return; }
+
+  // BOE conflict check on edit — check if new BOE+station combo conflicts with other entries
+  if (boe && boe !== t.boe) {
+    const conflicts = checkBoeStationConflict(boe, station);
+    if (conflicts) {
+      msgEl.textContent = 'BOE ' + boe + ' is already used at: ' + conflicts.join(', ') + '. A BOE cannot span multiple stations.';
+      msgEl.classList.remove('hidden'); return;
+    }
+  }
 
   const oldTrips = t.trips;
   const oldStation = t.station;
@@ -7164,18 +7349,97 @@ function sendReportWhatsApp() {
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
 
-// ══════════ BOE DATALIST — shared across all pages ══════════
+// ══════════ BOE CUSTOM AUTOCOMPLETE ══════════
 
-function refreshBoeDatalist() {
-  const dl = document.getElementById('boe-datalist');
-  if(!dl) return;
-  // Collect all known BOEs: from trips + from boeExpected keys
-  const known = new Set();
-  (DB.trips||[]).forEach(t => { if(t.boe && t.boe.length===11) known.add(t.boe); });
-  Object.keys(DB.boeExpected||{}).forEach(b => { if(b && b.length===11) known.add(b); });
-  // Rebuild datalist options
-  dl.innerHTML = Array.from(known).sort().map(b => `<option value="${b}">`).join('');
+function _buildBoeIndex() {
+  const map = {};
+  (DB.trips||[]).forEach(t => {
+    if (!t.boe || t.boe.length !== 11) return;
+    if (!map[t.boe]) map[t.boe] = { stations: new Set(), trips: 0 };
+    if (t.station) map[t.boe].stations.add(t.station);
+    map[t.boe].trips += (t.trips || 0);
+  });
+  Object.keys(DB.boeExpected||{}).forEach(b => {
+    if (!map[b]) map[b] = { stations: new Set(), trips: 0 };
+    map[b].expected = DB.boeExpected[b];
+  });
+  return map;
 }
+
+function handleBoeSearch(inputId) {
+  const input = document.getElementById(inputId);
+  const dd    = document.getElementById('boe-dd-' + inputId);
+  if (!input || !dd) return;
+  const query = input.value.replace(/\D/g,'');
+  if (!query) { closeBoeDropdown(inputId); return; }
+  const index   = _buildBoeIndex();
+  const matches = Object.entries(index)
+    .filter(([boe]) => boe.startsWith(query))
+    .sort((a,b) => a[0].localeCompare(b[0]))
+    .slice(0, 10);
+  if (!matches.length) {
+    dd.innerHTML = '<div class="boe-no-results">No matching BOE found</div>';
+    dd.classList.add('open');
+    return;
+  }
+  dd.innerHTML = matches.map(([boe, info]) => {
+    const stStr   = [...info.stations].slice(0,2).join(', ') + (info.stations.size > 2 ? '…' : '');
+    const tripStr = info.trips > 0 ? info.trips + ' trip' + (info.trips !== 1 ? 's' : '') : '';
+    const expStr  = info.expected ? ' / ' + info.expected + ' exp' : '';
+    const meta    = [stStr, tripStr + expStr].filter(Boolean).join(' · ');
+    const hi = `<span style="color:var(--accent);font-weight:800;">${boe.slice(0, query.length)}</span>${boe.slice(query.length)}`;
+    return `<div class="boe-option" data-value="${boe}" onmousedown="selectBoeOption('${inputId}','${boe}')">
+      <span class="boe-option-code">${hi}</span>
+      ${meta ? `<span class="boe-option-meta">${meta}</span>` : ''}
+    </div>`;
+  }).join('');
+  dd.classList.add('open');
+}
+
+function selectBoeOption(inputId, value) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  input.value = value;
+  closeBoeDropdown(inputId);
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+function closeBoeDropdown(inputId) {
+  const dd = document.getElementById('boe-dd-' + inputId);
+  if (dd) { dd.classList.remove('open'); dd.innerHTML = ''; }
+}
+
+function boeKeydown(e, inputId) {
+  const dd = document.getElementById('boe-dd-' + inputId);
+  if (!dd || !dd.classList.contains('open')) return;
+  const opts = dd.querySelectorAll('.boe-option');
+  if (!opts.length) return;
+  let cur = dd.querySelector('.boe-option.highlighted');
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (!cur) { opts[0].classList.add('highlighted'); }
+    else { cur.classList.remove('highlighted'); const nx = cur.nextElementSibling; if (nx && nx.classList.contains('boe-option')) nx.classList.add('highlighted'); }
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (cur) { cur.classList.remove('highlighted'); const pv = cur.previousElementSibling; if (pv && pv.classList.contains('boe-option')) pv.classList.add('highlighted'); }
+  } else if (e.key === 'Enter' || e.key === 'Tab') {
+    const hi = dd.querySelector('.boe-option.highlighted');
+    if (hi) { e.preventDefault(); selectBoeOption(inputId, hi.dataset.value); }
+  } else if (e.key === 'Escape') {
+    closeBoeDropdown(inputId);
+  }
+}
+
+// Close all BOE dropdowns when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.boe-wrap')) {
+    document.querySelectorAll('.boe-dropdown.open').forEach(dd => {
+      dd.classList.remove('open'); dd.innerHTML = '';
+    });
+  }
+});
+
+function refreshBoeDatalist() {} // no-op — kept for backward compat
 
 function checkBoeStationConflict(boe, station) {
   if (!boe || boe.length !== 11 || !station || !DB.trips) return null;
@@ -7389,6 +7653,11 @@ function renderSummary() {
   const periodStr    = from.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}) + ' — ' +
                        to.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
 
+  // Daily average trip calculation
+  const periodDays = Math.max(1, Math.round((to - from) / 86400000) + 1);
+  const dailyAvg   = totalTrips > 0 ? (totalTrips / periodDays).toFixed(1) : '0.0';
+  const dailyAvgDevices = totalDevices > 0 ? (totalDevices / periodDays).toFixed(1) : '0.0';
+
   // ── KPI CARDS ──
   if(el('summary-kpi-grid')) {
     const kpis = [
@@ -7435,7 +7704,7 @@ function renderSummary() {
       : `No device requests were submitted to Device Management during this period.`;
 
     prose = `
-      <p>During the period under review (<strong>${label}</strong>), Petroleum Ghana Link recorded a total of <strong>${totalTrips.toLocaleString()} trip${totalTrips!==1?'s':''}</strong> across <strong>${uniqueStations.length} loading station${uniqueStations.length!==1?'s':''}</strong>, documented through <strong>${tripLogs.length} trip log entr${tripLogs.length!==1?'ies':'y'}</strong> submitted by field personnel.</p>
+      <p>During the period under review (<strong>${label}</strong>), Petroleum Ghana Link recorded a total of <strong>${totalTrips.toLocaleString()} trip${totalTrips!==1?'s':''}</strong> across <strong>${uniqueStations.length} loading station${uniqueStations.length!==1?'s':''}</strong>, documented through <strong>${tripLogs.length} trip log entr${tripLogs.length!==1?'ies':'y'}</strong> submitted by field personnel. This equates to a daily average of <strong>${dailyAvg} trip${parseFloat(dailyAvg)!==1?'s':''} per day</strong> and <strong>${dailyAvgDevices} devices allocated per day</strong> over the ${periodDays}-day period.</p>
       ${topSt ? `<p>The highest-performing station during this period was <strong>${topSt}</strong>, which recorded the most trips. ${topSf?'In terms of individual performance, <strong>'+topSf+'</strong> led all field officers with the highest trip count.':''}</p>` : ''}
       <p>A total of <strong>${totalDevices.toLocaleString()} device${totalDevices!==1?'s':''}</strong> were allocated across all field operations. ${faultyNote}</p>
       <p>${confirmNote}</p>
@@ -7816,6 +8085,238 @@ function openAuditDetail(idx) {
   modal.classList.remove('hidden');
 }
 
+function exportSummaryReport() {
+  // Collect all rendered data from the page
+  const title    = document.getElementById('summary-banner-title')?.textContent || 'Operational Summary';
+  const subtitle = document.getElementById('summary-subtitle')?.textContent || '';
+  const genAt    = document.getElementById('summary-generated-at')?.textContent || '';
+  const prose    = document.getElementById('summary-prose')?.innerHTML || '';
+
+  function tableHTML(id) {
+    const el = document.getElementById(id);
+    return el ? el.closest('table')?.outerHTML || '' : '';
+  }
+
+  const win = window.open('', '_blank', 'width=900,height=700');
+  win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${title}</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: Calibri, 'Segoe UI', Arial, sans-serif; font-size: 13px; color: #1a1a1a; background: #fff; padding: 0; }
+
+    /* PAGE LAYOUT */
+    .page { max-width: 900px; margin: 0 auto; padding: 48px 56px; }
+
+    /* LETTERHEAD */
+    .letterhead { display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 3px solid #1a3a2a; padding-bottom: 20px; margin-bottom: 28px; }
+    .letterhead-logo { display: flex; align-items: center; gap: 14px; }
+    .letterhead-logo svg { flex-shrink: 0; }
+    .org-name { font-size: 18px; font-weight: 800; color: #1a3a2a; letter-spacing: 0.5px; line-height: 1.2; }
+    .org-sub  { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+    .letterhead-meta { text-align: right; font-size: 11px; color: #6b7280; line-height: 1.8; }
+
+    /* REPORT TITLE BLOCK */
+    .report-title-block { background: #1a3a2a; color: #fff; border-radius: 8px; padding: 22px 28px; margin-bottom: 28px; }
+    .report-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .report-meta  { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.6; }
+
+    /* SECTION */
+    .section { margin-bottom: 32px; page-break-inside: avoid; }
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .section-num { width: 26px; height: 26px; border-radius: 50%; background: #1a3a2a; color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .section-title { font-size: 14px; font-weight: 800; color: #1a3a2a; text-transform: uppercase; letter-spacing: 0.8px; }
+    .section-line { flex: 1; height: 1px; background: #e5e7eb; }
+
+    /* KPI GRID */
+    .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 0; }
+    .kpi-card { border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 14px 16px; position: relative; overflow: hidden; }
+    .kpi-accent { position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
+    .kpi-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; margin-bottom: 6px; }
+    .kpi-value { font-size: 26px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+    .kpi-sub   { font-size: 11px; color: #6b7280; }
+
+    /* PROSE */
+    .prose { line-height: 2; color: #374151; }
+    .prose p { margin-bottom: 10px; }
+    .prose strong { color: #1a1a1a; }
+
+    /* HIGHLIGHT BOX */
+    .highlight { background: #e8f2ec; border-left: 4px solid #1a3a2a; border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 12px 0; font-size: 13px; color: #1a3a2a; }
+
+    /* TABLE */
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 4px; }
+    thead th { padding: 9px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; background: #f9fafb; border-bottom: 2px solid #e5e7eb; }
+    tbody td { padding: 9px 12px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f9fafb; }
+
+    /* STATUS CHIPS */
+    .chip { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+    .chip-green  { background: #d1fae5; color: #065f46; }
+    .chip-red    { background: #fee2e2; color: #991b1b; }
+    .chip-amber  { background: #fef3c7; color: #92400e; }
+    .chip-gray   { background: #f3f4f6; color: #6b7280; }
+
+    /* DIVIDER */
+    .divider { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+
+    /* FOOTER */
+    .footer { margin-top: 40px; padding-top: 16px; border-top: 2px solid #1a3a2a; display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #9ca3af; }
+    .footer-brand { font-weight: 700; color: #1a3a2a; }
+
+    /* CONFIDENTIAL WATERMARK */
+    .confidential { text-align: center; font-size: 10px; color: #d1d5db; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
+
+    @media print {
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .section { page-break-inside: avoid; }
+      .page { padding: 0; }
+      .no-print { display: none !important; }
+      @page { margin: 1.5cm 2cm; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- PRINT BUTTON (hidden when printing) -->
+  <div class="no-print" style="text-align:right;margin-bottom:20px;">
+    <button onclick="window.print()" style="padding:10px 24px;background:#1a3a2a;color:#fff;border:none;border-radius:8px;font-family:Calibri,sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Print / Save as PDF</button>
+    <button onclick="window.close()" style="margin-left:8px;padding:10px 20px;background:none;color:#6b7280;border:1.5px solid #e5e7eb;border-radius:8px;font-family:Calibri,sans-serif;font-size:14px;cursor:pointer;">Close</button>
+  </div>
+
+  <!-- LETTERHEAD -->
+  <div class="letterhead">
+    <div class="letterhead-logo">
+      <svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+        <rect width="44" height="44" rx="10" fill="#1a3a2a"/>
+        <ellipse cx="22" cy="30" rx="10" ry="4" fill="#2d6b46"/>
+        <rect x="14" y="14" width="4" height="16" rx="2" fill="#b8d9c6"/>
+        <rect x="20" y="10" width="4" height="20" rx="2" fill="#e8f2ec"/>
+        <rect x="26" y="16" width="4" height="14" rx="2" fill="#b8d9c6"/>
+        <path d="M12 28 Q22 22 32 28" stroke="#b8860b" stroke-width="1.5" fill="none"/>
+        <circle cx="22" cy="9" r="3" fill="#b8860b"/>
+      </svg>
+      <div>
+        <div class="org-name">PETROLEUM GHANA LINK</div>
+        <div class="org-sub">Field Data Management System</div>
+      </div>
+    </div>
+    <div class="letterhead-meta">
+      <div style="font-weight:700;color:#1a3a2a;font-size:12px;">OPERATIONAL REPORT</div>
+      <div>${genAt}</div>
+    </div>
+  </div>
+
+  <!-- TITLE BLOCK -->
+  <div class="report-title-block">
+    <div class="report-title">${title}</div>
+    <div class="report-meta">${subtitle}</div>
+  </div>
+
+  <!-- SECTION 1: EXECUTIVE SUMMARY -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title">Executive Summary</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="prose">${prose}</div>
+  </div>
+
+  <!-- SECTION 2: KEY PERFORMANCE INDICATORS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title">Key Performance Indicators</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="kpi-grid" id="print-kpi-grid"></div>
+  </div>
+
+  <!-- SECTION 3: TRIPS BY LOADING STATION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title">Trips by Loading Station</div>
+      <div class="section-line"></div>
+    </div>
+    ${tableHTML('summary-station-table')}
+  </div>
+
+  <!-- SECTION 4: BOE REGISTER -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title">BOE Register</div>
+      <div class="section-line"></div>
+    </div>
+    ${tableHTML('summary-boe-table')}
+  </div>
+
+  <!-- SECTION 5: DEVICE REQUESTS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title">Device Requests by Supervisor</div>
+      <div class="section-line"></div>
+    </div>
+    ${tableHTML('summary-requests-table')}
+  </div>
+
+  <!-- SECTION 6: STAFF PERFORMANCE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-title">Staff Trip Log Performance</div>
+      <div class="section-line"></div>
+    </div>
+    ${tableHTML('summary-staff-table')}
+  </div>
+
+  <!-- SECTION 7: FAULTY DEVICE REPORT -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-title">Faulty Device Report</div>
+      <div class="section-line"></div>
+    </div>
+    ${tableHTML('summary-faulty-table')}
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="footer-brand">Petroleum Ghana Link</span>
+    <span>Field Data Management System &mdash; Confidential</span>
+    <span>${genAt}</span>
+  </div>
+
+</div>
+<script>
+  // Build KPI cards from live DOM
+  const kpiGrid = document.getElementById('print-kpi-grid');
+  const srcGrid = window.opener?.document.getElementById('summary-kpi-grid');
+  if (kpiGrid && srcGrid) {
+    srcGrid.querySelectorAll('.summary-kpi').forEach(card => {
+      const label  = card.querySelector('.summary-kpi-label')?.textContent || '';
+      const value  = card.querySelector('.summary-kpi-value')?.textContent || '';
+      const sub    = card.querySelector('.summary-kpi-sub')?.textContent || '';
+      const accent = card.querySelector('.summary-kpi-accent')?.style.background || '#1a3a2a';
+      const div    = document.createElement('div');
+      div.className = 'kpi-card';
+      div.innerHTML = '<div class="kpi-accent" style="background:'+accent+';"></div><div class="kpi-label">'+label+'</div><div class="kpi-value" style="color:'+accent+';">'+value+'</div><div class="kpi-sub">'+sub+'</div>';
+      kpiGrid.appendChild(div);
+    });
+  }
+<\/script>
+</body>
+</html>`);
+  win.document.close();
+}
+
 function exportAuditCSV() {
   const entries = DB.activity || [];
   const rows = [['Type','Description','Timestamp']];
@@ -7900,6 +8401,9 @@ function getAnomalyHistory() {
 }
 
 function markAnomalyDone(anomalyId, title) {
+  if(!currentUser || currentUser.role !== 'manager') {
+    toast('Only managers can resolve anomalies.', 'error'); return;
+  }
   if (!DB.anomalyResolved) DB.anomalyResolved = {};
   if (!DB.anomalyHistory) DB.anomalyHistory = [];
   DB.anomalyResolved[anomalyId] = { by: currentUser.fullname, at: nowStr(), rawTs: new Date().toISOString() };
