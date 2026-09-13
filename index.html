@@ -2990,6 +2990,7 @@ input, select, textarea {
 
   <div class="main-wrap">
 
+  <div id="rpt-personal-view">
     <!-- Page heading + Send button -->
     <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:1.6rem;">
       <div>
@@ -3059,7 +3060,74 @@ input, select, textarea {
       <div style="font-size:12px;">Submit trip entries on the Record Entry page and they will appear here.</div>
     </div>
   </div>
+  <!-- rpt-personal-view ends -->
+
+  <!-- ═══════ MANAGER-ONLY: TEAM ACTIVITY VIEW ═══════ -->
+  <div id="rpt-manager-view" class="hidden">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:1.6rem;">
+      <div>
+        <div class="pg-title">Team Activity Report</div>
+        <div class="pg-sub">Every entry logged by every staff member — who made it, when, and how many</div>
+      </div>
+    </div>
+
+    <!-- Summary metrics -->
+    <div class="metric-grid" style="margin-bottom:1.6rem;">
+      <div class="metric-card blue" style="cursor:default;">
+        <div class="metric-label">Total Entries</div>
+        <div class="metric-value" id="mgr-rpt-total-entries">0</div>
+        <div class="metric-sub" id="mgr-rpt-scope-label">All staff · all time</div>
+      </div>
+      <div class="metric-card green" style="cursor:default;">
+        <div class="metric-label">Total Trips Logged</div>
+        <div class="metric-value" id="mgr-rpt-total-trips">0</div>
+        <div class="metric-sub">Across all entries shown</div>
+      </div>
+      <div class="metric-card gold" style="cursor:default;">
+        <div class="metric-label">Active Staff</div>
+        <div class="metric-value" id="mgr-rpt-active-staff">0</div>
+        <div class="metric-sub">Made at least one entry</div>
+      </div>
+    </div>
+
+    <!-- Controls row -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:0.8rem;">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--text-3);font-weight:600;margin-right:2px;">Range:</span>
+        <button class="rpt-view-btn active" id="mgr-rpt-range-30" onclick="switchMgrReportRange(30,this)">Last 30 Days</button>
+        <button class="rpt-view-btn" id="mgr-rpt-range-90" onclick="switchMgrReportRange(90,this)">Last 90 Days</button>
+        <button class="rpt-view-btn" id="mgr-rpt-range-all" onclick="switchMgrReportRange('all',this)">All Time</button>
+      </div>
+      <select class="form-input" id="mgr-rpt-user-filter" style="width:200px;height:38px;" onchange="renderManagerReport()">
+        <option value="all">All Staff</option>
+      </select>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1.2rem;">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--text-3);font-weight:600;margin-right:2px;">Sum by:</span>
+        <button class="rpt-view-btn active" id="mgr-rpt-btn-day"   onclick="switchMgrReportGroup('day',this)">Day</button>
+        <button class="rpt-view-btn" id="mgr-rpt-btn-month" onclick="switchMgrReportGroup('month',this)">Month</button>
+        <button class="rpt-view-btn" id="mgr-rpt-btn-year"  onclick="switchMgrReportGroup('year',this)">Year</button>
+        <button onclick="mgrReportExpandAll()" style="margin-left:6px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:none;font-family:'Calibri',Calibri,sans-serif;font-size:12px;color:var(--text-3);cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-3)'">Expand All</button>
+      </div>
+    </div>
+
+    <!-- Report content: one collapsible block per period -->
+    <div id="mgr-rpt-content"></div>
+
+    <!-- Empty state -->
+    <div id="mgr-rpt-empty" class="hidden" style="text-align:center;padding:4rem;color:var(--text-3);">
+      <div style="width:56px;height:56px;border:2px solid var(--border-2);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div style="font-size:14px;font-weight:600;color:var(--text-2);margin-bottom:6px;" id="mgr-rpt-empty-title">No entries yet</div>
+      <div style="font-size:12px;" id="mgr-rpt-empty-sub">Once staff record trips, affixing, or requests, they'll appear here.</div>
+    </div>
+  </div>
 </div>
+</div>
+
 
 <!-- ════════════ REPORT PREVIEW MODAL ════════════ -->
 <div class="msg-preview-overlay hidden" id="report-preview-modal" onclick="closeReportPreview(event)">
@@ -5097,7 +5165,7 @@ function refreshDashboard() {
 
   const todayStr = new Date().toDateString();
   const todayTrips = DB.trips.filter(t => {
-    try { return new Date(t.ts).toDateString() === todayStr || t.ts.includes(new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})); } catch(e) { return false; }
+    try { return new Date(t.rawTs || t.ts).toDateString() === todayStr; } catch(e) { return false; }
   });
   document.getElementById('m-today').textContent = todayTrips.length;
   document.getElementById('m-devices').textContent = DB.trips.reduce((a,t) => a + (t.devices||0), 0);
@@ -5231,7 +5299,7 @@ function openStationModal(stationName) {
   const recent = allTrips.slice(-10).reverse();
   document.getElementById('smd-entries').innerHTML = recent.length ? recent.map(t => `
     <tr>
-      <td>${t.user}</td>
+      <td>${sanitize(t.user)}</td>
       <td>${t.trips}</td>
       <td>${t.devices}</td>
       <td style="font-family:'Calibri',Calibri,sans-serif;">${t.boe||'—'}</td>
@@ -5284,7 +5352,7 @@ function renderTable() {
     return `
     <tr>
       <td style="font-family:'Calibri',Calibri,sans-serif;font-size:11px;color:var(--text-3);">PGL-${String(DB.trips.length-i).padStart(4,'0')}</td>
-      <td>${t.user}</td>
+      <td>${sanitize(t.user)}</td>
       <td><span style="display:inline-flex;align-items:center;gap:5px;">
         <span style="width:7px;height:7px;border-radius:50%;background:${STATIONS.find(s=>s.name===t.station)?.color||'#999'};flex-shrink:0;"></span>${t.station}
       </span></td>
@@ -6303,11 +6371,11 @@ function renderAttend() {
 
         <div class="attend-card-header">
           <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:36px;height:36px;border-radius:50%;background:${isAffixing?'var(--gold)':'var(--accent)'};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">${initials(t.user)}</div>
+            <div style="width:36px;height:36px;border-radius:50%;background:${isAffixing?'var(--gold)':'var(--accent)'};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">${sanitize(initials(t.user))}</div>
             <div>
               <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">${typeBadge}</div>
-              <div style="font-size:14px;font-weight:700;">${t.user}</div>
-              <div style="font-size:11px;color:var(--text-3);">${t.unit||'—'} · ${t.staffno||'—'}</div>
+              <div style="font-size:14px;font-weight:700;">${sanitize(t.user)}</div>
+              <div style="font-size:11px;color:var(--text-3);">${sanitize(t.unit)||'—'} · ${sanitize(t.staffno)||'—'}</div>
             </div>
           </div>
           <div style="text-align:right;">
@@ -6684,7 +6752,9 @@ function renderDeclaration() {
       <div style="border-top:1px solid var(--border);padding:10px 16px;background:var(--bg2);">
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);margin-bottom:8px;">Trip Entries — click Edit to correct any record</div>
         <div style="display:flex;flex-direction:column;gap:6px;">
-          ${tripEntries.map(t => `
+          ${tripEntries.map(t => {
+            const canEdit = currentUser && (currentUser.role !== 'staff' || t.user === currentUser.fullname);
+            return `
             <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 12px;flex-wrap:wrap;">
               <div style="flex:1;min-width:0;">
                 <div style="font-size:12px;font-weight:700;color:var(--text);">${t.station}</div>
@@ -6694,12 +6764,13 @@ function renderDeclaration() {
                   &nbsp;·&nbsp; ${t.ts}
                 </div>
               </div>
+              ${canEdit ? `
               <button class="decl-edit-btn" onclick="openEditTripModal(${t._idx})">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 Edit
-              </button>
+              </button>` : ''}
             </div>
-          `).join('')}
+          `;}).join('')}
         </div>
       </div>` : '';
 
@@ -6790,7 +6861,7 @@ function processAlertQueue() {
     subtitle.textContent = 'From: ' + a.sender + ' · ' + a.ts;
     okBtn.className = 'btn-alert-ok ' + (a.mismatch ? 'warning-btn' : '');
     body.innerHTML = `
-      <p><strong>${a.sender}</strong> has submitted a device request for <strong>${a.station}</strong>.</p>
+      <p><strong>${sanitize(a.sender)}</strong> has submitted a device request for <strong>${sanitize(a.station)}</strong>.</p>
       <p>Devices Requested: <strong style="font-size:18px;font-family:'Calibri',Calibri,sans-serif;">${a.devices}</strong></p>
       ${a.mismatch ? `
       <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:7px;padding:10px 14px;margin-top:8px;">
@@ -6806,8 +6877,8 @@ function processAlertQueue() {
     subtitle.textContent = 'From: ' + a.sender + ' · ' + a.ts;
     okBtn.className = 'btn-alert-ok success-btn';
     body.innerHTML = `
-      <p>Your faulty device report has been reviewed and confirmed by <strong>${a.sender}</strong>.</p>
-      <p>Station: <strong>${a.station}</strong></p>
+      <p>Your faulty device report has been reviewed and confirmed by <strong>${sanitize(a.sender)}</strong>.</p>
+      <p>Station: <strong>${sanitize(a.station)}</strong></p>
       <p>Faulty Devices Acknowledged: <strong style="font-size:18px;font-family:'Calibri',Calibri,sans-serif;color:#c0392b;">${a.faulty}</strong></p>
       <p style="font-size:12px;color:var(--text-3);margin-top:8px;">The supervisor has seen your report. No further action needed.</p>`;
   }
@@ -6872,7 +6943,14 @@ function bgPoll() {
   // Re-sync currentUser object in case their data changed (role, unit, etc.)
   if(DB.users) {
     const fresh = DB.users.find(u => u.username === currentUser.username);
-    if(fresh) currentUser = fresh;
+    if(fresh) {
+      currentUser = fresh;
+    } else {
+      // Account was deleted (e.g. by a manager) while this session was active — force logout.
+      toast('Your account is no longer active. You have been logged out.', 'error');
+      doLogout();
+      return;
+    }
   }
   refreshBoeDatalist();
   checkPendingAlerts();
@@ -6957,9 +7035,9 @@ function renderOutput() {
       <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:130px;">
         <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:var(--accent);background:var(--accent-light);border-radius:4px;padding:2px 8px;">${medal}</div>
         <div style="background:${initials(u.fullname)?'var(--accent)':'#888'};color:#fff;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;">
-          ${initials(u.fullname)}
+          ${sanitize(initials(u.fullname))}
         </div>
-        <div style="font-size:13px;font-weight:700;text-align:center;">${u.fullname.split(' ')[0]}</div>
+        <div style="font-size:13px;font-weight:700;text-align:center;">${sanitize(u.fullname.split(' ')[0])}</div>
         <div style="font-size:11px;color:var(--text-3);">${u.trips} trips</div>
         <div style="background:${col};border-radius:8px 8px 0 0;width:90px;height:${podiumHeights[idx]};display:flex;align-items:flex-start;justify-content:center;padding-top:10px;color:#fff;font-weight:700;font-size:20px;">
           ${rank}
@@ -7090,6 +7168,19 @@ function switchReportView(view, btn) {
 
 function renderReport() {
   if(!currentUser) return;
+
+  const personalView = document.getElementById('rpt-personal-view');
+  const managerView  = document.getElementById('rpt-manager-view');
+
+  if (currentUser.role === 'manager') {
+    if (personalView) personalView.classList.add('hidden');
+    if (managerView)  managerView.classList.remove('hidden');
+    renderManagerReport();
+    return;
+  }
+  if (personalView) personalView.classList.remove('hidden');
+  if (managerView)  managerView.classList.add('hidden');
+
   const today = new Date().toDateString();
 
   const myTrips = (DB.trips||[]).filter(t => {
@@ -7247,6 +7338,198 @@ function toggleRptBlock(stationName) {
 function reportExpandAll() {
   document.querySelectorAll('.rpt-table-wrap').forEach(w => w.classList.remove('collapsed'));
   document.querySelectorAll('.rpt-toggle-icon').forEach(b => b.classList.add('open'));
+}
+
+// ══════════ MANAGER-ONLY: TEAM ACTIVITY REPORT ══════════
+let currentMgrReportGroup = 'day';
+let currentMgrReportRange = 30; // days; 'all' for no limit
+let _mgrRptBlockStates = {};
+
+function switchMgrReportGroup(group, btn) {
+  currentMgrReportGroup = group;
+  btn.closest('div').querySelectorAll('.rpt-view-btn').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  _mgrRptBlockStates = {};
+  renderManagerReport();
+}
+
+function switchMgrReportRange(range, btn) {
+  currentMgrReportRange = range;
+  btn.closest('div').querySelectorAll('.rpt-view-btn').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  _mgrRptBlockStates = {};
+  renderManagerReport();
+}
+
+function _mgrEntryTypeLabel(entryType) {
+  const map = {
+    'staff-record':     'Trip Entry',
+    'affixing':         'Affixing',
+    'inform-request':   'Device Request',
+    'manual-register':  'Manual Register',
+    'supervisor-log':   'Supervisor Log'
+  };
+  return map[entryType] || 'Entry';
+}
+
+function _mgrPeriodKey(date, group) {
+  const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0');
+  if (group === 'year')  return String(y);
+  if (group === 'month') return y + '-' + m;
+  return y + '-' + m + '-' + d;
+}
+
+function _mgrPeriodLabel(key, group) {
+  if (group === 'year') return key;
+  if (group === 'month') {
+    const parts = key.split('-').map(Number);
+    return new Date(parts[0], parts[1]-1, 1).toLocaleDateString('en-GB', { month:'long', year:'numeric' });
+  }
+  const parts = key.split('-').map(Number);
+  return new Date(parts[0], parts[1]-1, parts[2]).toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+}
+
+function _populateMgrUserFilter() {
+  const sel = document.getElementById('mgr-rpt-user-filter');
+  if (!sel) return;
+  const current = sel.value || 'all';
+  const names = Array.from(new Set((DB.trips||[]).map(t => t.user).filter(Boolean))).sort();
+  sel.innerHTML = '<option value="all">All Staff</option>' +
+    names.map(n => `<option value="${sanitize(n)}">${sanitize(n)}</option>`).join('');
+  if (names.includes(current)) sel.value = current;
+}
+
+function renderManagerReport() {
+  if (!currentUser || currentUser.role !== 'manager') return;
+  _populateMgrUserFilter();
+  const userFilter = document.getElementById('mgr-rpt-user-filter')?.value || 'all';
+
+  let entries = (DB.trips||[]).filter(t => t.user);
+  if (userFilter !== 'all') entries = entries.filter(t => t.user === userFilter);
+
+  if (currentMgrReportRange !== 'all') {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - currentMgrReportRange);
+    entries = entries.filter(t => {
+      let d = new Date(t.rawTs || t.ts);
+      if (isNaN(d.getTime())) d = new Date();
+      return d >= cutoff;
+    });
+  }
+
+  document.getElementById('mgr-rpt-total-entries').textContent = entries.length;
+  document.getElementById('mgr-rpt-total-trips').textContent   = entries.reduce((a,t)=>a+(t.trips||0),0);
+  document.getElementById('mgr-rpt-active-staff').textContent  = new Set(entries.map(t=>t.user)).size;
+  const rangeLabel = currentMgrReportRange === 'all' ? 'all time' : 'last ' + currentMgrReportRange + ' days';
+  document.getElementById('mgr-rpt-scope-label').textContent   = (userFilter === 'all' ? 'All staff' : userFilter) + ' · ' + rangeLabel;
+
+  const content = document.getElementById('mgr-rpt-content');
+  const empty   = document.getElementById('mgr-rpt-empty');
+  if (!entries.length) {
+    content.innerHTML = '';
+    empty.classList.remove('hidden');
+    const hadAnyBeforeRangeFilter = (DB.trips||[]).some(t => t.user && (userFilter === 'all' || t.user === userFilter));
+    document.getElementById('mgr-rpt-empty-title').textContent = hadAnyBeforeRangeFilter ? 'No entries in this range' : 'No entries yet';
+    document.getElementById('mgr-rpt-empty-sub').textContent = hadAnyBeforeRangeFilter
+      ? 'Try switching to "All Time" or a wider range above.'
+      : "Once staff record trips, affixing, or requests, they'll appear here.";
+    return;
+  }
+  empty.classList.add('hidden');
+
+  // Bucket every entry into a day / month / year period
+  const buckets = {};
+  entries.forEach(t => {
+    let d = new Date(t.rawTs || t.ts);
+    if (isNaN(d.getTime())) d = new Date();
+    const key = _mgrPeriodKey(d, currentMgrReportGroup);
+    if (!buckets[key]) buckets[key] = [];
+    buckets[key].push({ t, d });
+  });
+
+  const sortedKeys = Object.keys(buckets).sort().reverse(); // most recent period first
+
+  content.innerHTML = sortedKeys.map(key => {
+    const items = buckets[key].slice().sort((a,b) => b.d - a.d); // newest entry first within period
+    const label = _mgrPeriodLabel(key, currentMgrReportGroup);
+    const periodTrips = items.reduce((a,i)=>a+(i.t.trips||0),0);
+    const safeId = key.replace(/[^a-zA-Z0-9]/g,'_');
+
+    // Per-staff entry counts within this period
+    const byUser = {};
+    items.forEach(i => {
+      const u = i.t.user || 'Unknown';
+      if (!byUser[u]) byUser[u] = { count:0, trips:0 };
+      byUser[u].count++;
+      byUser[u].trips += (i.t.trips||0);
+    });
+    const userChips = Object.entries(byUser)
+      .sort((a,b) => b[1].count - a[1].count)
+      .map(([u,s]) => `<span class="rpt-chip" style="margin:2px 4px 2px 0;">${sanitize(u)}: ${s.count} entr${s.count!==1?'ies':'y'}</span>`)
+      .join('');
+
+    const isOpen    = _mgrRptBlockStates[safeId] !== false;
+    const iconClass = isOpen ? 'open' : '';
+    const wrapClass = isOpen ? '' : 'collapsed';
+
+    const rows = items.map(i => {
+      const t = i.t;
+      const timeStr = i.d.toLocaleString('en-GB', {
+        day:'2-digit', month:'short',
+        year: currentMgrReportGroup === 'day' ? undefined : 'numeric',
+        hour:'2-digit', minute:'2-digit'
+      });
+      return `<tr>
+        <td style="font-size:12px;white-space:nowrap;">${timeStr}</td>
+        <td style="font-weight:600;">${sanitize(t.user)}</td>
+        <td style="text-transform:capitalize;font-size:12px;color:var(--text-3);">${sanitize(t.role||'—')}</td>
+        <td style="font-size:12px;">${_mgrEntryTypeLabel(t.entryType)}</td>
+        <td>${t.station ? sanitize(t.station) : '<span class="rpt-rem-none">—</span>'}</td>
+        <td><span class="rpt-num">${t.trips||0}</span></td>
+        <td><span class="rpt-num">${t.devices||0}</span></td>
+        <td style="font-size:12px;">${t.boe ? sanitize(t.boe) : '<span class="rpt-rem-none">—</span>'}</td>
+      </tr>`;
+    }).join('');
+
+    return `
+      <div class="rpt-station-block" id="mgr-rpt-block-${safeId}">
+        <div class="rpt-station-header" onclick="toggleMgrRptBlock('${safeId}')">
+          <div class="rpt-station-title">
+            <div class="rpt-station-name">${label}</div>
+            <span class="rpt-chip" style="margin-left:4px;">${items.length} entr${items.length!==1?'ies':'y'} · ${periodTrips} trip${periodTrips!==1?'s':''}</span>
+          </div>
+          <div class="rpt-toggle-icon ${iconClass}" id="mgr-rpt-icon-${safeId}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="rpt-table-wrap ${wrapClass}" id="mgr-rpt-wrap-${safeId}">
+          <div style="padding:10px 16px;border-bottom:1px solid var(--border);">${userChips}</div>
+          <div style="overflow-x:auto;">
+            <table class="rpt-table">
+              <thead><tr>
+                <th>Time</th><th>Staff Member</th><th>Role</th><th>Type</th><th>Station</th><th>Trips</th><th>Devices</th><th>BOE</th>
+              </tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleMgrRptBlock(safeId) {
+  const wrap = document.getElementById('mgr-rpt-wrap-' + safeId);
+  const icon = document.getElementById('mgr-rpt-icon-' + safeId);
+  if(!wrap||!icon) return;
+  const collapsed = wrap.classList.contains('collapsed');
+  wrap.classList.toggle('collapsed', !collapsed);
+  icon.classList.toggle('open', !collapsed);
+  _mgrRptBlockStates[safeId] = collapsed; // collapsed was true → now open
+}
+
+function mgrReportExpandAll() {
+  document.querySelectorAll('#mgr-rpt-content .rpt-table-wrap').forEach(w => w.classList.remove('collapsed'));
+  document.querySelectorAll('#mgr-rpt-content .rpt-toggle-icon').forEach(b => b.classList.add('open'));
 }
 
 // ── BUILD CLEAN PLAIN-TEXT REPORT (no faulty devices) ──
@@ -7844,7 +8127,7 @@ function renderSummary() {
     el('summary-faulty-table').innerHTML = faultyLogs.length ? faultyLogs.map(t=>`<tr>
       <td style="font-size:12px;">${t.ts}</td>
       <td>${t.station}</td>
-      <td>${t.user}</td>
+      <td>${sanitize(t.user)}</td>
       <td><span style="color:var(--danger);font-weight:700;">${t.faulty}</span></td>
       <td style="font-size:11px;">${(t.deviceNums||[]).length?`<span style="color:var(--danger);">${t.deviceNums.join(', ')}</span>`:'<span style="color:var(--text-3);">Not specified</span>'}</td>
       <td>${t.faultyResolved?`<span style="color:var(--success);font-weight:700;">Resolved</span>`:`<span style="color:var(--warning);">Pending</span>`}</td>
@@ -8096,7 +8379,7 @@ function openAuditDetail(idx) {
   document.getElementById('audit-detail-text').textContent   = a.text || '—';
   document.getElementById('audit-detail-time').textContent   = timeStr;
   document.getElementById('audit-detail-extra').innerHTML    = a.detail
-    ? `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--text-2);line-height:1.8;white-space:pre-wrap;">${a.detail}</div>`
+    ? `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--text-2);line-height:1.8;white-space:pre-wrap;">${sanitize(a.detail)}</div>`
     : '<div style="color:var(--text-3);font-size:13px;font-style:italic;">No additional details recorded.</div>';
   modal.classList.remove('hidden');
 }
@@ -8333,12 +8616,21 @@ function exportSummaryReport() {
   win.document.close();
 }
 
+function _csvSafe(value) {
+  let s = String(value == null ? '' : value);
+  // Prevent CSV/formula injection: neutralize leading characters Excel/Sheets
+  // would interpret as the start of a formula.
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+
 function exportAuditCSV() {
   const entries = DB.activity || [];
   const rows = [['Type','Description','Timestamp']];
   entries.forEach(a => rows.push([
-    a.type||'', '"'+(a.text||'').replace(/"/g,'""')+'"',
-    a.rawTs ? new Date(a.rawTs).toLocaleString('en-GB') : a.time||''
+    _csvSafe(a.type||''),
+    _csvSafe(a.text||''),
+    _csvSafe(a.rawTs ? new Date(a.rawTs).toLocaleString('en-GB') : a.time||'')
   ]));
   const csv = rows.map(r => r.join(',')).join('\n');
   const blob = new Blob([csv], {type:'text/csv'});
@@ -8433,11 +8725,23 @@ function markAnomalyDone(anomalyId, title) {
   toast('Anomaly marked as resolved.', 'success');
 }
 
+// Anomalies currently on screen, kept so the "Done" button can reference one
+// by its safe numeric index instead of interpolating free text (which may
+// contain names with quote characters) into an inline onclick attribute.
+let _currentAnomalies = [];
+
+function markAnomalyDoneByIndex(i) {
+  const a = _currentAnomalies[i];
+  if (!a) return;
+  markAnomalyDone(a.id, a.title);
+}
+
 function renderAuditAnomalies() {
   const section = document.getElementById('audit-anomaly-section');
   if (!section) return;
   const anomalies = detectAnomalies();
   const history   = getAnomalyHistory();
+  _currentAnomalies = anomalies;
 
   let html = '';
 
@@ -8449,13 +8753,13 @@ function renderAuditAnomalies() {
         <div style="font-size:12px;opacity:0.85;">These patterns require your attention. Click Done once resolved.</div>
       </div>
     </div>`;
-    html += anomalies.map(a => `
+    html += anomalies.map((a,i) => `
       <div class="anomaly-item" style="display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;">
         <div style="flex:1;">
-          <div class="anomaly-item-title">${a.title}</div>
-          <div class="anomaly-item-desc">${a.desc}</div>
+          <div class="anomaly-item-title">${sanitize(a.title)}</div>
+          <div class="anomaly-item-desc">${sanitize(a.desc)}</div>
         </div>
-        <button onclick="markAnomalyDone('${a.id}','${a.title.replace(/'/g,"\\'")}');"
+        <button onclick="markAnomalyDoneByIndex(${i})"
           style="flex-shrink:0;padding:6px 14px;border-radius:7px;border:1.5px solid var(--success);background:var(--success-bg);color:var(--success);font-family:'Calibri',Calibri,sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s;white-space:nowrap;"
           onmouseover="this.style.background='var(--success)';this.style.color='#fff';"
           onmouseout="this.style.background='var(--success-bg)';this.style.color='var(--success)';">Done</button>
@@ -8468,8 +8772,8 @@ function renderAuditAnomalies() {
       ${history.slice().reverse().map(h => `
         <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-2);">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          <span style="flex:1;">${h.title}</span>
-          <span style="color:var(--text-3);font-size:11px;">Resolved by ${h.resolvedBy} · ${h.resolvedAt}</span>
+          <span style="flex:1;">${sanitize(h.title)}</span>
+          <span style="color:var(--text-3);font-size:11px;">Resolved by ${sanitize(h.resolvedBy)} · ${h.resolvedAt}</span>
         </div>`).join('')}
     </div>`;
   }
